@@ -3,7 +3,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 
 const MainComponent = ({ context }) => {
-  return <div>aari</div>;
+  return <div>Logii</div>;
 };
 
 export default MainComponent;
