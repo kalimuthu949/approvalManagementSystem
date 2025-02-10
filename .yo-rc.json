@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "approval-management-system",
+    "libraryId": "d533c23f-7be4-4848-82d9-b2e84ab0c3e5",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "approvalManagementSystem",
+    "solutionShortDescription": "approvalManagementSystem description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
