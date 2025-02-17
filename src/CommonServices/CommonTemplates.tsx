@@ -1,6 +1,7 @@
 import { Persona, PersonaSize } from "office-ui-fabric-react";
 import * as React from "react";
-import { IPeoplePickerDetails } from "./Interface";
+import { IPeoplePickerDetails } from "./interface";
+
 export const peoplePickerTemplate = (user: IPeoplePickerDetails) => {
   return (
     <>
