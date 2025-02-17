@@ -11,6 +11,10 @@ import { IReadonlyTheme } from "@microsoft/sp-component-base";
 import * as strings from "AmsWebPartStrings";
 import Ams from "./components/Ams";
 import { IAmsProps } from "./components/IAmsProps";
+//Prime React Default Styles setup Imports:
+import { SPComponentLoader } from "@microsoft/sp-loader";
+require("../../../node_modules/primereact/resources/primereact.min.css");
+import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
 
 export interface IAmsWebPartProps {
   description: string;
@@ -37,6 +41,15 @@ export default class AmsWebPart extends BaseClientSideWebPart<IAmsWebPartProps> 
     });
 
     ReactDom.render(element, this.domElement);
+  }
+
+  //Prime React Default Styles SetUp:
+  public constructor() {
+    super();
+    SPComponentLoader.loadCss("https://unpkg.com/primeicons/primeicons.css");
+    SPComponentLoader.loadCss(
+      "https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+    );
   }
 
   private _getEnvironmentMessage(): string {
