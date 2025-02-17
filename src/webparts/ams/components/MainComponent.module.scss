@@ -1,0 +1,19 @@
+//CommomStyleSheet Import:
+@import "../../../External/commonStyles.module.scss";
+
+.page {
+  background-color: $white;
+  .container {
+    display: flex;
+    width: 100%;
+    .container_sidebar {
+      width: 12%;
+      background-color: $sideNavBgColor;
+      padding: 30px 14px 14px 14px;
+    }
+    .container_content {
+      width: 88%;
+      padding: 14px;
+    }
+  }
+}

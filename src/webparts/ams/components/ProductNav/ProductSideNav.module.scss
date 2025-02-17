@@ -1,0 +1,21 @@
+@import "../../../../External/commonStyles.module.scss";
+.navButtonActiveContainer {
+  @include sideNavSelectableButton;
+  .iconSection {
+    width: 20px;
+    height: 20px;
+  }
+  .labelSection {
+    width: calc(100px - 20px);
+  }
+}
+.navButtonInactiveContainer {
+  @include sideNavUnselectableButton;
+  .iconSection {
+    width: 20px;
+    height: 20px;
+  }
+  .labelSection {
+    width: calc(100px - 20px);
+  }
+}
