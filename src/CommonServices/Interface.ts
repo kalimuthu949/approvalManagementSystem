@@ -10,3 +10,12 @@ export interface ISideNavDetails {
   name: string;
   pageName: string;
 }
+//ListNames Details:
+export interface IListNames {
+  CategoryConfig: string;
+}
+//CategoryConfig Details:
+export interface ICategoryDetails {
+  id: number;
+  category: string;
+}
