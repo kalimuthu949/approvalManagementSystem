@@ -1,9 +1,13 @@
 //interFace Imports:
-import { IListNames } from "./interface";
+import { ICategoryObjDetails, IListNames } from "./interface";
 
 export namespace Config {
   //ListNames Config:
   export const ListNames: IListNames = {
     CategoryConfig: "CategoryConfig",
+  };
+
+  export const InitialCategoryConfigDetails: ICategoryObjDetails = {
+    Category: "",
   };
 }
