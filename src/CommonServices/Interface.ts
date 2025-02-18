@@ -19,6 +19,15 @@ export interface ICategoryDetails {
   id: number;
   category: string;
 }
+
+//Dropdown Details:
+export interface IBasicDropDown {
+  name : string
+}
+export interface IDropdownDetails {
+  categoryDrop : IBasicDropDown[];
+
 export interface ICategoryObjDetails {
   Category: string;
+
 }
