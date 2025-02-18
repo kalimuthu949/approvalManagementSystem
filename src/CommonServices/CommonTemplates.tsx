@@ -1,10 +1,16 @@
-import { Persona, PersonaSize } from "office-ui-fabric-react";
+//Default Imports:
 import * as React from "react";
+import { useRef } from "react";
+//PeoplePicker Imports;
+import { Persona, PersonaSize } from "office-ui-fabric-react";
 import { IPeoplePickerDetails } from "./interface";
 //React Icons Imports - Using Status Template Only :
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegTimesCircle } from "react-icons/fa";
 import { LuClock9 } from "react-icons/lu";
+//PrimeReact Imports:
+import { Menu } from "primereact/menu";
+import { Button } from "primereact/button";
 //Common Style Imports:
 import styles from "../External/commonStyles.module.scss";
 
@@ -104,4 +110,30 @@ const getColors = (status: string) => {
       return null;
   }
   return colors;
+};
+
+//View,Edit,Delete Menu:
+
+export const ActionsMenu = ({ items }) => {
+  const menuLeft = useRef(null);
+  return (
+    <div className="customActionMenu">
+      <Menu
+        model={items}
+        popup
+        ref={menuLeft}
+        id="popup_menu_left"
+        style={{ width: "8.5rem" }}
+      />
+      <Button
+        icon="pi pi-ellipsis-v"
+        className="mr-2"
+        onClick={(event) => {
+          menuLeft.current.toggle(event);
+        }}
+        aria-controls="popup_menu_left"
+        aria-haspopup
+      />
+    </div>
+  );
 };

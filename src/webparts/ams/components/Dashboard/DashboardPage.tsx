@@ -5,13 +5,42 @@ import { useEffect, useState, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import { Menu } from "primereact/menu";
 //Styles Imports:
 import dashboardStyles from "./Dashboard.module.scss";
 import "../../../../External/style.css";
-import { statusTemplate } from "../../../../CommonServices/CommonTemplates";
-import { Menu } from "primereact/menu";
+//CommonService Imports:
+import {
+  ActionsMenu,
+  statusTemplate,
+} from "../../../../CommonServices/CommonTemplates";
 
 const DashboardPage = () => {
+  //Set Actions PopUp:
+  const actionsWithIcons = [
+    {
+      label: "View",
+      icon: "pi pi-eye",
+      className: "customView",
+      command: (event: any) => {
+        console.log(event, "event");
+      },
+    },
+    {
+      label: "Edit",
+      icon: "pi pi-file-edit",
+      className: "customEdit",
+      command: (event: any) => {},
+    },
+    {
+      label: "Delete",
+      icon: "pi pi-trash",
+      className: "customDelete",
+      command: (event: any) => {},
+    },
+  ];
+
+  //InterFace DummyArray:
   interface DummyRequest {
     id: number;
     requestId: string;
@@ -20,6 +49,7 @@ const DashboardPage = () => {
     email: string;
     status: string;
   }
+  //DummyArray Details
   const dummyArray: DummyRequest[] = [
     {
       id: 1,
@@ -55,56 +85,12 @@ const DashboardPage = () => {
     },
   ];
 
-  //Set Actions PopUp:
-  const menuLeft = useRef(null);
-  const actionsWithIcons = [
-    {
-      label: "View",
-      icon: "pi pi-eye",
-      className: "customView",
-      command: (event: any) => {
-        console.log(event, "event");
-      },
-    },
-    {
-      label: "Edit",
-      icon: "pi pi-file-edit",
-      className: "customEdit",
-      command: (event: any) => {},
-    },
-    {
-      label: "Delete",
-      icon: "pi pi-trash",
-      className: "customDelete",
-      command: (event: any) => {},
-    },
-  ];
-
   const renderStatusColumn = (rowData: DummyRequest) => {
     return <div>{statusTemplate(rowData?.status)}</div>;
   };
 
   const renderActionColumn = (rowData: DummyRequest) => {
-    return (
-      <div className="customActionMenu">
-        <Menu
-          model={actionsWithIcons}
-          popup
-          ref={menuLeft}
-          id="popup_menu_left"
-          style={{ width: "8.5rem" }}
-        />
-        <Button
-          icon="pi pi-ellipsis-v"
-          className="mr-2"
-          onClick={(event) => {
-            menuLeft.current.toggle(event);
-          }}
-          aria-controls="popup_menu_left"
-          aria-haspopup
-        />
-      </div>
-    );
+    return <ActionsMenu items={actionsWithIcons} />;
   };
 
   return (
