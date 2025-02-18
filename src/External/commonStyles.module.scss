@@ -17,6 +17,10 @@ $darkblue: #353862;
   --dataTableBodyTextColor: #7c8098;
   --dataTableHeaderPadding: 10px 20px;
   --dataTableBodyPadding: 6px 20px;
+  --sideBarBoxShadow: -4px 4px 10px rgba(255, 255, 255, 0.5);
+  --green: #16a34a;
+  --InputBoxLiteGreen: #16a34a5e;
+  --liteGreen: #dcfce7;
 }
 
 //sideNavSection Selectable ButtonModel styles:
@@ -72,4 +76,10 @@ $darkblue: #353862;
   border-radius: 8px;
   gap: 6px;
   font-weight: 600;
+}
+//sideBar Header Style:
+@mixin sideBarHeader {
+  font-size: 16px;
+  color: $green;
+  font-weight: 500;
 }
