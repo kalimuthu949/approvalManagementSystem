@@ -91,3 +91,74 @@ div[data-automationid="SiteHeader"] {
   font-weight: var(--dataTableHeaderFontWeight);
 }
 /*.....................................................................*/
+
+/*Header Component common styles(import Style from CommonStyles.module.scss)*/
+
+.headerContainer .p-dropdown {
+  width:15%;
+}
+
+.p-dropdown {
+  border: 1px solid var(--green);
+  box-shadow: none;
+}
+.p-dropdown-items-wrapper {
+  font-size: var(--dataTableHeaderFontSize);
+}
+
+.p-placeholder {
+  color: var(--dataTableBodyTextColor);
+  font-weight: calc(var(--dataTableHeaderFontWeight)-100);
+  font-size: var(--dataTableHeaderFontSize);
+}
+.p-dropdown-trigger-icon {
+  color: var(--green);
+  height: 13px;
+  width: 13px;
+}
+.p-dropdown-item.p-highlight {
+  background: var(--green);
+  color: var(--dataTableHeaderBgColor);
+}
+.p-dropdown .p-inputtext {
+  font-size: var(--dataTableHeaderFontSize);
+}
+.p-dropdown .p-dropdown-clear-icon {
+  color: var(--green);
+  border: 0px;
+  top:55%;
+  height: 13px;
+  width: 13px;
+}
+.p-button {
+  box-shadow: none;
+}
+
+.headerContainer .AddBtn {
+  width: 10%;
+}
+.AddBtn .p-button {
+  width: 100%;
+}
+
+.AddBtn .p-button-label {
+  font-size:var(--dataTableHeaderFontSize);
+  font-weight: calc(var(--dataTableHeaderFontWeight)-100);
+}
+
+.AddBtn .p-button {
+  background-color: var(--green);
+  gap: 5px;
+
+  color: var(--dataTableHeaderBgColor);
+  border: 0;
+  height: 32px;
+}
+.AddBtn .p-button:hover {
+  background-color: var(--LiteGreen);
+
+  color: var(--green);
+  gap: 5px;
+  border: 0;
+  height: 32px;
+}
