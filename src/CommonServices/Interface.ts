@@ -19,3 +19,6 @@ export interface ICategoryDetails {
   id: number;
   category: string;
 }
+export interface ICategoryObjDetails {
+  Category: string;
+}
