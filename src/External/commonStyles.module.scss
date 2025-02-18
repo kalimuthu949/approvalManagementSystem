@@ -2,11 +2,22 @@
 $green: #16a34a;
 $liteGreen: #dcfce7;
 $sideNavBgColor: #f9f9f9;
-$dataTableHeaderTextColor: #353862;
-$dataTableHeaderBgColor: #999999;
-$dataTableBodyTextColor: #7c8098;
 $white: #ffffff;
 $black: #202735;
+$sideNavBodyTextColor: #7c8098;
+$darkblue: #353862;
+
+//Using Styles For Normal CssFile:
+:root {
+  --dataTableHeaderBgColor: #f3f4f6;
+  --dataTableHeaderTextColor: $darkblue;
+  --dataTableHeaderFontSize: 12px;
+  --dataTableHeaderFontWeight: 700;
+  --dataTableHeaderBorderRadius: 4px;
+  --dataTableBodyTextColor: #7c8098;
+  --dataTableHeaderPadding: 10px 20px;
+  --dataTableBodyPadding: 6px 20px;
+}
 
 //sideNavSection Selectable ButtonModel styles:
 @mixin sideNavSelectableButton {
@@ -33,7 +44,7 @@ $black: #202735;
   align-items: center;
   font-size: 12px;
   padding: 10px 16px 10px 16px;
-  color: $dataTableBodyTextColor;
+  color: $sideNavBodyTextColor;
   border-radius: 10px;
   font-weight: 600;
   margin-bottom: 20px;
@@ -52,4 +63,13 @@ $black: #202735;
       transform: scale(1.1);
     }
   }
+}
+//common template is being used with the styles related to the status template.
+.statusItem {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px 6px 12px;
+  border-radius: 8px;
+  gap: 6px;
+  font-weight: 600;
 }
