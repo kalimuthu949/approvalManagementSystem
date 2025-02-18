@@ -104,11 +104,10 @@ div[data-automationid="SiteHeader"] {
 }
 /*.....................................................................*/
 
-
 /*Header Component common styles(import Style from CommonStyles.module.scss)*/
 
 .headerContainer .p-dropdown {
-  width:15%;
+  width: 15%;
 }
 
 .p-dropdown {
@@ -139,7 +138,7 @@ div[data-automationid="SiteHeader"] {
 .p-dropdown .p-dropdown-clear-icon {
   color: var(--green);
   border: 0px;
-  top:55%;
+  top: 55%;
   height: 13px;
   width: 13px;
 }
@@ -155,7 +154,7 @@ div[data-automationid="SiteHeader"] {
 }
 
 .AddBtn .p-button-label {
-  font-size:var(--dataTableHeaderFontSize);
+  font-size: var(--dataTableHeaderFontSize);
   font-weight: calc(var(--dataTableHeaderFontWeight)-100);
 }
 
@@ -175,66 +174,66 @@ div[data-automationid="SiteHeader"] {
   border: 0;
   height: 32px;
 
-/*CategoryConfig Common Styles..........................................*/
-.CustomSideBarContainer {
-  width: 40rem;
-  box-shadow: var(--sideBarBoxShadow);
-}
-.customButtonWrapper .pi {
-  font-size: var(--dataTableHeaderFontSize);
-}
-.customSubmitButton {
-  background-color: var(--green);
-  color: white;
-  padding: 6px 12px 6px 12px;
-  border: transparent;
-  font-size: 14px;
-}
-.customSubmitButton .pi,
-.customCancelButton .pi {
-  font-size: var(--dataTableHeaderFontSize);
-}
-/*Common Styles buttons with etc ......................................*/
-.customCancelButton {
-  background-color: var(--dataTableBodyTextColor);
-  color: white;
-  padding: 6px 12px 6px 12px;
-  border: transparent;
-  font-size: 14px;
-}
-.customSubmitButton:hover {
-  background-color: var(--liteGreen);
-  color: var(--green);
-}
-.customCancelButton:hover {
-  background-color: #7c809838;
-  color: var(--dataTableBodyTextColor);
-}
-.error_message {
-  color: #d81b1b;
-  font-size: 12px;
-  margin-top: 5px;
-  display: flex;
-  font-weight: 600;
-}
-.ms-BasePicker-text input::placeholder {
-  font-size: 13px;
-  color: #6c757d;
-}
-input::placeholder {
-  color: #9b757d;
-  font-size: 13px;
-}
-.p-placeholder {
-  color: #9b757d;
-  font-size: 13px;
-}
-.p-inputtextarea::placeholder {
-  color: #9b757d;
-  font-size: 13px;
-}
-.ms-BasePicker-text ::placeholder {
-  color: #9b757d;
-  font-size: 13px;
-
+  /*CategoryConfig Common Styles..........................................*/
+  .CustomSideBarContainer {
+    width: 40rem;
+    box-shadow: var(--sideBarBoxShadow);
+  }
+  .customButtonWrapper .pi {
+    font-size: var(--dataTableHeaderFontSize);
+  }
+  .customSubmitButton {
+    background-color: var(--green);
+    color: white;
+    padding: 6px 12px 6px 12px;
+    border: transparent;
+    font-size: 14px;
+  }
+  .customSubmitButton .pi,
+  .customCancelButton .pi {
+    font-size: var(--dataTableHeaderFontSize);
+  }
+  /*Common Styles buttons with etc ......................................*/
+  .customCancelButton {
+    background-color: var(--dataTableBodyTextColor);
+    color: white;
+    padding: 6px 12px 6px 12px;
+    border: transparent;
+    font-size: 14px;
+  }
+  .customSubmitButton:hover {
+    background-color: var(--liteGreen);
+    color: var(--green);
+  }
+  .customCancelButton:hover {
+    background-color: #7c809838;
+    color: var(--dataTableBodyTextColor);
+  }
+  .error_message {
+    color: #d81b1b;
+    font-size: 12px;
+    margin-top: 5px;
+    display: flex;
+    font-weight: 600;
+  }
+  .ms-BasePicker-text input::placeholder {
+    font-size: 13px;
+    color: #6c757d;
+  }
+  input::placeholder {
+    color: #9b757d;
+    font-size: 13px;
+  }
+  .p-placeholder {
+    color: #9b757d;
+    font-size: 13px;
+  }
+  .p-inputtextarea::placeholder {
+    color: #9b757d;
+    font-size: 13px;
+  }
+  .ms-BasePicker-text ::placeholder {
+    color: #9b757d;
+    font-size: 13px;
+  }
 }
