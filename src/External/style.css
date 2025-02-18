@@ -1,4 +1,5 @@
 /* Common WebPart FullWidth and CanvasZone Default Code */
+
 #workbenchPageContent > div > div > div {
   padding: 0px !important;
 }
@@ -36,3 +37,57 @@ div[data-automationid="SiteHeader"] {
   padding: 0px;
 }
 /*........................................................*/
+
+/*Dashboard Common Styles (import Style from CommonStyles.module.scss)*/
+.customDataTableContainer {
+  box-shadow: -4px 4px 12px #f5f5f5, 4px 0px 6px #f5f5f5;
+  padding: 10px;
+  border-radius: 6px;
+}
+.customDataTableContainer .p-datatable .p-datatable-thead > tr > th {
+  background-color: var(--dataTableHeaderBgColor);
+  padding: var(--dataTableHeaderPadding);
+  font-size: var(--dataTableHeaderFontSize);
+  color: var(--dataTableHeaderTextColor);
+  border: none;
+  border-radius: var(--dataTableHeaderBorderRadius);
+  font-weight: var(--dataTableHeaderFontWeight);
+}
+.customDataTableContainer .p-datatable .p-datatable-tbody > tr > td {
+  color: var(--dataTableBodyTextColor);
+  font-size: var(--dataTableHeaderFontSize);
+  padding: var(--dataTableBodyPadding);
+  border: 1px solid #dee2e6a8;
+  border-width: 0 0 1px 0;
+}
+.customActionMenu .p-button {
+  background: transparent;
+  border: transparent;
+  color: var(--dataTableBodyTextColor);
+}
+.customActionMenu .p-button:focus {
+  box-shadow: none;
+}
+.customActionMenu .pi {
+  font-size: var(--dataTableHeaderFontSize);
+}
+.customView .pi-eye,
+.customView .p-menuitem-text {
+  font-size: var(--dataTableHeaderFontSize);
+  color: #40afff;
+  font-weight: var(--dataTableHeaderFontWeight);
+}
+.customEdit .pi-file-edit,
+.customEdit .p-menuitem-text {
+  font-size: var(--dataTableHeaderFontSize);
+  color: #16a34a;
+  font-weight: var(--dataTableHeaderFontWeight);
+}
+
+.customDelete .pi-trash,
+.customDelete .p-menuitem-text {
+  font-size: var(--dataTableHeaderFontSize);
+  color: #a31618;
+  font-weight: var(--dataTableHeaderFontWeight);
+}
+/*.....................................................................*/
