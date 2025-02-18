@@ -8,6 +8,7 @@ import mainStyles from "./MainComponent.module.scss";
 //Children's Components Imports:
 import ProductSideNav from "./ProductNav/ProductSideNav";
 import DashboardPage from "./Dashboard/DashboardPage";
+import CategoryConfig from "./Admin/CategoryConfig/CategoryConfig";
 
 const MainComponent = ({ context }) => {
   //PageSwitch State:
@@ -19,7 +20,7 @@ const MainComponent = ({ context }) => {
     if (pageName) {
       setCurrentPage(pageName);
     } else {
-      setCurrentPage("Dashboard");
+      setCurrentPage("Request");
     }
   };
   //get and set the page Name (using Props):
@@ -39,7 +40,13 @@ const MainComponent = ({ context }) => {
             <ProductSideNav updatePage={updatePage} currentPage={currentPage} />
           </div>
           <div className={mainStyles.container_content}>
-            <DashboardPage />
+            {currentPage == "Request" ? (
+              <DashboardPage />
+            ) : currentPage == "CategoryConfig" ? (
+              <CategoryConfig />
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>
