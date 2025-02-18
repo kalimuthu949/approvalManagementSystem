@@ -17,19 +17,19 @@ const ProductSideNav = ({ updatePage, currentPage }) => {
   const sideNavContents: ISideNavDetails[] = [];
   sideNavContents.push(
     {
-      img: currentPage == "Dashboard" ? sampleImg : sampleImgBlue,
-      name: "Dashboard",
-      pageName: "Dashboard",
+      img: currentPage == "Request" ? sampleImg : sampleImgBlue,
+      name: "Request",
+      pageName: "Request",
     },
     {
-      img: currentPage == "Order" ? sampleImg : sampleImgBlue,
-      name: "Order",
-      pageName: "Order",
+      img: currentPage == "CategoryConfig" ? sampleImg : sampleImgBlue,
+      name: "Category config",
+      pageName: "CategoryConfig",
     },
     {
-      img: currentPage == "Messages" ? sampleImg : sampleImgBlue,
-      name: "Messages",
-      pageName: "Messages",
+      img: currentPage == "ApproveConfig" ? sampleImg : sampleImgBlue,
+      name: "Approve config",
+      pageName: "ApproveConfig",
     }
   );
 
