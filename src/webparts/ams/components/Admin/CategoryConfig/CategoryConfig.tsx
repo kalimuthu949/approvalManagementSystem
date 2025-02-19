@@ -5,10 +5,9 @@ import { useState, useEffect, useRef } from "react";
 import SPServices from "../../../../../CommonServices/SPServices";
 import { Config } from "../../../../../CommonServices/Config";
 import {
+  IActionBooleans,
   ICategoryDetails,
-  ICategoryObjDetails,
 } from "../../../../../CommonServices/interface";
-import { ActionsMenu } from "../../../../../CommonServices/CommonTemplates";
 //Styles Imports:
 import "../../../../../External/style.css";
 import categoryConfigStyles from "../CategoryConfig.module.scss";
@@ -29,7 +28,9 @@ const CategoryConfig = () => {
   const [categoryInputs, setCategoryInputs] = useState<string[]>([""]);
   console.log(categoryInputs, "categoryInputs");
   const [categoryIndex, setCategoryIndex] = useState<number>(null);
-  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [actionsBooleans, setActionsBooleans] = useState<IActionBooleans>({
+    ...Config.InitialActionsBooleans,
+  });
   console.log(categoryIndex, "categoryIndex");
 
   const getCategoryConfigDetails = () => {
@@ -64,7 +65,11 @@ const CategoryConfig = () => {
       label: "View",
       icon: "pi pi-eye",
       className: "customView",
-      command: (event: any) => {},
+      command: (event: any) => {
+        handleViewCategory(
+          categoryDetails.find((item: any) => item.id === categoryIndex)
+        );
+      },
     },
     {
       label: "Edit",
@@ -86,11 +91,24 @@ const CategoryConfig = () => {
     },
   ];
 
+  const handleViewCategory = (rowData: ICategoryDetails) => {
+    setActionsBooleans((prev) => ({
+      ...prev,
+      isView: true,
+    }));
+    setCategoryInputs([rowData.category]);
+    setCategoryIndex(rowData.id);
+    setVisibleRight(true);
+  };
+
   const handleEditCategory = (rowData: ICategoryDetails) => {
-    setIsEdit(true);
-    setCategoryInputs([rowData.category]); // Set the category in input field
-    setCategoryIndex(rowData.id); // Store the ID for updating
-    setVisibleRight(true); // Open the sidebar
+    setActionsBooleans((prev) => ({
+      ...prev,
+      isEdit: true,
+    }));
+    setCategoryInputs([rowData.category]);
+    setCategoryIndex(rowData.id);
+    setVisibleRight(true);
   };
 
   const hanldeDeleteCategory = () => {
@@ -103,11 +121,6 @@ const CategoryConfig = () => {
       RequestJSON: currObj,
     })
       .then((res) => {
-        // const tempCategoryArray = [...categoryDetails];
-        // let deleteArray = tempCategoryArray.filter(
-        //   (items) => items?.id !== categoryIndex
-        // );
-        // setCategoryDetails([...deleteArray]);
         getCategoryConfigDetails();
       })
       .catch((err) => {
@@ -116,7 +129,6 @@ const CategoryConfig = () => {
   };
 
   const renderActionColumn = (rowData: ICategoryDetails) => {
-    // return <ActionsMenu items={actionsWithIcons} />;
     return (
       <div className="customActionMenu">
         <Menu
@@ -163,7 +175,7 @@ const CategoryConfig = () => {
       (category) => category !== ""
     );
     if (validCategories.length > 0) {
-      if (isEdit) {
+      if (actionsBooleans?.isEdit) {
         // Update the existing category
         SPServices.SPUpdateItem({
           Listname: Config.ListNames.CategoryConfig,
@@ -175,7 +187,10 @@ const CategoryConfig = () => {
             setVisibleRight(false);
             setCategoryInputs([""]);
             setCategoryIndex(null);
-            setIsEdit(false);
+            setActionsBooleans((prev) => ({
+              ...prev,
+              isEdit: false,
+            }));
           })
           .catch((err) => console.log("Update Category Error", err));
       } else {
@@ -238,6 +253,7 @@ const CategoryConfig = () => {
               {categoryInputs.map((input, index) => (
                 <div key={index} className={categoryConfigStyles.inputWrapper}>
                   <InputText
+                    disabled={actionsBooleans?.isView}
                     value={input}
                     onChange={(e) =>
                       handleCategoryChange(index, e.target.value)
@@ -260,7 +276,7 @@ const CategoryConfig = () => {
                 <Button
                   style={{ padding: "5px" }}
                   icon="pi pi-plus"
-                  disabled={isEdit}
+                  disabled={actionsBooleans?.isEdit || actionsBooleans?.isView}
                   className="p-button-success"
                   onClick={() => addCategoryInput()}
                 />
@@ -275,15 +291,20 @@ const CategoryConfig = () => {
                 onClick={() => {
                   setVisibleRight(false);
                   setCategoryInputs([""]);
-                  setIsEdit(false);
+                  setActionsBooleans({
+                    isEdit: false,
+                    isView: false,
+                  });
                 }}
               />
-              <Button
-                icon="pi pi-save"
-                label="Submit"
-                className="customSubmitButton"
-                onClick={submitCategories}
-              />
+              {!actionsBooleans?.isView && (
+                <Button
+                  icon="pi pi-save"
+                  label="Submit"
+                  className="customSubmitButton"
+                  onClick={submitCategories}
+                />
+              )}
             </div>
           </Sidebar>
         </div>

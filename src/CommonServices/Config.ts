@@ -1,6 +1,5 @@
 //interFace Imports:
-
-import { IDropdownDetails, ICategoryObjDetails, IListNames } from "./interface";
+import { IActionBooleans, IDropdownDetails, IListNames } from "./interface";
 
 export namespace Config {
   //ListNames Config:
@@ -12,7 +11,9 @@ export namespace Config {
   export const initialConfigDrop: IDropdownDetails = {
     categoryDrop: [],
   };
-  export const InitialCategoryConfigDetails: ICategoryObjDetails = {
-    Category: "",
+  //View and Edit Obj:
+  export const InitialActionsBooleans: IActionBooleans = {
+    isEdit: false,
+    isView: false,
   };
 }
