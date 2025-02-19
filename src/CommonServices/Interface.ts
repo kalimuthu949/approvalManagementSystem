@@ -20,7 +20,6 @@ export interface ICategoryDetails {
   category: string;
   isDelete: boolean;
 }
-
 //Dropdown Details:
 export interface IBasicDropDown {
   name: string;
@@ -28,6 +27,8 @@ export interface IBasicDropDown {
 export interface IDropdownDetails {
   categoryDrop: IBasicDropDown[];
 }
-export interface ICategoryObjDetails {
-  Category: string;
+//View and Edit Obj:
+export interface IActionBooleans {
+  isEdit: boolean;
+  isView: boolean;
 }
