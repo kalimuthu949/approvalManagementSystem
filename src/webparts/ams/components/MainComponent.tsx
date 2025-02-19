@@ -41,14 +41,7 @@ const MainComponent = ({ context }) => {
             <ProductSideNav updatePage={updatePage} currentPage={currentPage} />
           </div>
           <div className={mainStyles.container_content}>
-            <Header currentPage={currentPage}/>
-            {currentPage == "Request" ? (
-              <DashboardPage />
-            ) : currentPage == "CategoryConfig" ? (
-              <CategoryConfig />
-            ) : (
-              ""
-            )}
+            <Header currentPage={currentPage} />
           </div>
         </div>
       </div>
