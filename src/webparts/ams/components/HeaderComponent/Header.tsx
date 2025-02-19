@@ -59,7 +59,6 @@ const Header = ({ currentPage }) => {
         <label>{currentPage}</label>
         <Dropdown
           value={SelectedCategory}
-          showClear
           options={CategoryFilterValue.categoryDrop}
           onChange={(e) => setSelectedCategory(e.value)}
           optionLabel="name"
