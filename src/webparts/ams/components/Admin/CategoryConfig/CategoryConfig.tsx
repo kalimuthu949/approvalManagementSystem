@@ -1,6 +1,6 @@
 //Default Imports:
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 //Common Service Imports:
 import SPServices from "../../../../../CommonServices/SPServices";
 import { Config } from "../../../../../CommonServices/Config";
@@ -18,17 +18,19 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
 import { InputText } from "primereact/inputtext";
+import { Menu } from "primereact/menu";
 
 const CategoryConfig = () => {
+  const menuLeft = useRef(null);
   const [categoryDetails, setCategoryDetails] = useState<ICategoryDetails[]>(
     []
   );
-  const [categoryDetailsObj, setCategoryDetailsObj] =
-    useState<ICategoryObjDetails>({
-      ...Config.InitialCategoryConfigDetails,
-    });
-  const [isValidation, setIsValidation] = useState<boolean>(false);
   const [visibleRight, setVisibleRight] = useState<boolean>(false);
+  const [categoryInputs, setCategoryInputs] = useState<string[]>([""]);
+  console.log(categoryInputs, "categoryInputs");
+  const [categoryIndex, setCategoryIndex] = useState<number>(null);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  console.log(categoryIndex, "categoryIndex");
 
   const getCategoryConfigDetails = () => {
     SPServices.SPReadItems({
@@ -36,12 +38,20 @@ const CategoryConfig = () => {
       Orderby: "Modified",
       Orderbydecorasc: false,
       Select: "*",
+      Filter: [
+        {
+          FilterKey: "IsDelete",
+          Operator: "eq",
+          FilterValue: "false",
+        },
+      ],
     }).then((res: any) => {
       const tempCategoryArray: ICategoryDetails[] = [];
       res.forEach((items: any) => {
         tempCategoryArray.push({
           id: items?.ID,
           category: items?.Category,
+          isDelete: items?.IsDelete,
         });
       });
       setCategoryDetails([...tempCategoryArray]);
@@ -60,54 +70,131 @@ const CategoryConfig = () => {
       label: "Edit",
       icon: "pi pi-file-edit",
       className: "customEdit",
-      command: (event: any) => {},
+      command: (event: any) => {
+        handleEditCategory(
+          categoryDetails.find((item: any) => item.id === categoryIndex)
+        );
+      },
     },
     {
       label: "Delete",
       icon: "pi pi-trash",
       className: "customDelete",
-      command: (event: any) => {},
+      command: (event: any) => {
+        hanldeDeleteCategory();
+      },
     },
   ];
 
-  const renderActionColumn = (rowData: ICategoryDetails) => {
-    return <ActionsMenu items={actionsWithIcons} />;
+  const handleEditCategory = (rowData: ICategoryDetails) => {
+    setIsEdit(true);
+    setCategoryInputs([rowData.category]); // Set the category in input field
+    setCategoryIndex(rowData.id); // Store the ID for updating
+    setVisibleRight(true); // Open the sidebar
   };
 
-  const handleInputValue = (type: string, value: any) => {
-    setCategoryDetailsObj((prev: ICategoryObjDetails) => ({
-      ...prev,
-      [type]: value,
-    }));
-  };
-
-  const AddCategoryDetails = () => {
-    // const tempcategoryArr: ICategoryDetails[] = [...categoryDetails];
-    // tempcategoryArr.unshift({
-    //   id: Math.max(...tempcategoryArr.map((o) => o?.id)) + 1,
-    //   category: "",
-    // });
-    // setCategoryDetails([...tempcategoryArr]);
-    setVisibleRight(true);
-  };
-
-  const generateJson = () => {
-    let json: ICategoryObjDetails = {
-      Category: categoryDetailsObj?.Category,
+  const hanldeDeleteCategory = () => {
+    const currObj = {
+      IsDelete: true,
     };
-    SPServices.SPAddItem({
+    SPServices.SPUpdateItem({
       Listname: Config.ListNames.CategoryConfig,
-      RequestJSON: json,
-    }).then(() => {
-      getCategoryConfigDetails();
-      setVisibleRight(false);
-    });
+      ID: categoryIndex,
+      RequestJSON: currObj,
+    })
+      .then((res) => {
+        // const tempCategoryArray = [...categoryDetails];
+        // let deleteArray = tempCategoryArray.filter(
+        //   (items) => items?.id !== categoryIndex
+        // );
+        // setCategoryDetails([...deleteArray]);
+        getCategoryConfigDetails();
+      })
+      .catch((err) => {
+        console.log("Delete Category Error", err);
+      });
   };
 
-  const validateFunction = () => {
-    let isValidation: boolean = !categoryDetailsObj?.Category;
-    setIsValidation(isValidation);
-    return !isValidation;
+  const renderActionColumn = (rowData: ICategoryDetails) => {
+    // return <ActionsMenu items={actionsWithIcons} />;
+    return (
+      <div className="customActionMenu">
+        <Menu
+          model={actionsWithIcons}
+          popup
+          ref={menuLeft}
+          id="popup_menu_left"
+          style={{ width: "8.5rem" }}
+        />
+        <Button
+          icon="pi pi-ellipsis-v"
+          className="mr-2"
+          onClick={(event) => {
+            menuLeft.current.toggle(event);
+            setCategoryIndex(rowData?.id);
+          }}
+          aria-controls="popup_menu_left"
+          aria-haspopup
+        />
+      </div>
+    );
+  };
+
+  const handleCategoryChange = (index: number, value: string) => {
+    const updatedInputs = [...categoryInputs];
+    updatedInputs[index] = value;
+    setCategoryInputs(updatedInputs);
+  };
+
+  const removeCategoryInput = (index: number) => {
+    const updatedInputs = categoryInputs.filter((_, i) => i !== index);
+    setCategoryInputs(updatedInputs);
+  };
+
+  const addCategoryInput = () => {
+    let DataEmptyCheck = categoryInputs[categoryInputs.length - 1];
+    if (DataEmptyCheck) {
+      setCategoryInputs([...categoryInputs, ""]);
+    }
+  };
+
+  const submitCategories = () => {
+    const validCategories = categoryInputs.filter(
+      (category) => category !== ""
+    );
+    if (validCategories.length > 0) {
+      if (isEdit) {
+        // Update the existing category
+        SPServices.SPUpdateItem({
+          Listname: Config.ListNames.CategoryConfig,
+          ID: categoryIndex,
+          RequestJSON: { Category: validCategories[0] },
+        })
+          .then(() => {
+            getCategoryConfigDetails();
+            setVisibleRight(false);
+            setCategoryInputs([""]);
+            setCategoryIndex(null);
+            setIsEdit(false);
+          })
+          .catch((err) => console.log("Update Category Error", err));
+      } else {
+        // Add a new category
+        const jsonArray = validCategories.map((item: string) => ({
+          Category: item,
+        }));
+        jsonArray.forEach((json) => {
+          SPServices.SPAddItem({
+            Listname: Config.ListNames.CategoryConfig,
+            RequestJSON: json,
+          }).then(() => {
+            getCategoryConfigDetails();
+            setVisibleRight(false);
+            setCategoryInputs([""]);
+          });
+        });
+      }
+    }
   };
 
   useEffect(() => {
@@ -116,7 +203,7 @@ const CategoryConfig = () => {
   return (
     <>
       <div className="customDataTableContainer">
-        <Button icon="pi pi-arrow-left" onClick={() => AddCategoryDetails()} />
+        <Button icon="pi pi-arrow-left" onClick={() => setVisibleRight(true)} />
         <DataTable
           value={categoryDetails}
           tableStyle={{ minWidth: "50rem" }}
@@ -148,46 +235,54 @@ const CategoryConfig = () => {
               Add new category
             </h4>
             <div className={categoryConfigStyles.categoryContainer}>
-              <div className={categoryConfigStyles.inputWrapper}>
-                <InputText
-                  value={categoryDetailsObj?.Category}
-                  onChange={(e) => handleInputValue("Category", e.target.value)}
-                  style={{ width: "100%" }}
-                  placeholder="Enter category"
-                />
-                {isValidation && !categoryDetailsObj?.Category && (
-                  <span className="error_message ">Category is required</span>
-                )}
-              </div>
+              {categoryInputs.map((input, index) => (
+                <div key={index} className={categoryConfigStyles.inputWrapper}>
+                  <InputText
+                    value={input}
+                    onChange={(e) =>
+                      handleCategoryChange(index, e.target.value)
+                    }
+                    style={{ width: "100%" }}
+                    placeholder="Enter category"
+                  />
+                  {index !== categoryInputs.length - 1 && (
+                    <Button
+                      icon="pi pi-trash"
+                      className="p-button-danger"
+                      onClick={() => removeCategoryInput(index)}
+                    />
+                  )}
+                </div>
+              ))}
               <div
                 className={`${categoryConfigStyles.buttonWrapper} customButtonWrapper`}
               >
                 <Button
                   style={{ padding: "5px" }}
                   icon="pi pi-plus"
+                  disabled={isEdit}
                   className="p-button-success"
+                  onClick={() => addCategoryInput()}
                 />
               </div>
             </div>
+
             <div className={`${categoryConfigStyles.sideBarButtonContainer}`}>
               <Button
                 icon="pi pi-times"
                 label="Cancel"
                 className="customCancelButton"
                 onClick={() => {
-                  setIsValidation(false);
                   setVisibleRight(false);
+                  setCategoryInputs([""]);
+                  setIsEdit(false);
                 }}
               />
               <Button
                 icon="pi pi-save"
                 label="Submit"
                 className="customSubmitButton"
-                onClick={() => {
-                  if (validateFunction()) {
-                    generateJson();
-                  }
-                }}
+                onClick={submitCategories}
               />
             </div>
           </Sidebar>
