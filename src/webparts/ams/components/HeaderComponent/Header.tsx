@@ -14,6 +14,8 @@ import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import "../../../../External/style.css";
 import headerStyles from "./Header.module.scss";
+import DashboardPage from "../Dashboard/DashboardPage";
+import CategoryConfig from "../Admin/CategoryConfig/CategoryConfig";
 
 const Header = ({ currentPage }) => {
   //UseStates
@@ -52,25 +54,36 @@ const Header = ({ currentPage }) => {
     CategoryFilter();
   }, []);
   return (
-    <div className="headerContainer">
-      <div className={headerStyles.ProfileHeader}>Test Profile</div>
+    <>
+      <div className="headerContainer">
+        <div className={headerStyles.ProfileHeader}>Test Profile</div>
 
-      <div className={headerStyles.FilterHeader}>
-        <label>{currentPage}</label>
-        <Dropdown
-          value={SelectedCategory}
-          showClear
-          options={CategoryFilterValue.categoryDrop}
-          onChange={(e) => setSelectedCategory(e.value)}
-          optionLabel="name"
-          placeholder="Category"
-          className="w-full md:w-14rem"
-        />
-        <div className="AddBtn">
-          <Button label="Add new" icon={<LuBadgePlus />} />
+        <div className={headerStyles.FilterHeader}>
+          <label>{currentPage}</label>
+          <Dropdown
+            value={SelectedCategory}
+            showClear
+            options={CategoryFilterValue.categoryDrop}
+            onChange={(e) => setSelectedCategory(e.value)}
+            optionLabel="name"
+            placeholder="Category"
+            className="w-full md:w-14rem"
+          />
+          <div className="AddBtn">
+            <Button label="Add new" icon={<LuBadgePlus />} />
+          </div>
         </div>
       </div>
-    </div>
+      <div>
+        {currentPage == "Request" ? (
+          <DashboardPage />
+        ) : currentPage == "CategoryConfig" ? (
+          <CategoryConfig />
+        ) : (
+          ""
+        )}
+      </div>
+    </>
   );
 };
 
