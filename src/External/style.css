@@ -114,6 +114,9 @@ div[data-automationid="SiteHeader"] {
   border: 1px solid var(--green);
   box-shadow: none;
 }
+.p-dropdown:hover {
+  border: 1.8px solid var(--green);
+}
 .p-dropdown-items-wrapper {
   font-size: var(--dataTableHeaderFontSize);
 }
@@ -134,6 +137,7 @@ div[data-automationid="SiteHeader"] {
 }
 .p-dropdown .p-inputtext {
   font-size: var(--dataTableHeaderFontSize);
+  border: 0px;
 }
 .p-dropdown .p-dropdown-clear-icon {
   color: var(--green);
@@ -166,11 +170,15 @@ div[data-automationid="SiteHeader"] {
   height: 32px;
 }
 .AddBtn .p-button:hover {
-  background-color: var(--LiteGreen);
+  background-color: var(--liteGreen);
   color: var(--green);
   gap: 5px;
   border: 0;
   height: 32px;
+  transition: ease-in-out;
+  transition-timing-function: linear;
+  transition-duration: 0.5s;
+
 }
 
 /*CategoryConfig Common Styles..........................................*/

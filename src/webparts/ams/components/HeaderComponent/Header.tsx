@@ -15,7 +15,7 @@ import { Dropdown } from "primereact/dropdown";
 import "../../../../External/style.css";
 import headerStyles from "./Header.module.scss";
 
-const Header = () => {
+const Header = ({ currentPage }) => {
   //UseStates
   const [CategoryFilterValue, setCategoryFilterValue] =
     useState<IDropdownDetails>({ ...Config.initialConfigDrop });
@@ -56,7 +56,7 @@ const Header = () => {
       <div className={headerStyles.ProfileHeader}>Test Profile</div>
 
       <div className={headerStyles.FilterHeader}>
-        <label>Request</label>
+        <label>{currentPage}</label>
         <Dropdown
           value={SelectedCategory}
           showClear
