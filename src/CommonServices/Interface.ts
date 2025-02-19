@@ -18,16 +18,16 @@ export interface IListNames {
 export interface ICategoryDetails {
   id: number;
   category: string;
+  isDelete: boolean;
 }
 
 //Dropdown Details:
 export interface IBasicDropDown {
-  name : string
+  name: string;
 }
 export interface IDropdownDetails {
-  categoryDrop : IBasicDropDown[];
-
+  categoryDrop: IBasicDropDown[];
+}
 export interface ICategoryObjDetails {
   Category: string;
-
 }

@@ -4,12 +4,15 @@
 .categorySideBarHeading {
   @include sideBarHeader;
 }
+
 .categoryContainer {
   display: flex;
   width: 100%;
   gap: 2%;
   .inputWrapper {
     width: 40%;
+    display: flex;
+    gap: 3%;
   }
   .buttonWrapper {
     width: 58%;
