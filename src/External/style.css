@@ -111,11 +111,12 @@ div[data-automationid="SiteHeader"] {
 }
 
 .p-dropdown {
-  border: 1px solid var(--green);
+  border: 1px solid var(--InputBoxLiteGreen);
   box-shadow: none;
+  padding: 2px;
 }
-.p-dropdown:hover {
-  border: 1.8px solid var(--green);
+.p-dropdown:focus-within {
+  border-color: var(--green);
 }
 .p-dropdown-items-wrapper {
   font-size: var(--dataTableHeaderFontSize);
@@ -158,7 +159,7 @@ div[data-automationid="SiteHeader"] {
 }
 
 .AddBtn .p-button-label {
-  font-size: var(--dataTableHeaderFontSize);
+  font-size: var(--fontSizebig);
   font-weight: calc(var(--dataTableHeaderFontWeight)-100);
 }
 

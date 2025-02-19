@@ -57,7 +57,6 @@ const Header = ({ currentPage }) => {
     <>
       <div className="headerContainer">
         <div className={headerStyles.ProfileHeader}>Test Profile</div>
-
         <div className={headerStyles.FilterHeader}>
           <label>{currentPage}</label>
           <Dropdown
