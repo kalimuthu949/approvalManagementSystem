@@ -21,7 +21,7 @@ import { Persona } from "office-ui-fabric-react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import "../../../../External/style.css";
 import headerStyles from "./Header.module.scss";
-import './HeaderStyle.css'
+import "./HeaderStyle.css";
 
 const Header = ({ context, currentPage }) => {
   //UseStates
@@ -76,16 +76,16 @@ const Header = ({ context, currentPage }) => {
       <div className="headerContainer">
         <div className={headerStyles.profile_header_container}>
           <div className={headerStyles.profile_header_content}>
-          <h1>Welcome back,</h1>
-          <label>{userDetails.name}</label>
+            <h1>Welcome back,</h1>
+            <label>{userDetails.name}</label>
           </div>
-          <div  className={headerStyles.profile_header_Icons}>
-          <div className={headerStyles.notifyBell}>
-            <IoMdNotificationsOutline />
-          </div>
-          <Persona
-            imageUrl={`/_layouts/15/userphoto.aspx?size=S&username=${userDetails.email}`}
-          />
+          <div className={headerStyles.profile_header_Icons}>
+            <div className={headerStyles.notifyBell}>
+              <IoMdNotificationsOutline />
+            </div>
+            <Persona
+              imageUrl={`/_layouts/15/userphoto.aspx?size=S&username=${userDetails.email}`}
+            />
           </div>
         </div>
         <div className={headerStyles.filter_header_container}>
