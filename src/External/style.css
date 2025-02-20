@@ -40,16 +40,15 @@ div[data-automationid="SiteHeader"] {
   box-shadow: none;
 }
 .p-inputtext {
-  padding: 5px;
+  padding: 8px;
+  font-size: var(--dataTableHeaderFontSize);
+  border: 1px solid var(--InputBoxLiteGreen);
 }
 .p-inputtext:enabled:focus {
   box-shadow: none;
 }
 .p-inputtext:enabled:focus {
   border-color: var(--green);
-}
-.p-inputtext {
-  border: 1px solid var(--InputBoxLiteGreen);
 }
 /*........................................................*/
 
@@ -139,6 +138,7 @@ div[data-automationid="SiteHeader"] {
 .p-dropdown .p-inputtext {
   font-size: var(--dataTableHeaderFontSize);
   border: 0px;
+  padding: 5px;
 }
 .p-dropdown .p-dropdown-clear-icon {
   color: var(--green);
@@ -179,8 +179,8 @@ div[data-automationid="SiteHeader"] {
   transition: ease-in-out;
   transition-timing-function: linear;
   transition-duration: 0.5s;
-
 }
+
 
 /*CategoryConfig Common Styles..........................................*/
 

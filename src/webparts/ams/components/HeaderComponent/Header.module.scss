@@ -10,24 +10,64 @@
   padding: 10px 0px 10px 0px;
   label {
     color: $black;
-    font-size: 14px;
-    font-weight: 700;
+    font-size: var(--fontSizebig);
+    font-weight: var(--dataTableHeaderFontWeight);
     width: 75%;
   }
 }
 .profile_header_container {
   @extend .filter_header_container;
+  justify-content: space-between;
   height: 50px;
   padding: 0px;
   background-color: $white;
+  .profile_header_content {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 0px;
+    height: 100%;
+    width: 100%;
+  }
   h1 {
     color: $sideNavBodyTextColor;
     font-size: 25px;
-    font-weight: 400;
+    font-weight: calc(var(--dataTableHeaderFontWeight) - 300);
     letter-spacing: 1px;
+    width: 17%;
   }
   label {
-    @extend .filter_header_container;
+    font-size: calc(var(--fontSizebig) +2);
+    font-weight: var(--dataTableHeaderFontWeight);
     color: $green;
+    width: 83%;
+    padding-top: 10px;
+  }
+  .profile_header_Icons {
+    padding: 0px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: end;
+  }
+  .notifyBell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: $liteGreen;
+    width: 35px;
+    height: 35px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      color: $green;
+    }
+    .personaImage {
+      border-radius: 10px;
+      width: 35px;
+      height: 35px;
+    }
   }
 }
