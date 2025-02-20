@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import commonStyles from "../../../External/commonStyles.module.scss";
 import "../../../External/style.css";
 import mainStyles from "./MainComponent.module.scss";
+//Common Service Imports
+import { Config } from "../../../CommonServices/Config";
 //Children's Components Imports:
 import ProductSideNav from "./ProductNav/ProductSideNav";
 import DashboardPage from "./Dashboard/DashboardPage";
@@ -21,7 +23,7 @@ const MainComponent = ({ context }) => {
     if (pageName) {
       setCurrentPage(pageName);
     } else {
-      setCurrentPage("Request");
+      setCurrentPage(Config.sideNavPageNames.Request);
     }
   };
   //get and set the page Name (using Props):
@@ -41,7 +43,7 @@ const MainComponent = ({ context }) => {
             <ProductSideNav updatePage={updatePage} currentPage={currentPage} />
           </div>
           <div className={mainStyles.container_content}>
-            <Header currentPage={currentPage} />
+            <Header context={context} currentPage={currentPage} />
           </div>
         </div>
       </div>
