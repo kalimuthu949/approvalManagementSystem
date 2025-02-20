@@ -23,7 +23,7 @@ const Header = ({ context, currentPage }) => {
   //UseStates
   const [categoryFilterValue, setCategoryFilterValue] =
     useState<IDropdownDetails>({ ...Config.initialConfigDrop });
-  const [SelectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [sideBarVisible, setSideBarVisible] = useState<boolean>(false);
   const [sideBarcontent, setSideBarContent] = useState<IRightSideBarContents>({
     ...Config.rightSideBarContents,
@@ -59,11 +59,9 @@ const Header = ({ context, currentPage }) => {
       });
   };
 
-
   const openSidebar = () => {
     setSideBarVisible(true);
   };
-
 
   //useEffect
   useEffect(() => {
@@ -96,7 +94,7 @@ const Header = ({ context, currentPage }) => {
               visible={sideBarVisible}
               onHide={() => setSideBarVisible(false)}
               contents={
-                currentPage == "CategoryConfig"
+                currentPage == Config.sideNavPageNames.CategoryConfig
                   ? sideBarcontent?.categoryConfigContent
                   : ""
               }
@@ -105,9 +103,9 @@ const Header = ({ context, currentPage }) => {
         </div>
       </div>
       <div>
-        {currentPage == "Request" ? (
+        {currentPage == Config.sideNavPageNames.Request ? (
           <DashboardPage />
-        ) : currentPage == "CategoryConfig" ? (
+        ) : currentPage == Config.sideNavPageNames.CategoryConfig ? (
           <CategoryConfig
             setCategorySideBarContent={setSideBarContent}
             setCategorySideBarVisible={setSideBarVisible}
