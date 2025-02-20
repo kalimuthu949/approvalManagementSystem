@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import sideNavStyles from "./ProductSideNav.module.scss";
 //CommonService Imports:
 import { ISideNavDetails } from "../../../../CommonServices/interface";
+import { Config } from "../../../../CommonServices/Config";
 //Fluentui Imports:
 import { TooltipHost } from "@fluentui/react";
 
@@ -17,19 +18,28 @@ const ProductSideNav = ({ updatePage, currentPage }) => {
   const sideNavContents: ISideNavDetails[] = [];
   sideNavContents.push(
     {
-      img: currentPage == "Request" ? sampleImg : sampleImgBlue,
+      img:
+        currentPage == Config.sideNavPageNames.Request
+          ? sampleImg
+          : sampleImgBlue,
       name: "Request",
-      pageName: "Request",
+      pageName: Config.sideNavPageNames.Request,
     },
     {
-      img: currentPage == "CategoryConfig" ? sampleImg : sampleImgBlue,
+      img:
+        currentPage == Config.sideNavPageNames.CategoryConfig
+          ? sampleImg
+          : sampleImgBlue,
       name: "Category config",
-      pageName: "CategoryConfig",
+      pageName: Config.sideNavPageNames.CategoryConfig,
     },
     {
-      img: currentPage == "ApproveConfig" ? sampleImg : sampleImgBlue,
+      img:
+        currentPage == Config.sideNavPageNames.ApproveConfig
+          ? sampleImg
+          : sampleImgBlue,
       name: "Approve config",
-      pageName: "ApproveConfig",
+      pageName: Config.sideNavPageNames.ApproveConfig,
     }
   );
 

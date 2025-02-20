@@ -151,26 +151,26 @@ div[data-automationid="SiteHeader"] {
   box-shadow: none;
 }
 
-.headerContainer .AddBtn {
+.headerContainer .addNewButton {
   width: 10%;
 }
-.AddBtn .p-button {
+.addNewButton .p-button {
   width: 100%;
 }
 
-.AddBtn .p-button-label {
+.addNewButton .p-button-label {
   font-size: var(--fontSizebig);
   font-weight: calc(var(--dataTableHeaderFontWeight)-100);
 }
 
-.AddBtn .p-button {
+.addNewButton .p-button {
   background-color: var(--green);
   gap: 5px;
   color: var(--dataTableHeaderBgColor);
   border: 0;
   height: 32px;
 }
-.AddBtn .p-button:hover {
+.addNewButton .p-button:hover {
   background-color: var(--liteGreen);
   color: var(--green);
   gap: 5px;

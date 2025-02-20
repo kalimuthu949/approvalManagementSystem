@@ -19,9 +19,9 @@ import DashboardPage from "../Dashboard/DashboardPage";
 import CategoryConfig from "../Admin/CategoryConfig/CategoryConfig";
 import { RightSidebar } from "../../../../CommonServices/CommonTemplates";
 
-const Header = ({ currentPage }) => {
+const Header = ({ context, currentPage }) => {
   //UseStates
-  const [CategoryFilterValue, setCategoryFilterValue] =
+  const [categoryFilterValue, setCategoryFilterValue] =
     useState<IDropdownDetails>({ ...Config.initialConfigDrop });
   const [SelectedCategory, setSelectedCategory] = useState(null);
   const [sideBarVisible, setSideBarVisible] = useState<boolean>(false);
@@ -29,8 +29,13 @@ const Header = ({ currentPage }) => {
     ...Config.rightSideBarContents,
   });
 
+  const userDetails = {
+    name: context._pageContext._user.displayName,
+    email: context._pageContext._user.email,
+  };
+  console.log("userDetails", userDetails);
   //Get Category From List
-  const CategoryFilter = () => {
+  const categoryFilter = () => {
     SPServices.SPReadItems({
       Listname: Config.ListNames.CategoryConfig,
       Select: "*",
@@ -54,30 +59,34 @@ const Header = ({ currentPage }) => {
       });
   };
 
+
   const openSidebar = () => {
     setSideBarVisible(true);
   };
 
+
   //useEffect
   useEffect(() => {
-    CategoryFilter();
+    categoryFilter();
   }, []);
   return (
     <>
       <div className="headerContainer">
-        <div className={headerStyles.ProfileHeader}>Test Profile</div>
-        <div className={headerStyles.FilterHeader}>
+        <div className={headerStyles.profile_header_container}>
+          <h1>Welcome back,</h1>
+          <label>{userDetails.name}</label>
+        </div>
+        <div className={headerStyles.filter_header_container}>
           <label>{currentPage}</label>
           <Dropdown
-            value={SelectedCategory}
-            showClear
-            options={CategoryFilterValue.categoryDrop}
+            value={selectedCategory}
+            options={categoryFilterValue.categoryDrop}
             onChange={(e) => setSelectedCategory(e.value)}
             optionLabel="name"
             placeholder="Category"
             className="w-full md:w-14rem"
           />
-          <div className="AddBtn">
+          <div className="addNewButton">
             <Button
               label="Add new"
               onClick={() => openSidebar()}
