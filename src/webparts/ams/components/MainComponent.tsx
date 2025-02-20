@@ -1,21 +1,23 @@
 //Default Imports:
 import * as React from "react";
 import { useEffect, useState } from "react";
+
 //Style Imports:
-import commonStyles from "../../../External/commonStyles.module.scss";
 import "../../../External/style.css";
 import mainStyles from "./MainComponent.module.scss";
+
 //Common Service Imports
 import { Config } from "../../../CommonServices/Config";
+
+
+
 //Children's Components Imports:
 import ProductSideNav from "./ProductNav/ProductSideNav";
-import DashboardPage from "./Dashboard/DashboardPage";
-import CategoryConfig from "./Admin/CategoryConfig/CategoryConfig";
 import Header from "./HeaderComponent/Header";
 
 const MainComponent = ({ context }) => {
   //PageSwitch State:
-  const [currentPage, setCurrentPage] = useState("");
+  const [currentPage, setCurrentPage] = useState<string>("");
   //Handle page Function using URL params:
   const setPageFromUrl = () => {
     const urlParams = new URLSearchParams(window.location.search);

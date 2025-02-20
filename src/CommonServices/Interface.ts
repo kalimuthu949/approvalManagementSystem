@@ -32,3 +32,13 @@ export interface IActionBooleans {
   isEdit: boolean;
   isView: boolean;
 }
+//RightSideBarContents Details:
+export interface IRightSideBarContents {
+  categoryConfigContent: string;
+}
+//Page Name
+export interface ISideNavPageNames {
+  Request: string;
+  ApproveConfig: string;
+  CategoryConfig: string;
+}

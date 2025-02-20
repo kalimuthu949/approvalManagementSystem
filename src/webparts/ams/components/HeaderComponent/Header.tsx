@@ -6,6 +6,7 @@ import { Config } from "../../../../CommonServices/Config";
 import {
   IBasicDropDown,
   IDropdownDetails,
+  IRightSideBarContents,
 } from "../../../../CommonServices/interface";
 import SPServices from "../../../../CommonServices/SPServices";
 //Style Imports:
@@ -16,12 +17,17 @@ import "../../../../External/style.css";
 import headerStyles from "./Header.module.scss";
 import DashboardPage from "../Dashboard/DashboardPage";
 import CategoryConfig from "../Admin/CategoryConfig/CategoryConfig";
+import { RightSidebar } from "../../../../CommonServices/CommonTemplates";
 
 const Header = ({ context, currentPage }) => {
   //UseStates
   const [categoryFilterValue, setCategoryFilterValue] =
     useState<IDropdownDetails>({ ...Config.initialConfigDrop });
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [SelectedCategory, setSelectedCategory] = useState(null);
+  const [sideBarVisible, setSideBarVisible] = useState<boolean>(false);
+  const [sideBarcontent, setSideBarContent] = useState<IRightSideBarContents>({
+    ...Config.rightSideBarContents,
+  });
 
   const userDetails = {
     name: context._pageContext._user.displayName,
@@ -54,6 +60,11 @@ const Header = ({ context, currentPage }) => {
   };
 
 
+  const openSidebar = () => {
+    setSideBarVisible(true);
+  };
+
+
   //useEffect
   useEffect(() => {
     categoryFilter();
@@ -78,8 +89,18 @@ const Header = ({ context, currentPage }) => {
           <div className="addNewButton">
             <Button
               label="Add new"
+              onClick={() => openSidebar()}
               icon={<LuBadgePlus />}
             />
+            <RightSidebar
+              visible={sideBarVisible}
+              onHide={() => setSideBarVisible(false)}
+              contents={
+                currentPage == "CategoryConfig"
+                  ? sideBarcontent?.categoryConfigContent
+                  : ""
+              }
+            ></RightSidebar>
           </div>
         </div>
       </div>
@@ -88,6 +109,8 @@ const Header = ({ context, currentPage }) => {
           <DashboardPage />
         ) : currentPage == "CategoryConfig" ? (
           <CategoryConfig
+            setCategorySideBarContent={setSideBarContent}
+            setCategorySideBarVisible={setSideBarVisible}
           />
         ) : (
           ""
