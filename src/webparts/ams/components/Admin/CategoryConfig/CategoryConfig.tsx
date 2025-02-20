@@ -7,7 +7,10 @@ import { Config } from "../../../../../CommonServices/Config";
 import {
   IActionBooleans,
   ICategoryDetails,
+  IRightSideBarContents,
 } from "../../../../../CommonServices/interface";
+//React Icons:
+import { FaRegTrashAlt } from "react-icons/fa";
 //Styles Imports:
 import "../../../../../External/style.css";
 import categoryConfigStyles from "../CategoryConfig.module.scss";
@@ -19,19 +22,19 @@ import { Sidebar } from "primereact/sidebar";
 import { InputText } from "primereact/inputtext";
 import { Menu } from "primereact/menu";
 
-const CategoryConfig = () => {
+const CategoryConfig = ({
+  setCategorySideBarContent,
+  setCategorySideBarVisible,
+}) => {
   const menuLeft = useRef(null);
   const [categoryDetails, setCategoryDetails] = useState<ICategoryDetails[]>(
     []
   );
-  const [visibleRight, setVisibleRight] = useState<boolean>(false);
   const [categoryInputs, setCategoryInputs] = useState<string[]>([""]);
-  console.log(categoryInputs, "categoryInputs");
   const [categoryIndex, setCategoryIndex] = useState<number>(null);
   const [actionsBooleans, setActionsBooleans] = useState<IActionBooleans>({
     ...Config.InitialActionsBooleans,
   });
-  console.log(categoryIndex, "categoryIndex");
 
   const getCategoryConfigDetails = () => {
     SPServices.SPReadItems({
@@ -46,17 +49,21 @@ const CategoryConfig = () => {
           FilterValue: "false",
         },
       ],
-    }).then((res: any) => {
-      const tempCategoryArray: ICategoryDetails[] = [];
-      res.forEach((items: any) => {
-        tempCategoryArray.push({
-          id: items?.ID,
-          category: items?.Category,
-          isDelete: items?.IsDelete,
+    })
+      .then((res: any) => {
+        const tempCategoryArray: ICategoryDetails[] = [];
+        res.forEach((items: any) => {
+          tempCategoryArray.push({
+            id: items?.ID,
+            category: items?.Category,
+            isDelete: items?.IsDelete,
+          });
         });
+        setCategoryDetails([...tempCategoryArray]);
+      })
+      .catch((err) => {
+        console.log("Get Category Config Error", err);
       });
-      setCategoryDetails([...tempCategoryArray]);
-    });
   };
 
   //Set Actions PopUp:
@@ -98,7 +105,7 @@ const CategoryConfig = () => {
     }));
     setCategoryInputs([rowData.category]);
     setCategoryIndex(rowData.id);
-    setVisibleRight(true);
+    setCategorySideBarVisible(true);
   };
 
   const handleEditCategory = (rowData: ICategoryDetails) => {
@@ -108,7 +115,7 @@ const CategoryConfig = () => {
     }));
     setCategoryInputs([rowData.category]);
     setCategoryIndex(rowData.id);
-    setVisibleRight(true);
+    setCategorySideBarVisible(true);
   };
 
   const hanldeDeleteCategory = () => {
@@ -158,16 +165,16 @@ const CategoryConfig = () => {
     setCategoryInputs(updatedInputs);
   };
 
-  const removeCategoryInput = (index: number) => {
-    const updatedInputs = categoryInputs.filter((_, i) => i !== index);
-    setCategoryInputs(updatedInputs);
-  };
-
   const addCategoryInput = () => {
     let DataEmptyCheck = categoryInputs[categoryInputs.length - 1];
     if (DataEmptyCheck) {
       setCategoryInputs([...categoryInputs, ""]);
     }
+  };
+
+  const removeCategoryInput = (index: number) => {
+    const updatedInputs = categoryInputs.filter((_, i) => i !== index);
+    setCategoryInputs(updatedInputs);
   };
 
   const submitCategories = () => {
@@ -184,7 +191,7 @@ const CategoryConfig = () => {
         })
           .then(() => {
             getCategoryConfigDetails();
-            setVisibleRight(false);
+            setCategorySideBarVisible(false);
             setCategoryInputs([""]);
             setCategoryIndex(null);
             setActionsBooleans((prev) => ({
@@ -204,7 +211,7 @@ const CategoryConfig = () => {
             RequestJSON: json,
           }).then(() => {
             getCategoryConfigDetails();
-            setVisibleRight(false);
+            setCategorySideBarVisible(false);
             setCategoryInputs([""]);
           });
         });
@@ -212,13 +219,84 @@ const CategoryConfig = () => {
     }
   };
 
+  //CategoryRightSideBar Contents:
+  const categoryConfigSideBarContents = () => {
+    return (
+      <>
+        <h4 className={categoryConfigStyles.categorySideBarHeading}>
+          Add new category
+        </h4>
+        <div className={categoryConfigStyles.categoryContainer}>
+          {categoryInputs.map((input, index) => (
+            <div key={index} className={categoryConfigStyles.inputWrapper}>
+              <InputText
+                disabled={actionsBooleans?.isView}
+                value={input}
+                onChange={(e) => {
+                  console.log(e.target.value, "inputValue");
+                  handleCategoryChange(index, e.target.value);
+                }}
+                placeholder="Enter category"
+              />
+              {index !== categoryInputs.length - 1 && (
+                <FaRegTrashAlt onClick={() => removeCategoryInput(index)} />
+              )}
+            </div>
+          ))}
+          <div
+            className={`${categoryConfigStyles.buttonWrapper} customButtonWrapper`}
+          >
+            <Button
+              style={{ padding: "5px" }}
+              icon="pi pi-plus"
+              disabled={actionsBooleans?.isEdit || actionsBooleans?.isView}
+              className="p-button-success"
+              onClick={() => addCategoryInput()}
+            />
+          </div>
+        </div>
+
+        <div className={`${categoryConfigStyles.sideBarButtonContainer}`}>
+          <Button
+            icon="pi pi-times"
+            label="Cancel"
+            className="customCancelButton"
+            onClick={() => {
+              setCategorySideBarVisible(false);
+              setCategoryInputs([""]);
+              setActionsBooleans({
+                isEdit: false,
+                isView: false,
+              });
+            }}
+          />
+          {!actionsBooleans?.isView && (
+            <Button
+              icon="pi pi-save"
+              label="Submit"
+              className="customSubmitButton"
+              onClick={submitCategories}
+            />
+          )}
+        </div>
+      </>
+    );
+  };
+
   useEffect(() => {
     getCategoryConfigDetails();
   }, []);
+
+  useEffect(() => {
+    setCategorySideBarContent((prev: IRightSideBarContents) => ({
+      ...prev,
+      categoryConfigContent: categoryConfigSideBarContents(),
+    }));
+  }, [categoryInputs]);
+
   return (
     <>
       <div className="customDataTableContainer">
-        <Button icon="pi pi-arrow-left" onClick={() => setVisibleRight(true)} />
         <DataTable
           value={categoryDetails}
           tableStyle={{ minWidth: "50rem" }}
@@ -239,75 +317,6 @@ const CategoryConfig = () => {
             body={renderActionColumn}
           ></Column>
         </DataTable>
-        <div>
-          <Sidebar
-            className="CustomSideBarContainer"
-            visible={visibleRight}
-            position="right"
-            onHide={() => setVisibleRight(false)}
-          >
-            <h4 className={categoryConfigStyles.categorySideBarHeading}>
-              Add new category
-            </h4>
-            <div className={categoryConfigStyles.categoryContainer}>
-              {categoryInputs.map((input, index) => (
-                <div key={index} className={categoryConfigStyles.inputWrapper}>
-                  <InputText
-                    disabled={actionsBooleans?.isView}
-                    value={input}
-                    onChange={(e) =>
-                      handleCategoryChange(index, e.target.value)
-                    }
-                    style={{ width: "100%" }}
-                    placeholder="Enter category"
-                  />
-                  {index !== categoryInputs.length - 1 && (
-                    <Button
-                      icon="pi pi-trash"
-                      className="p-button-danger"
-                      onClick={() => removeCategoryInput(index)}
-                    />
-                  )}
-                </div>
-              ))}
-              <div
-                className={`${categoryConfigStyles.buttonWrapper} customButtonWrapper`}
-              >
-                <Button
-                  style={{ padding: "5px" }}
-                  icon="pi pi-plus"
-                  disabled={actionsBooleans?.isEdit || actionsBooleans?.isView}
-                  className="p-button-success"
-                  onClick={() => addCategoryInput()}
-                />
-              </div>
-            </div>
-
-            <div className={`${categoryConfigStyles.sideBarButtonContainer}`}>
-              <Button
-                icon="pi pi-times"
-                label="Cancel"
-                className="customCancelButton"
-                onClick={() => {
-                  setVisibleRight(false);
-                  setCategoryInputs([""]);
-                  setActionsBooleans({
-                    isEdit: false,
-                    isView: false,
-                  });
-                }}
-              />
-              {!actionsBooleans?.isView && (
-                <Button
-                  icon="pi pi-save"
-                  label="Submit"
-                  className="customSubmitButton"
-                  onClick={submitCategories}
-                />
-              )}
-            </div>
-          </Sidebar>
-        </div>
       </div>
     </>
   );

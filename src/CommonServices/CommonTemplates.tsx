@@ -11,9 +11,11 @@ import { LuClock9 } from "react-icons/lu";
 //PrimeReact Imports:
 import { Menu } from "primereact/menu";
 import { Button } from "primereact/button";
+import { Sidebar } from "primereact/sidebar";
 //Common Style Imports:
 import styles from "../External/commonStyles.module.scss";
 
+//PeoplePicker Template:
 export const peoplePickerTemplate = (user: IPeoplePickerDetails) => {
   return (
     <>
@@ -57,6 +59,7 @@ export const peoplePickerTemplate = (user: IPeoplePickerDetails) => {
   );
 };
 
+//Custom Template :
 export const statusTemplate = (status: string) => {
   return (
     <div
@@ -113,7 +116,6 @@ const getColors = (status: string) => {
 };
 
 //View,Edit,Delete Menu:
-
 export const ActionsMenu = ({ items }) => {
   const menuLeft = useRef(null);
   return (
@@ -134,6 +136,22 @@ export const ActionsMenu = ({ items }) => {
         aria-controls="popup_menu_left"
         aria-haspopup
       />
+    </div>
+  );
+};
+
+//SideBar setups:
+export const RightSidebar = ({ visible, onHide, contents }) => {
+  return (
+    <div>
+      <Sidebar
+        visible={visible}
+        className="CustomSideBarContainer"
+        position="right"
+        onHide={onHide}
+      >
+        {contents}
+      </Sidebar>
     </div>
   );
 };

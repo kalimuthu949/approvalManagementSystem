@@ -6,6 +6,7 @@ import { Config } from "../../../../CommonServices/Config";
 import {
   IBasicDropDown,
   IDropdownDetails,
+  IRightSideBarContents,
 } from "../../../../CommonServices/interface";
 import SPServices from "../../../../CommonServices/SPServices";
 //Style Imports:
@@ -16,13 +17,17 @@ import "../../../../External/style.css";
 import headerStyles from "./Header.module.scss";
 import DashboardPage from "../Dashboard/DashboardPage";
 import CategoryConfig from "../Admin/CategoryConfig/CategoryConfig";
+import { RightSidebar } from "../../../../CommonServices/CommonTemplates";
 
 const Header = ({ currentPage }) => {
   //UseStates
   const [CategoryFilterValue, setCategoryFilterValue] =
     useState<IDropdownDetails>({ ...Config.initialConfigDrop });
   const [SelectedCategory, setSelectedCategory] = useState(null);
-  console.log("CategoryFilterValue", CategoryFilterValue);
+  const [sideBarVisible, setSideBarVisible] = useState<boolean>(false);
+  const [sideBarcontent, setSideBarContent] = useState<IRightSideBarContents>({
+    ...Config.rightSideBarContents,
+  });
 
   //Get Category From List
   const CategoryFilter = () => {
@@ -49,6 +54,10 @@ const Header = ({ currentPage }) => {
       });
   };
 
+  const openSidebar = () => {
+    setSideBarVisible(true);
+  };
+
   //useEffect
   useEffect(() => {
     CategoryFilter();
@@ -69,7 +78,20 @@ const Header = ({ currentPage }) => {
             className="w-full md:w-14rem"
           />
           <div className="AddBtn">
-            <Button label="Add new" icon={<LuBadgePlus />} />
+            <Button
+              label="Add new"
+              onClick={() => openSidebar()}
+              icon={<LuBadgePlus />}
+            />
+            <RightSidebar
+              visible={sideBarVisible}
+              onHide={() => setSideBarVisible(false)}
+              contents={
+                currentPage == "CategoryConfig"
+                  ? sideBarcontent?.categoryConfigContent
+                  : ""
+              }
+            ></RightSidebar>
           </div>
         </div>
       </div>
@@ -77,7 +99,10 @@ const Header = ({ currentPage }) => {
         {currentPage == "Request" ? (
           <DashboardPage />
         ) : currentPage == "CategoryConfig" ? (
-          <CategoryConfig />
+          <CategoryConfig
+            setCategorySideBarContent={setSideBarContent}
+            setCategorySideBarVisible={setSideBarVisible}
+          />
         ) : (
           ""
         )}
