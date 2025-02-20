@@ -42,3 +42,9 @@ export interface ISideNavPageNames {
   ApproveConfig: string;
   CategoryConfig: string;
 }
+
+//User Details
+export interface IUserDetails {
+  name: string;
+  email: string;
+}

@@ -1,0 +1,13 @@
+/*Persona*/
+.headerContainer .ms-Persona {
+    display: inline;
+  }
+  .headerContainer .ms-Image {
+    border-radius: 10px;
+    width: 35px !important;
+    height: 35px !important;
+    margin-top: 6px;
+  }
+  .headerContainer .ms-Image img {
+    object-fit: cover;
+  }

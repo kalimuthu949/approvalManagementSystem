@@ -7,29 +7,33 @@ import {
   IBasicDropDown,
   IDropdownDetails,
   IRightSideBarContents,
+  IUserDetails,
 } from "../../../../CommonServices/interface";
 import SPServices from "../../../../CommonServices/SPServices";
 //Style Imports:
 import { LuBadgePlus } from "react-icons/lu";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
-import "../../../../External/style.css";
-import headerStyles from "./Header.module.scss";
 import DashboardPage from "../Dashboard/DashboardPage";
 import CategoryConfig from "../Admin/CategoryConfig/CategoryConfig";
 import { RightSidebar } from "../../../../CommonServices/CommonTemplates";
+import { Persona } from "office-ui-fabric-react";
+import { IoMdNotificationsOutline } from "react-icons/io";
+import "../../../../External/style.css";
+import headerStyles from "./Header.module.scss";
+import './HeaderStyle.css'
 
 const Header = ({ context, currentPage }) => {
   //UseStates
   const [categoryFilterValue, setCategoryFilterValue] =
     useState<IDropdownDetails>({ ...Config.initialConfigDrop });
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState<number>(null);
   const [sideBarVisible, setSideBarVisible] = useState<boolean>(false);
   const [sideBarcontent, setSideBarContent] = useState<IRightSideBarContents>({
     ...Config.rightSideBarContents,
   });
 
-  const userDetails = {
+  const userDetails: IUserDetails = {
     name: context._pageContext._user.displayName,
     email: context._pageContext._user.email,
   };
@@ -71,8 +75,18 @@ const Header = ({ context, currentPage }) => {
     <>
       <div className="headerContainer">
         <div className={headerStyles.profile_header_container}>
+          <div className={headerStyles.profile_header_content}>
           <h1>Welcome back,</h1>
           <label>{userDetails.name}</label>
+          </div>
+          <div  className={headerStyles.profile_header_Icons}>
+          <div className={headerStyles.notifyBell}>
+            <IoMdNotificationsOutline />
+          </div>
+          <Persona
+            imageUrl={`/_layouts/15/userphoto.aspx?size=S&username=${userDetails.email}`}
+          />
+          </div>
         </div>
         <div className={headerStyles.filter_header_container}>
           <label>{currentPage}</label>
