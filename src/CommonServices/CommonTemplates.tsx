@@ -3,7 +3,7 @@ import * as React from "react";
 import { useRef } from "react";
 //PeoplePicker Imports;
 import { Persona, PersonaSize } from "office-ui-fabric-react";
-import { IPeoplePickerDetails } from "./interface";
+import { IPeoplePickerDetails, IToaster } from "./interface";
 //React Icons Imports - Using Status Template Only :
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegTimesCircle } from "react-icons/fa";
@@ -152,6 +152,21 @@ export const RightSidebar = ({ visible, onHide, contents }) => {
       >
         {contents}
       </Sidebar>
+    </div>
+  );
+};
+
+//Common Toast Notification setups:
+export const toastNotify = (item: IToaster) => {
+  return (
+    <div className="flex flex-row align-items-center toastContainer">
+      <div className={item.ClsName}>
+        <i className={`pi ${item.iconName}`}></i>
+      </div>
+      <div>
+        <div className="toast-heading">{item.type}</div>
+        <div className="toast-message">{item.msg}</div>
+      </div>
     </div>
   );
 };

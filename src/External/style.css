@@ -181,7 +181,6 @@ div[data-automationid="SiteHeader"] {
   transition-duration: 0.5s;
 }
 
-
 /*CategoryConfig Common Styles..........................................*/
 
 .CustomSideBarContainer {
@@ -244,4 +243,36 @@ input::placeholder {
 .ms-BasePicker-text ::placeholder {
   color: #9b757d;
   font-size: 13px;
+}
+/* Toast Common Styles: .............................................*/
+.toastContainer {
+  display: flex;
+  flex: 1;
+  gap: 14px;
+  align-items: center;
+}
+.toastContainer i {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+}
+.toast-Heading {
+  font-size: 16px;
+  font-weight: 500;
+}
+.toast-message {
+  font-size: 14px;
+}
+.p-toast .p-toast-message .p-toast-icon-close {
+  margin-top: 6px;
+}
+.toast-imgcontainer-success {
+  padding: 10px;
+  background-color: #165424f7;
+  border-radius: 6px;
+}
+.toast-imgcontainer-warning {
+  padding: 10px;
+  background-color: #d2ab2e;
+  border-radius: 6px;
 }
