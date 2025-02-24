@@ -18,19 +18,22 @@ import categoryConfigStyles from "../CategoryConfig.module.scss";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
-import { Sidebar } from "primereact/sidebar";
+import { Toast } from "primereact/toast";
 import { InputText } from "primereact/inputtext";
 import { Menu } from "primereact/menu";
+import { toastNotify } from "../../../../../CommonServices/CommonTemplates";
 
 const CategoryConfig = ({
   setCategorySideBarContent,
   setCategorySideBarVisible,
 }) => {
   const menuLeft = useRef(null);
+  const toast = useRef<Toast>(null);
   const [categoryDetails, setCategoryDetails] = useState<ICategoryDetails[]>(
     []
   );
   const [categoryInputs, setCategoryInputs] = useState<string[]>([""]);
+  console.log(categoryInputs, "categoryInputs");
   const [categoryIndex, setCategoryIndex] = useState<number>(null);
   const [actionsBooleans, setActionsBooleans] = useState<IActionBooleans>({
     ...Config.InitialActionsBooleans,
@@ -169,6 +172,18 @@ const CategoryConfig = ({
     let DataEmptyCheck = categoryInputs[categoryInputs.length - 1];
     if (DataEmptyCheck) {
       setCategoryInputs([...categoryInputs, ""]);
+    } else {
+      toast.current?.show({
+        severity: "warn",
+        summary: "Warning",
+        content: (prop) =>
+          toastNotify({
+            iconName: "pi-exclamation-triangle",
+            ClsName: "toast-imgcontainer-warning",
+            type: "Warning",
+            msg: Config?.toastWarningMessage,
+          }),
+      });
     }
   };
 
@@ -190,6 +205,18 @@ const CategoryConfig = ({
           RequestJSON: { Category: validCategories[0] },
         })
           .then(() => {
+            toast.current?.show({
+              severity: "success",
+              summary: "Success",
+              // detail: Config.NextContent,
+              content: (prop) =>
+                toastNotify({
+                  iconName: "pi-check-square",
+                  ClsName: "toast-imgcontainer-success",
+                  type: "Success",
+                  msg: "Category Updated Successfully",
+                }),
+            });
             getCategoryConfigDetails();
             setCategorySideBarVisible(false);
             setCategoryInputs([""]);
@@ -210,6 +237,18 @@ const CategoryConfig = ({
             Listname: Config.ListNames.CategoryConfig,
             RequestJSON: json,
           }).then(() => {
+            toast.current?.show({
+              severity: "success",
+              summary: "Success",
+              // detail: Config.NextContent,
+              content: (prop) =>
+                toastNotify({
+                  iconName: "pi-check-square",
+                  ClsName: "toast-imgcontainer-success",
+                  type: "Success",
+                  msg: "Category Added Successfully",
+                }),
+            });
             getCategoryConfigDetails();
             setCategorySideBarVisible(false);
             setCategoryInputs([""]);
@@ -238,6 +277,7 @@ const CategoryConfig = ({
                 }}
                 placeholder="Enter category"
               />
+
               {index !== categoryInputs.length - 1 && (
                 <FaRegTrashAlt onClick={() => removeCategoryInput(index)} />
               )}
@@ -275,7 +315,9 @@ const CategoryConfig = ({
               icon="pi pi-save"
               label="Submit"
               className="customSubmitButton"
-              onClick={submitCategories}
+              onClick={() => {
+                submitCategories();
+              }}
             />
           )}
         </div>
@@ -296,6 +338,7 @@ const CategoryConfig = ({
 
   return (
     <>
+      <Toast ref={toast} />
       <div className="customDataTableContainer">
         <DataTable
           value={categoryDetails}

@@ -48,3 +48,11 @@ export interface IUserDetails {
   name: string;
   email: string;
 }
+
+//Toast Message Details:
+export interface IToaster {
+  iconName: string;
+  ClsName: string;
+  type: "Warning" | "Success" | "Alert";
+  msg: string;
+}
