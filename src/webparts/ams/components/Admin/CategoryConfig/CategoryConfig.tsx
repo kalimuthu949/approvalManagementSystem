@@ -33,7 +33,6 @@ const CategoryConfig = ({
     []
   );
   const [categoryInputs, setCategoryInputs] = useState<string[]>([""]);
-  console.log(categoryInputs, "categoryInputs");
   const [categoryIndex, setCategoryIndex] = useState<number>(null);
   const [actionsBooleans, setActionsBooleans] = useState<IActionBooleans>({
     ...Config.InitialActionsBooleans,
@@ -181,7 +180,7 @@ const CategoryConfig = ({
             iconName: "pi-exclamation-triangle",
             ClsName: "toast-imgcontainer-warning",
             type: "Warning",
-            msg: Config?.toastWarningMessage,
+            msg: "Please fill the current category before adding a new one",
           }),
       });
     }
@@ -263,7 +262,11 @@ const CategoryConfig = ({
     return (
       <>
         <h4 className={categoryConfigStyles.categorySideBarHeading}>
-          Add new category
+          {actionsBooleans?.isEdit
+            ? "Edit category"
+            : actionsBooleans?.isView
+            ? "View category"
+            : "Add new category"}
         </h4>
         <div className={categoryConfigStyles.categoryContainer}>
           {categoryInputs.map((input, index) => (
@@ -272,7 +275,6 @@ const CategoryConfig = ({
                 disabled={actionsBooleans?.isView}
                 value={input}
                 onChange={(e) => {
-                  console.log(e.target.value, "inputValue");
                   handleCategoryChange(index, e.target.value);
                 }}
                 placeholder="Enter category"
