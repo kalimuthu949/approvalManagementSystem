@@ -22,9 +22,7 @@ const DashboardPage = () => {
       label: "View",
       icon: "pi pi-eye",
       className: "customView",
-      command: (event: any) => {
-        console.log(event, "event");
-      },
+      command: (event: any) => {},
     },
     {
       label: "Edit",

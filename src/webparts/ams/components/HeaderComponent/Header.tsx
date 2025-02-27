@@ -37,7 +37,7 @@ const Header = ({ context, currentPage }) => {
     name: context._pageContext._user.displayName,
     email: context._pageContext._user.email,
   };
-  console.log("userDetails", userDetails);
+
   //Get Category From List
   const categoryFilter = () => {
     SPServices.SPReadItems({
@@ -47,12 +47,10 @@ const Header = ({ context, currentPage }) => {
       Orderbydecorasc: false,
     })
       .then((res: any) => {
-        console.log(res, "res");
         const TempArr: IBasicDropDown[] = [];
         res?.forEach((item: any) => {
           TempArr.push({ name: item.Category });
         });
-        console.log("TempArr", TempArr);
         setCategoryFilterValue((prev: IDropdownDetails) => ({
           ...prev,
           categoryDrop: TempArr,

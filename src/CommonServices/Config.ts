@@ -35,8 +35,4 @@ export namespace Config {
     ApproveConfig: "ApproveConfig",
     CategoryConfig: "CategoryConfig",
   };
-
-  //Toast Notification Warning Content Config:
-  export const toastWarningMessage: string =
-    "Please fill the category before adding a new one";
 }
