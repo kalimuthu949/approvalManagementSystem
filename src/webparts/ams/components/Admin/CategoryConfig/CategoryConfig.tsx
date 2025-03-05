@@ -13,7 +13,7 @@ import {
 import { FaRegTrashAlt } from "react-icons/fa";
 //Styles Imports:
 import "../../../../../External/style.css";
-import categoryConfigStyles from "../CategoryConfig.module.scss";
+import categoryConfigStyles from "./CategoryConfig.module.scss";
 //primeReact Imports:
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -239,7 +239,6 @@ const CategoryConfig = ({
             toast.current?.show({
               severity: "success",
               summary: "Success",
-              // detail: Config.NextContent,
               content: (prop) =>
                 toastNotify({
                   iconName: "pi-check-square",

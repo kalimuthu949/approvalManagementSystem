@@ -116,7 +116,7 @@ const Header = ({ context, currentPage }) => {
       </div>
       <div>
         {currentPage == Config.sideNavPageNames.Request ? (
-          <DashboardPage />
+          <DashboardPage context={context} />
         ) : currentPage == Config.sideNavPageNames.CategoryConfig ? (
           <CategoryConfig
             setCategorySideBarContent={setSideBarContent}

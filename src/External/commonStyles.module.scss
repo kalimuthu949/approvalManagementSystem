@@ -21,7 +21,7 @@ $darkblue: #353862;
   --green: #16a34a;
   --InputBoxLiteGreen: #16a34a5e;
   --liteGreen: #dcfce7;
-  --fontSizebig:14px
+  --fontSizebig: 14px;
 }
 
 //sideNavSection Selectable ButtonModel styles:
@@ -83,4 +83,19 @@ $darkblue: #353862;
   font-size: 16px;
   color: $green;
   font-weight: 500;
+}
+//multiPeoplepicker Section Style:
+.Persona {
+  width: 30px;
+  height: 30px;
+  background-color: #0a1b39;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 13px;
+  .AllPersona {
+    visibility: visible;
+  }
 }
