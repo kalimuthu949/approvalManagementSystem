@@ -276,3 +276,18 @@ input::placeholder {
   background-color: #d2ab2e;
   border-radius: 6px;
 }
+/*MultiPeoplePicker Common Styles..........................................*/
+.user-selector-group .ms-Image {
+  width: 30px !important;
+  height: 30px !important;
+}
+.displayText {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user-selector-group .ms-Persona {
+  min-width: 0px;
+  width: 24px;
+}

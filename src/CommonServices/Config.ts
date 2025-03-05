@@ -3,6 +3,7 @@ import {
   IActionBooleans,
   IDropdownDetails,
   IListNames,
+  IRequestHubDetails,
   IRightSideBarContents,
   ISideNavPageNames,
 } from "./interface";
@@ -11,6 +12,8 @@ export namespace Config {
   //ListNames Config:
   export const ListNames: IListNames = {
     CategoryConfig: "CategoryConfig",
+    RequestsHub: "RequestsHub",
+    ApprovalConfig: "ApprovalConfig",
   };
 
   //Dropdown Config:
@@ -34,5 +37,15 @@ export namespace Config {
     Request: "Request",
     ApproveConfig: "ApproveConfig",
     CategoryConfig: "CategoryConfig",
+  };
+
+  //RequestHub Config:
+  export const RequestHubDetails: IRequestHubDetails = {
+    id: null,
+    requestId: "",
+    status: "",
+    category: "",
+    approvers: [],
+    approvalJson: [],
   };
 }

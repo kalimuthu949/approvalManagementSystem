@@ -2,8 +2,16 @@
 import * as React from "react";
 import { useRef } from "react";
 //PeoplePicker Imports;
-import { Persona, PersonaSize } from "office-ui-fabric-react";
 import { IPeoplePickerDetails, IToaster } from "./interface";
+import {
+  DirectionalHint,
+  Label,
+  Persona,
+  PersonaPresence,
+  PersonaSize,
+  TooltipDelay,
+  TooltipHost,
+} from "@fluentui/react";
 //React Icons Imports - Using Status Template Only :
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegTimesCircle } from "react-icons/fa";
@@ -14,6 +22,7 @@ import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
 //Common Style Imports:
 import styles from "../External/commonStyles.module.scss";
+import "../External/style.css";
 
 //PeoplePicker Template:
 export const peoplePickerTemplate = (user: IPeoplePickerDetails) => {
@@ -168,5 +177,85 @@ export const toastNotify = (item: IToaster) => {
         <div className="toast-message">{item.msg}</div>
       </div>
     </div>
+  );
+};
+
+//MultiPeoplePicker Template:
+export const multiplePeoplePickerTemplate = (users: IPeoplePickerDetails[]) => {
+  return (
+    <>
+      {users?.length ? (
+        <div
+          className="user-selector-group"
+          style={{
+            display: "flex",
+          }}
+        >
+          {users.map((value, index) => {
+            if (index < 2) {
+              return (
+                <Persona
+                  styles={{
+                    root: {
+                      cursor: "pointer",
+                      margin: "0 !important;",
+                      ".ms-Persona-details": {
+                        display: "none",
+                      },
+                    },
+                  }}
+                  imageUrl={
+                    "/_layouts/15/userphoto.aspx?size=S&username=" + value.email
+                  }
+                  title={value.name}
+                  size={PersonaSize.size32}
+                />
+              );
+            }
+          })}
+
+          {users.length > 2 ? (
+            <TooltipHost
+              className="all-member-users"
+              content={
+                <ul style={{ margin: 10, padding: 0 }}>
+                  {users.map((DName: any) => {
+                    return (
+                      <li style={{ listStyleType: "none" }}>
+                        <div style={{ display: "flex" }}>
+                          <Persona
+                            showOverflowTooltip
+                            size={PersonaSize.size24}
+                            presence={PersonaPresence.none}
+                            showInitialsUntilImageLoads={true}
+                            imageUrl={
+                              "/_layouts/15/userphoto.aspx?size=S&username=" +
+                              `${DName.email}`
+                            }
+                          />
+                          <Label style={{ marginLeft: 10, fontSize: 12 }}>
+                            {DName.name}
+                          </Label>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              }
+              delay={TooltipDelay.zero}
+              directionalHint={DirectionalHint.bottomCenter}
+              styles={{ root: { display: "inline-block" } }}
+            >
+              <div className={styles.Persona}>
+                +{users.length - 2}
+                <div className={styles.AllPersona}></div>
+              </div>
+            </TooltipHost>
+          ) : null}
+        </div>
+      ) : (
+        ""
+      )}
+    </>
   );
 };

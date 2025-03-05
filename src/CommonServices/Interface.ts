@@ -13,6 +13,8 @@ export interface ISideNavDetails {
 //ListNames Details:
 export interface IListNames {
   CategoryConfig: string;
+  RequestsHub: string;
+  ApprovalConfig: string;
 }
 //CategoryConfig Details:
 export interface ICategoryDetails {
@@ -55,4 +57,14 @@ export interface IToaster {
   ClsName: string;
   type: "Warning" | "Success" | "Alert";
   msg: string;
+}
+
+//RequestHub Details:
+export interface IRequestHubDetails {
+  id: number;
+  requestId: string;
+  status: string;
+  category: string;
+  approvers: IPeoplePickerDetails[];
+  approvalJson: [];
 }
