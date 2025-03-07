@@ -74,8 +74,8 @@ export const statusTemplate = (status: string) => {
     <div
       className={styles.statusItem}
       style={{
-        backgroundColor: getColors(status).bgColor,
-        color: getColors(status).color,
+        backgroundColor: getColors(status)?.bgColor,
+        color: getColors(status)?.color,
       }}
     >
       <div style={{ fontSize: "16px" }}>{getIcons(status)}</div>

@@ -10,95 +10,198 @@ import {
 } from "../../../../CommonServices/interface";
 import SPServices from "../../../../CommonServices/SPServices";
 import { Config } from "../../../../CommonServices/Config";
+//Style Imports
+import styles from "./WorkFlowActionButtons.module.scss";
+import { Item } from "@pnp/sp/items";
 
 const WorkflowActionButtons = ({
   context,
   requestsHubDetails,
   setRequestsHubDetails,
+  itemID,
 }) => {
-  //Current User:
-  const currentUser = context?._pageContext?._user?.email;
-  console.log(requestsHubDetails, "requestsHubDetails");
+  //Variables
+  const createdUser = "Leowilson@chandrudemo.onmicrosoft.com";
+  const loginUser = context._pageContext._user.email;
+  const currentRec = requestsHubDetails?.find((e) => e.id === itemID);
 
-  const isCurrentUserPrimaryApprover = requestsHubDetails?.some(
-    (item: IRequestHubDetails) =>
-      item?.approvalJson?.some(
-        (value: any) =>
-          value?.Approvers[value?.userApprover]?.email === currentUser
-      )
-  );
-
-  const ApproveRequests = async () => {
-    const updatedDetails = requestsHubDetails.map(
+  //Update Status by approver
+  const updateStatusByApprover = (data, email, newStatusCode) => {
+    const updatedDetails = requestsHubDetails?.map(
       (item: IRequestHubDetails) => {
-        const updatedItem: any = {
-          ...item,
-          approvalJson: item.approvalJson.map((value: any) => {
-            if (value.ApprovalType === "Sequence") {
-              return {
-                ...value,
-                userApprover: (value.userApprover || 0) + 1, // Increment userApprover only for Sequence
-              };
-            }
-            return value;
-          }),
-        };
-        updateSharePointList(updatedItem);
-        return updatedItem;
+        if (item.id === itemID) {
+          var updateStatge = null;
+          var statusUpdate = item?.status;
+          const updatedItem: any = {
+            ...item,
+            approvalJson: data.map((approvalFlow) => ({
+              ...approvalFlow,
+              stages: approvalFlow.stages.map((stage) => {
+                if (approvalFlow.Currentstage === stage.stage) {
+                  // First, update the approvers' status codes
+                  const updatedApprovers = stage.approvers.map((approver) =>
+                    approver.email === email
+                      ? { ...approver, statusCode: newStatusCode }
+                      : approver
+                  );
+
+                  // Then, check if all approvers have statusCode === 1
+                  const allApproved = updatedApprovers.every(
+                    (approver) => approver.statusCode === 1
+                  );
+                  // Then, check if anyone approvers have statusCode === 2
+                  const anyoneRejected = updatedApprovers.some(
+                    (approver) => approver.statusCode === 2
+                  );
+
+                  // Update CurrentStage
+                  const updateStatgeVal = allApproved
+                    ? approvalFlow.Currentstage === approvalFlow.TotalStages
+                      ? ((statusUpdate = "Approved"),
+                        (updateStatge = approvalFlow.Currentstage))
+                      : (updateStatge = approvalFlow.Currentstage + 1)
+                    : ((updateStatge = approvalFlow.Currentstage),
+                      anyoneRejected
+                        ? (statusUpdate = "Rejected")
+                        : (statusUpdate = statusUpdate));
+
+                  return {
+                    ...stage,
+                    approvers: updatedApprovers,
+                    stageStatusCode: allApproved
+                      ? 1
+                      : anyoneRejected
+                      ? 2
+                      : stage.stageStatusCode,
+                  };
+                } else {
+                  return { ...stage };
+                }
+              }),
+              Currentstage: updateStatge,
+            })),
+            status: statusUpdate,
+          };
+          updateSharePointList(updatedItem);
+          return updatedItem;
+        } else {
+          return { ...item };
+        }
       }
     );
-    setRequestsHubDetails(updatedDetails);
+    setRequestsHubDetails([...updatedDetails]);
   };
 
-  const RejectRequests = async () => {
-    const updatedDetails = requestsHubDetails.map(
+  //Update status by user
+  const updateStatusByUser = (data, email, newStatusCode) => {
+    //Update status and ApprovalJson
+    const updatedDetails = requestsHubDetails?.map(
       (item: IRequestHubDetails) => {
-        const updatedItem: any = {
-          ...item,
-          approvalJson: item.approvalJson.map((value: any) => ({
-            ...value,
-            userApprover: null, // Reset userApprover to null
-          })),
-        };
-        updateSharePointList(updatedItem);
-        return updatedItem;
+        if (item.id === itemID) {
+          const updatedItem: any = {
+            ...item,
+            status: "Pending",
+            approvalJson: data.map((approvalFlow) => ({
+              ...approvalFlow,
+              Currentstage:
+                approvalFlow.RejectionFlow === newStatusCode
+                  ? 1
+                  : approvalFlow.RejectionFlow === 1 &&
+                    approvalFlow.Currentstage,
+
+              stages: approvalFlow.stages.map((stage) => {
+                //Update stageStatusCode
+                const stageStatusCodeByUser =
+                  approvalFlow.RejectionFlow === newStatusCode
+                    ? 0
+                    : stage.stageStatusCode === 2
+                    ? 0
+                    : stage.stageStatusCode;
+
+                //Update approvers
+                const stageApproversByUser = stage.approvers?.map((approver) =>
+                  approvalFlow.RejectionFlow === newStatusCode
+                    ? { ...approver, statusCode: 0 }
+                    : approver.statusCode === 2
+                    ? { ...approver, statusCode: 0 }
+                    : { ...approver, statusCode: approver.statusCode }
+                );
+                return {
+                  ...stage,
+                  approvers: stageApproversByUser,
+                  stageStatusCode: stageStatusCodeByUser,
+                };
+              }),
+            })),
+          };
+          updateSharePointList(updatedItem);
+          return updatedItem;
+        } else {
+          return { ...item };
+        }
       }
     );
-    setRequestsHubDetails(updatedDetails);
+    setRequestsHubDetails([...updatedDetails]);
   };
 
-  const ResubmitRequests = () => {
-    const updatedDetails = requestsHubDetails.map(
-      (item: IRequestHubDetails) => {
-        const updatedItem: any = {
-          ...item,
-          approvalJson: item.approvalJson.map((value: any) => ({
-            ...value,
-            userApprover: 0, // Reset userApprover to 0
-          })),
-        };
-        updateSharePointList(updatedItem);
-        return updatedItem;
-      }
+  //On Approval Click
+  const onApprovalClick = () => {
+    updateStatusByApprover(currentRec.approvalJson, loginUser, 1);
+  };
+
+  //On Rejection Click
+  const onRejectionClick = () => {
+    updateStatusByApprover(currentRec.approvalJson, loginUser, 2);
+  };
+
+  //On Re_Submit Click
+  const onResubmitClick = () => {
+    updateStatusByUser(currentRec.approvalJson, loginUser, 0);
+  };
+
+  //Button Visibility
+  const visibleButtons = () => {
+    const tempStage = currentRec.approvalJson[0].stages.find(
+      (e) => e.stage === currentRec.approvalJson[0].Currentstage
     );
-    setRequestsHubDetails(updatedDetails);
+    const tempStageApprovers = [...tempStage.approvers];
+    return (
+      <>
+        <div className={styles.workFlowButtons}>
+          {currentRec.status !== "Approved" &&
+            (currentRec.status === "Pending" ? (
+              <>
+                {loginUser === createdUser && <Button label="Submit" />}
+
+                {tempStageApprovers.some(
+                  (Approvers) => Approvers.email === loginUser
+                ) &&
+                  tempStageApprovers.find((e) => e.email === loginUser)
+                    .statusCode === 0 && (
+                    <>
+                      <Button label="Approve" onClick={onApprovalClick} />
+                      <Button label="Reject" onClick={onRejectionClick} />
+                    </>
+                  )}
+              </>
+            ) : (
+              loginUser === createdUser &&
+              currentRec.approvalJson[0].RejectionFlow !== 2 && (
+                <Button label="Re_submit" onClick={onResubmitClick} />
+              )
+            ))}
+        </div>
+      </>
+    );
   };
 
-  const showResubmit = requestsHubDetails?.some((item: IRequestHubDetails) =>
-    item?.approvalJson?.some(
-      (value: any) =>
-        value.userApprover === null && // Only when rejected
-        !value?.Approvers?.some(
-          (approver: IPeoplePickerDetails) => approver?.email === currentUser
-        )
-    )
-  );
-
+  //Update SharePoint List
   const updateSharePointList = async (updatedItem: IRequestHubDetails) => {
     SPServices.SPUpdateItem({
       Listname: Config?.ListNames?.RequestsHub,
       RequestJSON: {
         ApprovalJson: JSON.stringify(updatedItem.approvalJson),
+        Status: updatedItem?.status,
       },
       ID: updatedItem?.id,
     })
@@ -110,30 +213,10 @@ const WorkflowActionButtons = ({
       });
   };
 
-  return (
-    <>
-      <div style={{ marginTop: "20px" }}>
-        {isCurrentUserPrimaryApprover ? (
-          <>
-            <Button
-              onClick={() => ApproveRequests()}
-              style={{ marginRight: "20px" }}
-              label="Approve"
-            />
-            <Button
-              onClick={() => RejectRequests()}
-              style={{ marginRight: "20px" }}
-              label="Reject"
-            />
-          </>
-        ) : showResubmit ? (
-          <>
-            <Button onClick={() => ResubmitRequests()} label="Re_submit" />
-          </>
-        ) : null}
-      </div>
-    </>
-  );
-};
+  // useEffect(() => {
+  //   visibleButtons();
+  // }, []);
 
+  return visibleButtons();
+};
 export default WorkflowActionButtons;

@@ -15,6 +15,7 @@ export interface IListNames {
   CategoryConfig: string;
   RequestsHub: string;
   ApprovalConfig: string;
+  ApprovalStageConfig:string
 }
 //CategoryConfig Details:
 export interface ICategoryDetails {
