@@ -14,6 +14,7 @@ export namespace Config {
     CategoryConfig: "CategoryConfig",
     RequestsHub: "RequestsHub",
     ApprovalConfig: "ApprovalConfig",
+    ApprovalStageConfig:"ApprovalStageConfig"
   };
 
   //Dropdown Config:

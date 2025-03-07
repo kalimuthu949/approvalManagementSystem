@@ -27,6 +27,7 @@ const DashboardPage = ({ context }) => {
   const [requestsDetails, setRequestsDetails] = useState<IRequestHubDetails[]>(
     []
   );
+  console.log("requestsDetails",requestsDetails)
   //Set Actions PopUp:
   const actionsWithIcons = [
     {
@@ -118,11 +119,12 @@ const DashboardPage = ({ context }) => {
   //Render Approvers Column:
   const renderApproversColumn = (rowData: IRequestHubDetails) => {
     return (
-      <div>
-        {rowData?.approvers.length > 1
-          ? multiplePeoplePickerTemplate(rowData?.approvers)
-          : peoplePickerTemplate(rowData?.approvers[0])}
-      </div>
+      <>loggi</>
+      // <div>
+      //   {rowData?.approvers.length > 1
+      //     ? multiplePeoplePickerTemplate(rowData?.approvers)
+      //     : peoplePickerTemplate(rowData?.approvers[0])}
+      // </div>
     );
   };
 
@@ -173,6 +175,7 @@ const DashboardPage = ({ context }) => {
             context={context}
             requestsHubDetails={requestsDetails}
             setRequestsHubDetails={setRequestsDetails}
+            itemID={1}
           />
         )}
       </div>
