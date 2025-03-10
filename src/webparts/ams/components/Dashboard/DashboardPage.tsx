@@ -27,7 +27,7 @@ const DashboardPage = ({ context }) => {
   const [requestsDetails, setRequestsDetails] = useState<IRequestHubDetails[]>(
     []
   );
-  console.log("requestsDetails",requestsDetails)
+  console.log("requestsDetails", requestsDetails);
   //Set Actions PopUp:
   const actionsWithIcons = [
     {
@@ -63,7 +63,8 @@ const DashboardPage = ({ context }) => {
 
       const temArr: IRequestHubDetails[] = await Promise.all(
         res.map(async (item: any) => {
-          const approvers = await fetchApprovers(item.CategoryId);
+          const approvalStage: any = await fetchApprovalFlow(item.CategoryId);
+          const approvers = await approvalStage;
           return {
             id: item.ID,
             requestId: item?.RequestID ? item?.RequestID : "R-00001",
@@ -80,13 +81,12 @@ const DashboardPage = ({ context }) => {
     }
   };
 
-  //Get Fetch Approvers from ApprovalConfig:
-  const fetchApprovers = async (categoryId: number) => {
+  //Get ApprovalFlow from ApprovalConfig:
+  const fetchApprovalFlow = async (categoryId: number) => {
     try {
       const res = await SPServices.SPReadItems({
         Listname: Config.ListNames.ApprovalConfig,
-        Select: "*,Approvers/Id,Approvers/Title,Approvers/EMail",
-        Expand: "Approvers",
+        Select: "*",
         Orderby: "Modified",
         Orderbydecorasc: false,
         Filter: [
@@ -97,10 +97,39 @@ const DashboardPage = ({ context }) => {
           },
         ],
       });
+      const stageApprovers: IPeoplePickerDetails[] = await fetchStageApprovers(
+        res
+      );
+      console.log
+      return {
+        stageApprovers,
+      };
+    } catch (e) {
+      console.log("Fetch Approvers Error", e);
+    }
+  };
 
+  //Get Fetch Approvers from ApprovalStageConfig:
+  const fetchStageApprovers = async (approvalFlowItem) => {
+    console.log("approvalFlowItem", approvalFlowItem[0]);
+    try {
+      const res = await SPServices.SPReadItems({
+        Listname: Config.ListNames.ApprovalStageConfig,
+        Select: "*,Approver/Id,Approver/Title,Approver/EMail",
+        Expand: "Approver",
+        Orderby: "Modified",
+        Orderbydecorasc: false,
+        Filter: [
+          {
+            FilterKey: "ParentApproval",
+            Operator: "eq",
+            FilterValue: approvalFlowItem[0].ID.toString(),
+          },
+        ],
+      });
       return res.flatMap(
         (item: any) =>
-          item?.Approvers?.map((element: any) => ({
+          item?.Approver?.map((element: any) => ({
             id: element?.Id,
             name: element?.Title,
             email: element?.EMail,
@@ -119,12 +148,11 @@ const DashboardPage = ({ context }) => {
   //Render Approvers Column:
   const renderApproversColumn = (rowData: IRequestHubDetails) => {
     return (
-      <>loggi</>
-      // <div>
-      //   {rowData?.approvers.length > 1
-      //     ? multiplePeoplePickerTemplate(rowData?.approvers)
-      //     : peoplePickerTemplate(rowData?.approvers[0])}
-      // </div>
+      <div>
+        {rowData?.approvers.length > 1
+          ? multiplePeoplePickerTemplate(rowData?.approvers)
+          : peoplePickerTemplate(rowData?.approvers[0])}
+      </div>
     );
   };
 

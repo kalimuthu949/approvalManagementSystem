@@ -20,6 +20,11 @@ const WorkflowActionButtons = ({
   setRequestsHubDetails,
   itemID,
 }) => {
+  //useStates
+  const [submitBtn, setSubmitBtn] = useState(false);
+  const [reSubmit, setReSubmit] = useState(false);
+  const [approvalBtn, setapprovalBtn] = useState(false);
+
   //Variables
   const createdUser = "Leowilson@chandrudemo.onmicrosoft.com";
   const loginUser = context._pageContext._user.email;
@@ -44,16 +49,20 @@ const WorkflowActionButtons = ({
                       ? { ...approver, statusCode: newStatusCode }
                       : approver
                   );
-
                   // Then, check if all approvers have statusCode === 1
-                  const allApproved = updatedApprovers.every(
-                    (approver) => approver.statusCode === 1
-                  );
+                  const allApproved =
+                    approvalFlow.ApprovalType === 2
+                      ? updatedApprovers.every(
+                          (approver) => approver.statusCode === 1
+                        )
+                      : approvalFlow.ApprovalType === 1 &&
+                        updatedApprovers.some(
+                          (approver) => approver.statusCode === 1
+                        );
                   // Then, check if anyone approvers have statusCode === 2
                   const anyoneRejected = updatedApprovers.some(
                     (approver) => approver.statusCode === 2
                   );
-
                   // Update CurrentStage
                   const updateStatgeVal = allApproved
                     ? approvalFlow.Currentstage === approvalFlow.TotalStages
@@ -161,37 +170,26 @@ const WorkflowActionButtons = ({
 
   //Button Visibility
   const visibleButtons = () => {
+    setSubmitBtn(false);
+    setReSubmit(false);
+    setapprovalBtn(false);
     const tempStage = currentRec.approvalJson[0].stages.find(
       (e) => e.stage === currentRec.approvalJson[0].Currentstage
     );
     const tempStageApprovers = [...tempStage.approvers];
     return (
-      <>
-        <div className={styles.workFlowButtons}>
-          {currentRec.status !== "Approved" &&
-            (currentRec.status === "Pending" ? (
-              <>
-                {loginUser === createdUser && <Button label="Submit" />}
-
-                {tempStageApprovers.some(
-                  (Approvers) => Approvers.email === loginUser
-                ) &&
-                  tempStageApprovers.find((e) => e.email === loginUser)
-                    .statusCode === 0 && (
-                    <>
-                      <Button label="Approve" onClick={onApprovalClick} />
-                      <Button label="Reject" onClick={onRejectionClick} />
-                    </>
-                  )}
-              </>
-            ) : (
-              loginUser === createdUser &&
-              currentRec.approvalJson[0].RejectionFlow !== 2 && (
-                <Button label="Re_submit" onClick={onResubmitClick} />
-              )
-            ))}
-        </div>
-      </>
+      currentRec.status !== "Approved" &&
+      (currentRec.status === "Pending"
+        ? (loginUser === createdUser && setSubmitBtn(true),
+          tempStageApprovers.some(
+            (Approvers) => Approvers.email === loginUser
+          ) &&
+            tempStageApprovers.find((e) => e.email === loginUser).statusCode ===
+              0 &&
+            setapprovalBtn(true))
+        : loginUser === createdUser &&
+          currentRec.approvalJson[0].RejectionFlow !== 2 &&
+          setReSubmit(true))
     );
   };
 
@@ -213,10 +211,24 @@ const WorkflowActionButtons = ({
       });
   };
 
-  // useEffect(() => {
-  //   visibleButtons();
-  // }, []);
+//useEffect
+  useEffect(() => {
+    visibleButtons();
+  });
 
-  return visibleButtons();
+  return (
+    <>
+      <div className={styles.workFlowButtons}>
+        {submitBtn && <Button label="Submit" />}
+        {approvalBtn && (
+          <>
+            <Button label="Approve" onClick={onApprovalClick} />
+            <Button label="Reject" onClick={onRejectionClick} />
+          </>
+        )}
+        {reSubmit && <Button label="Re_submit" onClick={onResubmitClick} />}
+      </div>
+    </>
+  );
 };
 export default WorkflowActionButtons;
