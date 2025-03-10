@@ -2,6 +2,7 @@
 import {
   IActionBooleans,
   IDropdownDetails,
+  ILibraryNames,
   IListNames,
   IRequestHubDetails,
   IRightSideBarContents,
@@ -14,7 +15,7 @@ export namespace Config {
     CategoryConfig: "CategoryConfig",
     RequestsHub: "RequestsHub",
     ApprovalConfig: "ApprovalConfig",
-    ApprovalStageConfig:"ApprovalStageConfig"
+    ApprovalStageConfig: "ApprovalStageConfig",
   };
 
   //Dropdown Config:
@@ -48,5 +49,10 @@ export namespace Config {
     category: "",
     approvers: [],
     approvalJson: [],
+  };
+
+  //LibraryNames Config:
+  export const LibraryNames: ILibraryNames = {
+    AttachmentsLibrary: "AttachmentsLibrary",
   };
 }

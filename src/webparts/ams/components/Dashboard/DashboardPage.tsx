@@ -21,13 +21,14 @@ import {
   IRequestHubDetails,
 } from "../../../../CommonServices/interface";
 import WorkflowActionButtons from "../WorkflowButtons/WorkflowActionButtons";
+import AttachmentUploader from "../AttachmentUploader/AttachmentUploader";
 
 const DashboardPage = ({ context }) => {
   //State Variables:
   const [requestsDetails, setRequestsDetails] = useState<IRequestHubDetails[]>(
     []
   );
-  console.log("requestsDetails",requestsDetails)
+  console.log("requestsDetails", requestsDetails);
   //Set Actions PopUp:
   const actionsWithIcons = [
     {
@@ -171,12 +172,15 @@ const DashboardPage = ({ context }) => {
       </div>
       <div>
         {requestsDetails?.length > 0 && (
-          <WorkflowActionButtons
-            context={context}
-            requestsHubDetails={requestsDetails}
-            setRequestsHubDetails={setRequestsDetails}
-            itemID={1}
-          />
+          <div>
+            <WorkflowActionButtons
+              context={context}
+              requestsHubDetails={requestsDetails}
+              setRequestsHubDetails={setRequestsDetails}
+              itemID={1}
+            />
+            <AttachmentUploader context={context} />
+          </div>
         )}
       </div>
     </>

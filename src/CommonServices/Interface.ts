@@ -15,7 +15,7 @@ export interface IListNames {
   CategoryConfig: string;
   RequestsHub: string;
   ApprovalConfig: string;
-  ApprovalStageConfig:string
+  ApprovalStageConfig: string;
 }
 //CategoryConfig Details:
 export interface ICategoryDetails {
@@ -68,4 +68,9 @@ export interface IRequestHubDetails {
   category: string;
   approvers: IPeoplePickerDetails[];
   approvalJson: [];
+}
+
+//LibraryNames Details:
+export interface ILibraryNames {
+  AttachmentsLibrary: string;
 }

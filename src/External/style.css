@@ -151,8 +151,8 @@ div[data-automationid="SiteHeader"] {
   box-shadow: none;
 }
 
-.headerContainer .addNewButton {
-  width: 10%;
+.addNewButton {
+  width: 9%;
 }
 .addNewButton .p-button {
   width: 100%;
@@ -163,9 +163,14 @@ div[data-automationid="SiteHeader"] {
   font-weight: calc(var(--dataTableHeaderFontWeight)-100);
 }
 
+.addNewButton .p-button-icon {
+  height: 12px;
+  width: 12px;
+}
+
 .addNewButton .p-button {
   background-color: var(--green);
-  gap: 5px;
+  gap: 6px;
   color: var(--dataTableHeaderBgColor);
   border: 0;
   height: 32px;
