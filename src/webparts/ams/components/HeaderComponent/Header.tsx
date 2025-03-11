@@ -120,18 +120,14 @@ const Header = ({ context, currentPage }) => {
       </div>
       <div>
         {currentPage == Config.sideNavPageNames.Request ? (
-
           <>
-            <DashboardPage context={context} />
+            <DashboardPage
+              context={context}
+              setRequestsDashBoardContent={setSideBarContent}
+              setDynamicRequestsSideBarVisible={setSideBarVisible}
+            />
             <MyRequestPage context={context} />
           </>
-
-          <DashboardPage
-            context={context}
-            setRequestsDashBoardContent={setSideBarContent}
-            setDynamicRequestsSideBarVisible={setSideBarVisible}
-          />
-
         ) : currentPage == Config.sideNavPageNames.CategoryConfig ? (
           <CategoryConfig
             setCategorySideBarContent={setSideBarContent}

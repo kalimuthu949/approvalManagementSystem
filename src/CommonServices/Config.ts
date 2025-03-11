@@ -52,7 +52,7 @@ export namespace Config {
     status: "",
     category: "",
     CategoryId: null,
-    approvers: [],
+
     approvalJson: [],
   };
 

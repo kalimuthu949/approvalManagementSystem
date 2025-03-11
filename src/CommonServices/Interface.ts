@@ -70,7 +70,6 @@ export interface IRequestHubDetails {
   status: string;
   category: string;
   CategoryId: number;
-  approvers: IPeoplePickerDetails[];
   approvalJson: IApprovalFlow[];
 }
 
