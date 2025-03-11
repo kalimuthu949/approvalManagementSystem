@@ -182,6 +182,7 @@ export const toastNotify = (item: IToaster) => {
 
 //MultiPeoplePicker Template:
 export const multiplePeoplePickerTemplate = (users: IPeoplePickerDetails[]) => {
+  console.log("users", users);
   return (
     <>
       {users?.length ? (
