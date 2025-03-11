@@ -16,6 +16,8 @@ export interface IListNames {
   RequestsHub: string;
   ApprovalConfig: string;
   ApprovalStageConfig: string;
+  CategorySectionConfig: string;
+  SectionColumnsConfig: string;
 }
 //CategoryConfig Details:
 export interface ICategoryDetails {
@@ -38,6 +40,7 @@ export interface IActionBooleans {
 //RightSideBarContents Details:
 export interface IRightSideBarContents {
   categoryConfigContent: string;
+  RequestsDashBoardContent: string;
 }
 //Page Name
 export interface ISideNavPageNames {
@@ -66,6 +69,7 @@ export interface IRequestHubDetails {
   requestId: string;
   status: string;
   category: string;
+  CategoryId: number;
   approvers: IPeoplePickerDetails[];
   approvalJson: [];
 }
@@ -73,4 +77,13 @@ export interface IRequestHubDetails {
 //LibraryNames Details:
 export interface ILibraryNames {
   AttachmentsLibrary: string;
+}
+
+//SectionColumnsConfiguration Details:
+export interface ISectionColumnsConfig {
+  id: number;
+  sectionName: string;
+  columnName: string;
+  columnType: string;
+  isRequired: boolean;
 }
