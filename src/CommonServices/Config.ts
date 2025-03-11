@@ -6,6 +6,7 @@ import {
   IListNames,
   IRequestHubDetails,
   IRightSideBarContents,
+  ISectionColumnsConfig,
   ISideNavPageNames,
 } from "./interface";
 
@@ -16,6 +17,8 @@ export namespace Config {
     RequestsHub: "RequestsHub",
     ApprovalConfig: "ApprovalConfig",
     ApprovalStageConfig: "ApprovalStageConfig",
+    CategorySectionConfig: "CategorySectionConfig",
+    SectionColumnsConfig: "SectionColumnsConfig",
   };
 
   //Dropdown Config:
@@ -32,6 +35,7 @@ export namespace Config {
   //RightSideBarContents Config:
   export const rightSideBarContents: IRightSideBarContents = {
     categoryConfigContent: "",
+    RequestsDashBoardContent: "",
   };
 
   //PageNames Config:
@@ -47,6 +51,7 @@ export namespace Config {
     requestId: "",
     status: "",
     category: "",
+    CategoryId: null,
     approvers: [],
     approvalJson: [],
   };
@@ -54,5 +59,14 @@ export namespace Config {
   //LibraryNames Config:
   export const LibraryNames: ILibraryNames = {
     AttachmentsLibrary: "AttachmentsLibrary",
+  };
+
+  //SecionColumnsConfiguration Details:
+  export const SectionColumnsConfigDetails: ISectionColumnsConfig = {
+    id: null,
+    sectionName: "",
+    columnName: "",
+    columnType: "",
+    isRequired: false,
   };
 }

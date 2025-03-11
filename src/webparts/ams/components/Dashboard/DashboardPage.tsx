@@ -22,20 +22,28 @@ import {
 } from "../../../../CommonServices/interface";
 import WorkflowActionButtons from "../WorkflowButtons/WorkflowActionButtons";
 import AttachmentUploader from "../AttachmentUploader/AttachmentUploader";
+import RequestsFields from "../DynamicsRequests/RequestsFields";
 
-const DashboardPage = ({ context }) => {
+const DashboardPage = ({
+  context,
+  setRequestsDashBoardContent,
+  setDynamicRequestsSideBarVisible,
+}) => {
   //State Variables:
   const [requestsDetails, setRequestsDetails] = useState<IRequestHubDetails[]>(
     []
   );
-  console.log("requestsDetails", requestsDetails);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
   //Set Actions PopUp:
-  const actionsWithIcons = [
+  const actionsWithIcons = (rowData: IRequestHubDetails) => [
     {
       label: "View",
       icon: "pi pi-eye",
       className: "customView",
-      command: (event: any) => {},
+      command: () => {
+        setSelectedCategoryId(rowData.CategoryId);
+        setDynamicRequestsSideBarVisible(true);
+      },
     },
     {
       label: "Edit",
@@ -75,6 +83,7 @@ const DashboardPage = ({ context }) => {
             requestId: item?.RequestID ? item?.RequestID : "R-00001",
             status: item?.Status,
             category: item?.Category?.Category,
+            CategoryId: item?.CategoryId,
             approvers,
             approvalJson: JSON.parse(item?.ApprovalJson),
           };
@@ -102,7 +111,16 @@ const DashboardPage = ({ context }) => {
           },
         ],
       });
+
       return await fetchStageApprovers(res);
+
+      const stageApprovers: IPeoplePickerDetails[] = await fetchStageApprovers(
+        res
+      );
+      return {
+        stageApprovers,
+      };
+
     } catch (e) {
       console.log("Fetch Approvers Error", e);
     }
@@ -156,7 +174,8 @@ const DashboardPage = ({ context }) => {
 
   //Render Action Column:
   const renderActionColumn = (rowData: IRequestHubDetails) => {
-    return <ActionsMenu items={actionsWithIcons} />;
+    const menuModel = actionsWithIcons(rowData); // rowData pass panrom da
+    return <ActionsMenu items={menuModel} />;
   };
 
   useEffect(() => {
@@ -195,6 +214,13 @@ const DashboardPage = ({ context }) => {
           <Column field="Action" body={renderActionColumn}></Column>
         </DataTable>
       </div>
+      {selectedCategoryId && (
+        <RequestsFields
+          categoryId={selectedCategoryId}
+          setRequestsDashBoardContent={setRequestsDashBoardContent}
+          setDynamicRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
+        />
+      )}
       <div>
         {requestsDetails?.length > 0 && (
           <div>
