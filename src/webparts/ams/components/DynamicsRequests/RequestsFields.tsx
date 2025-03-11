@@ -130,10 +130,7 @@ const RequestsFields = ({
               .filter((f) => f.columnType === "Singleline")
               .map((field) => (
                 <div key={field.id} className={dynamicFieldsStyles.inputField}>
-                  <Label
-                    className={dynamicFieldsStyles.label}
-                    htmlFor={field.columnName}
-                  >
+                  <Label className={dynamicFieldsStyles.label}>
                     {field.columnName}
                   </Label>
                   <InputText
@@ -156,10 +153,7 @@ const RequestsFields = ({
               .filter((f) => f.columnType === "Multiline")
               .map((field) => (
                 <div key={field.id} className={dynamicFieldsStyles.inputField}>
-                  <Label
-                    className={dynamicFieldsStyles.label}
-                    htmlFor={field.columnName}
-                  >
+                  <Label className={dynamicFieldsStyles.label}>
                     {field.columnName}
                   </Label>
                   <InputTextarea
@@ -221,66 +215,7 @@ const RequestsFields = ({
     }));
   }, [dynamicFields, formData, errors]);
 
-  return (
-    // <div className={dynamicFieldsStyles.formContainer}>
-    //   <div className={dynamicFieldsStyles.singlelineFields}>
-    //     {dynamicFields
-    //       .filter((f) => f.columnType === "Singleline")
-    //       .map((field) => (
-    //         <div key={field.id} className={dynamicFieldsStyles.inputField}>
-    //           <Label
-    //             className={dynamicFieldsStyles.label}
-    //             htmlFor={field.columnName}
-    //           >
-    //             {field.columnName}
-    //           </Label>
-    //           <InputText
-    //             id={field.columnName}
-    //             value={formData[field.columnName] || ""}
-    //             onChange={(e) =>
-    //               handleInputChange(field.columnName, e.target.value)
-    //             }
-    //           />
-    //           {errors[field.columnName] && (
-    //             <span className={dynamicFieldsStyles.errorMsg}>
-    //               {errors[field.columnName]}
-    //             </span>
-    //           )}
-    //         </div>
-    //       ))}
-    //   </div>
-    //   <div className={dynamicFieldsStyles.multilineFields}>
-    //     {dynamicFields
-    //       .filter((f) => f.columnType === "Multiline")
-    //       .map((field) => (
-    //         <div key={field.id} className={dynamicFieldsStyles.inputField}>
-    //           <Label
-    //             className={dynamicFieldsStyles.label}
-    //             htmlFor={field.columnName}
-    //           >
-    //             {field.columnName}
-    //           </Label>
-    //           <InputTextarea
-    //             id={field.columnName}
-    //             value={formData[field.columnName] || ""}
-    //             onChange={(e) =>
-    //               handleInputChange(field.columnName, e.target.value)
-    //             }
-    //             rows={3}
-    //           />
-    //           {errors[field.columnName] && (
-    //             <span className={dynamicFieldsStyles.errorMsg}>
-    //               {errors[field.columnName]}
-    //             </span>
-    //           )}
-    //         </div>
-    //       ))}
-    //   </div>
-    //   <Button label="Submit" className="addNewButton " onClick={handleSubmit} />
-    // </div>
-    // <div>aari</div>
-    <></>
-  );
+  return <></>;
 };
 
 export default RequestsFields;
