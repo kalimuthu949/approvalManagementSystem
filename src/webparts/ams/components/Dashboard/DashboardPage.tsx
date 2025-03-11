@@ -72,9 +72,9 @@ const DashboardPage = ({
 
       const temArr: IRequestHubDetails[] = await Promise.all(
         res.map(async (item: any) => {
-          const approvers: IPeoplePickerDetails[] = await fetchApprovalFlow(
-            item?.Category?.Id
-          );
+          // const approvers: IPeoplePickerDetails[] = await fetchApprovalFlow(
+          //   item?.Category?.Id
+          // );
 
           let Approvers = [];
 
@@ -84,7 +84,7 @@ const DashboardPage = ({
             status: item?.Status,
             category: item?.Category?.Category,
             CategoryId: item?.CategoryId,
-            approvers,
+            // approvers,
             approvalJson: JSON.parse(item?.ApprovalJson),
           };
         })
@@ -120,7 +120,6 @@ const DashboardPage = ({
       return {
         stageApprovers,
       };
-
     } catch (e) {
       console.log("Fetch Approvers Error", e);
     }
@@ -165,9 +164,9 @@ const DashboardPage = ({
   const renderApproversColumn = (rowData: IRequestHubDetails) => {
     return (
       <div>
-        {rowData?.approvers.length > 1
+        {/* {rowData?.approvers.length > 1
           ? multiplePeoplePickerTemplate(rowData?.approvers)
-          : peoplePickerTemplate(rowData?.approvers[0])}
+          : peoplePickerTemplate(rowData?.approvers[0])} */}
       </div>
     );
   };
