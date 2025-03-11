@@ -14,14 +14,16 @@ import SPServices from "../../../../CommonServices/SPServices";
 import { LuBadgePlus } from "react-icons/lu";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
-import DashboardPage from "../Dashboard/DashboardPage";
-import CategoryConfig from "../Admin/CategoryConfig/CategoryConfig";
 import { RightSidebar } from "../../../../CommonServices/CommonTemplates";
 import { Persona } from "office-ui-fabric-react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import "../../../../External/style.css";
 import headerStyles from "./Header.module.scss";
 import "./HeaderStyle.css";
+//Children's component import
+import DashboardPage from "../Dashboard/DashboardPage";
+import CategoryConfig from "../Admin/CategoryConfig/CategoryConfig";
+import MyRequestPage from "../MyRequest/MyRequest";
 
 const Header = ({ context, currentPage }) => {
   //UseStates
@@ -118,11 +120,18 @@ const Header = ({ context, currentPage }) => {
       </div>
       <div>
         {currentPage == Config.sideNavPageNames.Request ? (
+
+          <>
+            <DashboardPage context={context} />
+            <MyRequestPage context={context} />
+          </>
+
           <DashboardPage
             context={context}
             setRequestsDashBoardContent={setSideBarContent}
             setDynamicRequestsSideBarVisible={setSideBarVisible}
           />
+
         ) : currentPage == Config.sideNavPageNames.CategoryConfig ? (
           <CategoryConfig
             setCategorySideBarContent={setSideBarContent}

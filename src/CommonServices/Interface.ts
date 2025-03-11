@@ -71,9 +71,28 @@ export interface IRequestHubDetails {
   category: string;
   CategoryId: number;
   approvers: IPeoplePickerDetails[];
-  approvalJson: [];
+  approvalJson: IApprovalFlow[];
 }
 
+export interface IApprovalFlow {
+  ApprovalFlowName: string;
+  Currentstage: number;
+  TotalStages: number;
+  RejectionFlow: number;
+  ApprovalType: number;
+  stages: Stage[];
+}
+interface Stage {
+  stage: number;
+  stageStatusCode: number;
+  approvers: Approver[];
+}
+interface Approver {
+  id: string;
+  name: string;
+  email: string;
+  statusCode: number;
+}
 //LibraryNames Details:
 export interface ILibraryNames {
   AttachmentsLibrary: string;
