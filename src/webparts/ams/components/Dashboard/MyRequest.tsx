@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 //Styles Imports:
-import dashboardStyles from "./MyRequest.module.scss";
+import dashboardStyles from "./Dashboard.module.scss";
 import "../../../../External/style.css";
 //CommonService Imports:
 import {
@@ -22,20 +22,28 @@ import {
 } from "../../../../CommonServices/interface";
 import WorkflowActionButtons from "../WorkflowButtons/WorkflowActionButtons";
 import AttachmentUploader from "../AttachmentUploader/AttachmentUploader";
+import RequestsFields from "../DynamicsRequests/RequestsFields";
 
-const MyRequestPage = ({ context }) => {
+const MyRequestPage = ({
+  context,
+  setRequestsDashBoardContent,
+  setDynamicRequestsSideBarVisible,
+}) => {
   //State Variables:
   const [requestsDetails, setRequestsDetails] = useState<IRequestHubDetails[]>(
     []
   );
-  console.log("requestsDetails", requestsDetails);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
   //Set Actions PopUp:
-  const actionsWithIcons = [
+  const actionsWithIcons = (rowData: IRequestHubDetails) => [
     {
       label: "View",
       icon: "pi pi-eye",
       className: "customView",
-      command: (event: any) => {},
+      command: () => {
+        setSelectedCategoryId(rowData.CategoryId);
+        setDynamicRequestsSideBarVisible(true);
+      },
     },
     {
       label: "Edit",
@@ -64,13 +72,12 @@ const MyRequestPage = ({ context }) => {
 
       const temArr: IRequestHubDetails[] = await Promise.all(
         res.map(async (item: any) => {
-          const approvers: IPeoplePickerDetails[] = [];
           return {
             id: item.ID,
             requestId: item?.RequestID ? item?.RequestID : "R-00001",
             status: item?.Status,
             category: item?.Category?.Category,
-            approvers,
+            CategoryId: item?.CategoryId,
             approvalJson: JSON.parse(item?.ApprovalJson),
           };
         })
@@ -91,13 +98,17 @@ const MyRequestPage = ({ context }) => {
     rowData: IRequestHubDetails,
     Columncode: number
   ) => {
+    //Current Stage
+    const currentSatge = () => {
+      return rowData.approvalJson[0].Currentstage;
+    };
     //Current Stage Approvers
     const approvers = (): IPeoplePickerDetails[] => {
       return rowData.approvalJson.flatMap((e) =>
         e?.stages
           .find((stage) => stage?.stage === e.Currentstage)
           .approvers.flatMap((approver) => ({
-            id: null,
+            id: approver.id,
             name: approver.name,
             email: approver.email,
           }))
@@ -111,7 +122,7 @@ const MyRequestPage = ({ context }) => {
           .approvers.flatMap((approver) =>
             approver.statusCode === 0
               ? {
-                  id: null,
+                  id: approver.id,
                   name: approver.name,
                   email: approver.email,
                 }
@@ -126,7 +137,7 @@ const MyRequestPage = ({ context }) => {
           stage.approvers.flatMap((approver) =>
             approver.statusCode === 1
               ? {
-                  id: null,
+                  id: approver.id,
                   name: approver.name,
                   email: approver.email,
                 }
@@ -149,6 +160,8 @@ const MyRequestPage = ({ context }) => {
           ? approvedApprovers().length > 1
             ? multiplePeoplePickerTemplate(approvedApprovers())
             : peoplePickerTemplate(approvedApprovers()[0])
+          : Columncode === 4 && rowData.status !== "Approved"
+          ? currentSatge()
           : ""}
       </div>
     );
@@ -156,7 +169,8 @@ const MyRequestPage = ({ context }) => {
 
   //Render Action Column:
   const renderActionColumn = (rowData: IRequestHubDetails) => {
-    return <ActionsMenu items={actionsWithIcons} />;
+    const menuModel = actionsWithIcons(rowData);
+    return <ActionsMenu items={menuModel} />;
   };
 
   useEffect(() => {
@@ -183,6 +197,11 @@ const MyRequestPage = ({ context }) => {
           <Column field="category" header="Category"></Column>
           <Column
             field="approvalJson"
+            header="Current Stage"
+            body={(e) => renderStagelevelApproverColumns(e, 4)}
+          ></Column>
+          <Column
+            field="approvalJson"
             header="Approvers"
             body={(e) => renderStagelevelApproverColumns(e, 1)}
           ></Column>
@@ -205,6 +224,13 @@ const MyRequestPage = ({ context }) => {
           <Column field="Action" body={renderActionColumn}></Column>
         </DataTable>
       </div>
+      {selectedCategoryId && (
+        <RequestsFields
+          categoryId={selectedCategoryId}
+          setRequestsDashBoardContent={setRequestsDashBoardContent}
+          setDynamicRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
+        />
+      )}
       <div>
         {requestsDetails?.length > 0 && (
           <div>

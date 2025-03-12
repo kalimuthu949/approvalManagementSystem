@@ -76,6 +76,7 @@ export const statusTemplate = (status: string) => {
       style={{
         backgroundColor: getColors(status)?.bgColor,
         color: getColors(status)?.color,
+        borderColor: getColors(status)?.borderColor,
       }}
     >
       <div style={{ fontSize: "16px" }}>{getIcons(status)}</div>
@@ -94,6 +95,10 @@ const getIcons = (status: string) => {
 
     case "Rejected":
       return <FaRegTimesCircle />;
+    case "Parallel":
+      return "";
+    case "Sequence":
+      return "";
 
     default:
       return null;
@@ -104,6 +109,7 @@ const getColors = (status: string) => {
   let colors = {
     bgColor: "",
     color: "",
+    borderColor: "",
   };
   switch (status) {
     case "Pending":
@@ -117,6 +123,16 @@ const getColors = (status: string) => {
     case "Rejected":
       colors.bgColor = "#f6e8e8";
       colors.color = "#b23d3f";
+      break;
+    case "Parallel":
+      colors.bgColor = "#ebf7ff";
+      colors.color = "#2a6d9c";
+      colors.borderColor = "#2d68de";
+      break;
+    case "Sequence":
+      colors.bgColor = "#ffebfd";
+      colors.color = "#9c2a87";
+      colors.borderColor = "#d013e8";
       break;
     default:
       return null;

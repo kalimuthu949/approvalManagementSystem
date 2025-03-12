@@ -23,7 +23,8 @@ import "./HeaderStyle.css";
 //Children's component import
 import DashboardPage from "../Dashboard/DashboardPage";
 import CategoryConfig from "../Admin/CategoryConfig/CategoryConfig";
-import MyRequestPage from "../MyRequest/MyRequest";
+import MyRequestPage from "../Dashboard/MyRequest";
+import ApprovalWorkFlow from "../Admin/ApprovalWorkFlow/ApprovalWorkFlow";
 
 const Header = ({ context, currentPage }) => {
   //UseStates
@@ -121,12 +122,16 @@ const Header = ({ context, currentPage }) => {
       <div>
         {currentPage == Config.sideNavPageNames.Request ? (
           <>
-            <DashboardPage
+            {/* <DashboardPage
+              context={context}
+              setRequestsDashBoardContent={setSideBarContent}
+              setDynamicRequestsSideBarVisible={setSideBarVisible}
+            /> */}
+            <MyRequestPage
               context={context}
               setRequestsDashBoardContent={setSideBarContent}
               setDynamicRequestsSideBarVisible={setSideBarVisible}
             />
-            <MyRequestPage context={context} />
           </>
         ) : currentPage == Config.sideNavPageNames.CategoryConfig ? (
           <CategoryConfig
@@ -134,7 +139,13 @@ const Header = ({ context, currentPage }) => {
             setCategorySideBarVisible={setSideBarVisible}
           />
         ) : (
-          ""
+          <>
+          {/* <CategoryConfig
+            setCategorySideBarContent={setSideBarContent}
+            setCategorySideBarVisible={setSideBarVisible}
+          /> */}
+          <ApprovalWorkFlow/>
+           </>
         )}
       </div>
     </>
