@@ -25,6 +25,19 @@ export interface ICategoryDetails {
   category: string;
   isDelete: boolean;
 }
+//ApprovalConfig Details
+export interface IApprovalConfigDetails {
+  id: number;
+  category: [];
+  apprvalFlowName: string;
+  approvalProcess: number;
+  rejectionFlow: string;
+  stages: IApprovalStages[];
+}
+export interface IApprovalStages {
+  stage: number;
+  approver: IPeoplePickerDetails[];
+}
 //Dropdown Details:
 export interface IBasicDropDown {
   name: string;
@@ -87,7 +100,7 @@ interface Stage {
   approvers: Approver[];
 }
 interface Approver {
-  id: string;
+  id: number;
   name: string;
   email: string;
   statusCode: number;

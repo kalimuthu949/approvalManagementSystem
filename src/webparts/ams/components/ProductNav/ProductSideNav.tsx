@@ -25,20 +25,20 @@ const ProductSideNav = ({ updatePage, currentPage }) => {
       name: "Request",
       pageName: Config.sideNavPageNames.Request,
     },
-    {
-      img:
-        currentPage == Config.sideNavPageNames.CategoryConfig
-          ? sampleImg
-          : sampleImgBlue,
-      name: "Category config",
-      pageName: Config.sideNavPageNames.CategoryConfig,
-    },
+    // {
+    //   img:
+    //     currentPage == Config.sideNavPageNames.CategoryConfig
+    //       ? sampleImg
+    //       : sampleImgBlue,
+    //   name: "Category config",
+    //   pageName: Config.sideNavPageNames.CategoryConfig,
+    // },
     {
       img:
         currentPage == Config.sideNavPageNames.ApproveConfig
           ? sampleImg
           : sampleImgBlue,
-      name: "Approve config",
+      name: "Approval config",
       pageName: Config.sideNavPageNames.ApproveConfig,
     }
   );

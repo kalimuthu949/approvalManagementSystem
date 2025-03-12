@@ -75,9 +75,6 @@ const DashboardPage = ({
           // const approvers: IPeoplePickerDetails[] = await fetchApprovalFlow(
           //   item?.Category?.Id
           // );
-
-          let Approvers = [];
-
           return {
             id: item.ID,
             requestId: item?.RequestID ? item?.RequestID : "R-00001",
@@ -111,9 +108,7 @@ const DashboardPage = ({
           },
         ],
       });
-
       return await fetchStageApprovers(res);
-
       const stageApprovers: IPeoplePickerDetails[] = await fetchStageApprovers(
         res
       );
