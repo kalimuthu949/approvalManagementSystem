@@ -19,7 +19,8 @@ import dynamicFieldsStyles from "./RequestsFields.module.scss";
 import "../../../../External/style.css";
 
 const RequestsFields = ({
-  categoryId,
+  currentRecord,
+  recordAction,
   setRequestsDashBoardContent,
   setDynamicRequestsSideBarVisible,
 }) => {
@@ -28,7 +29,17 @@ const RequestsFields = ({
   );
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
+  const [editFields, setEditFields] = useState<boolean>(false);
 
+  //set Edit fields based on view and edit
+  const setEditFieldsFlag = () => {
+    if (recordAction === "Edit") {
+      setEditFields(true);
+    } else {
+      setEditFields(false);
+    }
+  };
+  //CategorySectionConfig List
   const getCategorySectionConfigDetails = () => {
     SPServices.SPReadItems({
       Listname: Config.ListNames?.CategorySectionConfig,
@@ -40,7 +51,7 @@ const RequestsFields = ({
         {
           FilterKey: "Category",
           Operator: "eq",
-          FilterValue: categoryId.toString(),
+          FilterValue: currentRecord.CategoryId.toString(),
         },
       ],
     })
@@ -53,7 +64,7 @@ const RequestsFields = ({
         console.log(err, "getCategorySectionConfigDetails");
       });
   };
-
+  //SectionColumnsConfig List
   const getSectionColumnsConfigDetails = (
     secionName: string,
     secionID: number
@@ -95,6 +106,25 @@ const RequestsFields = ({
       });
   };
 
+  //Get RequestHub details
+  const getRequestHubDetails = () => {
+    SPServices.SPReadItemUsingID({
+      Listname: Config.ListNames.RequestsHub,
+      Select: "*",
+      SelectedId: currentRecord.id,
+    })
+      .then((item: any) => {
+        const tempArr = {};
+        dynamicFields.map(
+          (e) => (tempArr[e.columnName] = item[e.columnName])
+        );
+        setFormData(tempArr);
+      })
+      .catch((e) => {
+        console.log("Get Current Record from RequestHup Details error", e);
+      });
+  };
+
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
     if (errors[name]) {
@@ -115,7 +145,6 @@ const RequestsFields = ({
 
   const handleSubmit = () => {
     if (validateForm()) {
-      console.log("Form Data: ", formData);
       // Call update function here
     }
   };
@@ -134,6 +163,7 @@ const RequestsFields = ({
                     {field.columnName}
                   </Label>
                   <InputText
+                    readOnly={!editFields}
                     id={field.columnName}
                     value={formData[field.columnName] || ""}
                     onChange={(e) =>
@@ -158,6 +188,7 @@ const RequestsFields = ({
                   </Label>
                   <InputTextarea
                     id={field.columnName}
+                    readOnly={!editFields}
                     value={formData[field.columnName] || ""}
                     onChange={(e) =>
                       handleInputChange(field.columnName, e.target.value)
@@ -173,20 +204,34 @@ const RequestsFields = ({
               ))}
           </div>
           <div className={`${dynamicFieldsStyles.sideBarButtonContainer}`}>
-            <Button
-              icon="pi pi-times"
-              label="Cancel"
-              className="customCancelButton"
-              onClick={() => handleCancel()}
-            />
-            <Button
-              icon="pi pi-save"
-              label="Submit"
-              className="customSubmitButton"
-              onClick={() => {
-                handleSubmit();
-              }}
-            />
+            {recordAction === "Edit" && (
+              <>
+                <Button
+                  icon="pi pi-times"
+                  label="Cancel"
+                  className="customCancelButton"
+                  onClick={() => handleCancel()}
+                />
+                <Button
+                  icon="pi pi-save"
+                  label="Submit"
+                  className="customSubmitButton"
+                  onClick={() => {
+                    handleSubmit();
+                  }}
+                />
+              </>
+            )}
+            {recordAction === "View" && (
+              <>
+                <Button
+                  icon="pi pi-times"
+                  label="Close"
+                  className="customCancelButton"
+                  onClick={() => handleCancel()}
+                />
+              </>
+            )}
           </div>
         </div>
       </>
@@ -203,10 +248,10 @@ const RequestsFields = ({
     setDynamicFields([]);
     setFormData({});
     setErrors({});
-    if (categoryId) {
+    if (currentRecord.CategoryId) {
       getCategorySectionConfigDetails();
     }
-  }, [categoryId]);
+  }, [currentRecord.CategoryId]);
 
   useEffect(() => {
     setRequestsDashBoardContent((prev: IRightSideBarContents) => ({
@@ -214,6 +259,13 @@ const RequestsFields = ({
       RequestsDashBoardContent: DynamicRequestsFieldsSideBarContent(),
     }));
   }, [dynamicFields, formData, errors]);
+
+  useEffect(() => {
+    setEditFieldsFlag();
+  }, []);
+  useEffect(() => {
+    getRequestHubDetails();
+  }, [dynamicFields]);
 
   return <></>;
 };

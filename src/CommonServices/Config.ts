@@ -8,6 +8,7 @@ import {
   IRightSideBarContents,
   ISectionColumnsConfig,
   ISideNavPageNames,
+  ITabviewDetails,
 } from "./interface";
 
 export namespace Config {
@@ -24,6 +25,7 @@ export namespace Config {
   //Dropdown Config:
   export const initialConfigDrop: IDropdownDetails = {
     categoryDrop: [],
+    approvelProcess: [],
   };
 
   //View and Edit Obj:
@@ -35,6 +37,7 @@ export namespace Config {
   //RightSideBarContents Config:
   export const rightSideBarContents: IRightSideBarContents = {
     categoryConfigContent: "",
+    ApprovalConfigContent: "",
     RequestsDashBoardContent: "",
   };
 
@@ -68,5 +71,11 @@ export namespace Config {
     columnName: "",
     columnType: "",
     isRequired: false,
+  };
+
+  //TabViewContent Config
+  export const TabViewConfigDetails: ITabviewDetails = {
+    id: null,
+    name: "",
   };
 }

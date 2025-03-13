@@ -30,6 +30,7 @@ export interface IApprovalConfigDetails {
   id: number;
   category: [];
   apprvalFlowName: string;
+  totalStages: number;
   approvalProcess: number;
   rejectionFlow: string;
   stages: IApprovalStages[];
@@ -44,6 +45,7 @@ export interface IBasicDropDown {
 }
 export interface IDropdownDetails {
   categoryDrop: IBasicDropDown[];
+  approvelProcess: IBasicDropDown[];
 }
 //View and Edit Obj:
 export interface IActionBooleans {
@@ -53,6 +55,7 @@ export interface IActionBooleans {
 //RightSideBarContents Details:
 export interface IRightSideBarContents {
   categoryConfigContent: string;
+  ApprovalConfigContent: string;
   RequestsDashBoardContent: string;
 }
 //Page Name
@@ -117,4 +120,10 @@ export interface ISectionColumnsConfig {
   columnName: string;
   columnType: string;
   isRequired: boolean;
+}
+
+//TabView Details
+export interface ITabviewDetails {
+  id: number;
+  name: string;
 }

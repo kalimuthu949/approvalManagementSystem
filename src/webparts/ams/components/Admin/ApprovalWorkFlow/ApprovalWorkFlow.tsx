@@ -3,6 +3,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 //Styles import
 import "../../../../../External/commonStyles.module.scss";
+import ApprovalWorkflowStyles from "./ApprovalWorkFlow.module.scss";
 //Common Service imports
 import SPServices from "../../../../../CommonServices/SPServices";
 import { Config } from "../../../../../CommonServices/Config";
@@ -16,17 +17,26 @@ import {
   IApprovalConfigDetails,
   IApprovalStages,
   IPeoplePickerDetails,
+  IRightSideBarContents,
+  IDropdownDetails,
 } from "../../../../../CommonServices/interface";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
+import { Dropdown } from "primereact/dropdown";
 
-const ApprovalWorkFlow = () => {
+const ApprovalWorkFlow = ({
+  setApprovalSideBarContent,
+  setApprovalSideBarVisible,
+}) => {
   //useStates
   const [approvalConfigDetails, setApprovalConfigDetails] = useState<
     IApprovalConfigDetails[]
   >([]);
-  console.log("approvalConfigDetails", approvalConfigDetails);
-
+  const [approvalProcessChoices, setApprovalProcessChoices] =
+    useState<IDropdownDetails>({ ...Config.initialConfigDrop });
   //Set Actions PopUp:
   const actionsWithIcons = () => [
     {
@@ -74,14 +84,13 @@ const ApprovalWorkFlow = () => {
             id: item?.ID,
             category: item?.CategoryId,
             apprvalFlowName: item?.ApprovalFlowName,
+            totalStages: item?.TotalStages,
             approvalProcess: item?.ApprovalProcess,
             rejectionFlow: item?.RejectionFlow,
             stages: allStages,
           };
         })
       );
-
-      console.log("tempArr", tempArr);
       setApprovalConfigDetails([...tempArr]);
     } catch (e) {
       console.log("Get Approval Config error", e);
@@ -91,7 +100,6 @@ const ApprovalWorkFlow = () => {
   // Get Approval Stage Config List
   const getApprovalStageConfigList = async (parentID: number) => {
     try {
-      console.log("parentID", parentID);
       const res = await SPServices.SPReadItems({
         Listname: Config.ListNames.ApprovalStageConfig,
         Select: "*,Approver/Id,Approver/Title,Approver/EMail",
@@ -127,14 +135,13 @@ const ApprovalWorkFlow = () => {
     return (
       <div>
         {rowData?.approvalProcess === 1
-          ? statusTemplate("Parallel")
-          : statusTemplate("Sequence")}
+          ? statusTemplate("Only one can approve")
+          : statusTemplate("Everyone should approve")}
       </div>
     );
   };
   //Render Approvers column
   const renderApproversColumn = (rowData) => {
-    console.log("rowData", rowData);
     const approvers: IPeoplePickerDetails[] = rowData?.stages.flatMap((e) =>
       e?.approver.map((approver) => ({
         id: approver?.id,
@@ -156,8 +163,57 @@ const ApprovalWorkFlow = () => {
     return <ActionsMenu items={menuModel} />;
   };
 
+  //Approval Process options
+
+  const approvalProcessOptions = () => {
+    const tempArr = [
+      {
+        name: "Only one can approve",
+      },
+      {
+        name: "Everyone should approve",
+      },
+    ];
+    setApprovalProcessChoices((prev: IDropdownDetails) => ({
+      ...prev,
+      approvelProcess: tempArr,
+    }));
+  };
+
+  //ApprovalConfig Sitebar Contents
+  const approvalConfigSitebarContents = () => {
+    return (
+      <>
+        <h4 className={ApprovalWorkflowStyles.approvalSideBarHeading}>
+          Add new approver
+        </h4>
+        <div className={ApprovalWorkflowStyles.approverHeader}>
+          <div className={ApprovalWorkflowStyles.approverHeaderSection}>
+            <label>Name</label>
+            <InputText placeholder="Enter here" />
+          </div>
+          <div className={ApprovalWorkflowStyles.approverHeaderSection}>
+            <label>Type</label>
+            <Dropdown
+              options={approvalProcessChoices.approvelProcess}
+              onChange={(e) => {}}
+              optionLabel="name"
+              placeholder="Select here"
+              className="w-full md:w-14rem"
+            />
+          </div>
+        </div>
+      </>
+    );
+  };
+
   useEffect(() => {
     getApprovalConfigList();
+    approvalProcessOptions();
+    setApprovalSideBarContent((prev: IRightSideBarContents) => ({
+      ...prev,
+      ApprovalConfigContent: approvalConfigSitebarContents(),
+    }));
   }, []);
 
   return (
@@ -173,6 +229,7 @@ const ApprovalWorkFlow = () => {
           }
         >
           <Column field="apprvalFlowName" header="name"></Column>
+          <Column field="totalStages" header="Total Stages"></Column>
           <Column
             field="stages"
             header="Approvers"
@@ -182,8 +239,9 @@ const ApprovalWorkFlow = () => {
             field="approvalProcess"
             header="Type"
             body={renderApprovalTypeColumn}
-            style={{ width: "10rem" }}
+            style={{ width: "13rem", alignItems: "center" }}
           ></Column>
+          <Column field="rejectionFlow" header="Rejection Flow"></Column>
           <Column field="Action" body={renderActionColumn}></Column>
         </DataTable>
       </div>

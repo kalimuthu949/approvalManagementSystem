@@ -33,7 +33,10 @@ const MyRequestPage = ({
   const [requestsDetails, setRequestsDetails] = useState<IRequestHubDetails[]>(
     []
   );
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
+  //Record Action
+  const [recordAction, setRecordAction] = useState<string>("");
+  // const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
+  const [currentRecord, setCurrentRecord] = useState<IRequestHubDetails>();
   //Set Actions PopUp:
   const actionsWithIcons = (rowData: IRequestHubDetails) => [
     {
@@ -41,7 +44,9 @@ const MyRequestPage = ({
       icon: "pi pi-eye",
       className: "customView",
       command: () => {
-        setSelectedCategoryId(rowData.CategoryId);
+        setRecordAction("View");
+        setCurrentRecord(rowData);
+        // setSelectedCategoryId(rowData.CategoryId);
         setDynamicRequestsSideBarVisible(true);
       },
     },
@@ -49,7 +54,9 @@ const MyRequestPage = ({
       label: "Edit",
       icon: "pi pi-file-edit",
       className: "customEdit",
-      command: (event: any) => {},
+      command: (event: any) => {
+        setRecordAction("Edit");
+      },
     },
     {
       label: "Delete",
@@ -64,12 +71,21 @@ const MyRequestPage = ({
     try {
       const res = await SPServices.SPReadItems({
         Listname: Config.ListNames.RequestsHub,
-        Select: "*,Category/Id,Category/Category",
-        Expand: "Category",
+        Select:
+          "*,Category/Id,Category/Category,Author/Id,Author/Title,Author/EMail",
+        Expand: "Category,Author",
         Orderby: "Modified",
         Orderbydecorasc: false,
+        Filter: [
+          {
+            FilterKey: "Author/EMail",
+            Operator: "eq",
+            FilterValue: context._pageContext._user.email,
+          },
+          { FilterKey: "IsDelete", Operator: "eq", FilterValue: "false" },
+        ],
+        FilterCondition: "and",
       });
-
       const temArr: IRequestHubDetails[] = await Promise.all(
         res.map(async (item: any) => {
           return {
@@ -224,14 +240,16 @@ const MyRequestPage = ({
           <Column field="Action" body={renderActionColumn}></Column>
         </DataTable>
       </div>
-      {selectedCategoryId && (
+      {currentRecord && (
         <RequestsFields
-          categoryId={selectedCategoryId}
+          currentRecord={currentRecord}
+          // categoryId={selectedCategoryId}
+          recordAction={recordAction}
           setRequestsDashBoardContent={setRequestsDashBoardContent}
           setDynamicRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
         />
       )}
-      <div>
+      {/* <div>
         {requestsDetails?.length > 0 && (
           <div>
             <WorkflowActionButtons
@@ -243,7 +261,7 @@ const MyRequestPage = ({
             <AttachmentUploader context={context} />
           </div>
         )}
-      </div>
+      </div> */}
     </>
   );
 };
