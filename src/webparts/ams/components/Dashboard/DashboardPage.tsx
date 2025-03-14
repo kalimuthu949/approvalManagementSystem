@@ -33,7 +33,11 @@ const DashboardPage = ({
   const [requestsDetails, setRequestsDetails] = useState<IRequestHubDetails[]>(
     []
   );
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
+  //Record Action
+  const [recordAction, setRecordAction] = useState<string>("");
+  //CategoryId
+  // const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
+  const [currentRecord, setCurrentRecord] = useState<IRequestHubDetails>();
   //Set Actions PopUp:
   const actionsWithIcons = (rowData: IRequestHubDetails) => [
     {
@@ -41,7 +45,9 @@ const DashboardPage = ({
       icon: "pi pi-eye",
       className: "customView",
       command: () => {
-        setSelectedCategoryId(rowData.CategoryId);
+        setRecordAction("View");
+        // setSelectedCategoryId(rowData.CategoryId);
+        setCurrentRecord(rowData)
         setDynamicRequestsSideBarVisible(true);
       },
     },
@@ -49,7 +55,9 @@ const DashboardPage = ({
       label: "Edit",
       icon: "pi pi-file-edit",
       className: "customEdit",
-      command: (event: any) => {},
+      command: (event: any) => {
+        setRecordAction("Edit");
+      },
     },
     {
       label: "Delete",
@@ -58,7 +66,6 @@ const DashboardPage = ({
       command: (event: any) => {},
     },
   ];
-
   //Get RequestHub Details:
   const getRequestsHubDetails = async () => {
     try {
@@ -208,9 +215,10 @@ const DashboardPage = ({
           <Column field="Action" body={renderActionColumn}></Column>
         </DataTable>
       </div>
-      {selectedCategoryId && (
+      {currentRecord && (
         <RequestsFields
-          categoryId={selectedCategoryId}
+        currentRecord={currentRecord}
+          recordAction={recordAction}
           setRequestsDashBoardContent={setRequestsDashBoardContent}
           setDynamicRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
         />

@@ -2,7 +2,7 @@
 import * as React from "react";
 import { useRef } from "react";
 //PeoplePicker Imports;
-import { IPeoplePickerDetails, IToaster } from "./interface";
+import { IPeoplePickerDetails, IToaster, ITabviewDetails } from "./interface";
 import {
   DirectionalHint,
   Label,
@@ -20,6 +20,7 @@ import { LuClock9 } from "react-icons/lu";
 import { Menu } from "primereact/menu";
 import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
+import { TabView, TabPanel } from "primereact/tabview";
 //Common Style Imports:
 import styles from "../External/commonStyles.module.scss";
 import "../External/style.css";
@@ -95,9 +96,9 @@ const getIcons = (status: string) => {
 
     case "Rejected":
       return <FaRegTimesCircle />;
-    case "Parallel":
+    case "Only one can approve":
       return "";
-    case "Sequence":
+    case "Everyone should approve":
       return "";
 
     default:
@@ -124,12 +125,12 @@ const getColors = (status: string) => {
       colors.bgColor = "#f6e8e8";
       colors.color = "#b23d3f";
       break;
-    case "Parallel":
+    case "Only one can approve":
       colors.bgColor = "#ebf7ff";
       colors.color = "#2a6d9c";
       colors.borderColor = "#2d68de";
       break;
-    case "Sequence":
+    case "Everyone should approve":
       colors.bgColor = "#ffebfd";
       colors.color = "#9c2a87";
       colors.borderColor = "#d013e8";
@@ -198,7 +199,6 @@ export const toastNotify = (item: IToaster) => {
 
 //MultiPeoplePicker Template:
 export const multiplePeoplePickerTemplate = (users: IPeoplePickerDetails[]) => {
-  console.log("users", users);
   return (
     <>
       {users?.length ? (
@@ -274,5 +274,23 @@ export const multiplePeoplePickerTemplate = (users: IPeoplePickerDetails[]) => {
         ""
       )}
     </>
+  );
+};
+
+//TabView
+export const tabViewBar = (
+  data: ITabviewDetails[],
+  activeTabViewBar,
+  setActiveTabViewBar
+) => {
+  return (
+    <TabView
+      activeIndex={activeTabViewBar}
+      onTabChange={(e) => setActiveTabViewBar(e.index)}
+    >
+      {data.map((e) => (
+        <TabPanel header={e.name} />
+      ))}
+    </TabView>
   );
 };

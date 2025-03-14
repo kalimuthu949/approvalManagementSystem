@@ -3,6 +3,7 @@
 .filter_header_container {
   display: flex;
   box-sizing: border-box;
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
   height: 60px;
@@ -14,6 +15,10 @@
     font-weight: var(--dataTableHeaderFontWeight);
     width: 75%;
   }
+  .filter_header_pageName{
+    width: 83%;
+  }
+
 }
 .profile_header_container {
   @extend .filter_header_container;
@@ -40,7 +45,6 @@
     font-size: calc(var(--fontSizebig) +2);
     font-weight: var(--dataTableHeaderFontWeight);
     color: $green;
-    width: 83%;
     padding-top: 10px;
   }
   .profile_header_Icons {
