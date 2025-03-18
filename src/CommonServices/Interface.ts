@@ -18,6 +18,7 @@ export interface IListNames {
   ApprovalStageConfig: string;
   CategorySectionConfig: string;
   SectionColumnsConfig: string;
+  ApprovalHistory: string;
 }
 //CategoryConfig Details:
 export interface ICategoryDetails {
@@ -43,8 +44,12 @@ export interface IApprovalStages {
 export interface IBasicDropDown {
   name: string;
 }
+export interface IBasicFilterCategoryDrop {
+  name: string;
+  id:number
+}
 export interface IDropdownDetails {
-  categoryDrop: IBasicDropDown[];
+  categoryDrop: IBasicFilterCategoryDrop[];
   approvelProcess: IBasicDropDown[];
 }
 //View and Edit Obj:
@@ -57,6 +62,7 @@ export interface IRightSideBarContents {
   categoryConfigContent: string;
   ApprovalConfigContent: string;
   RequestsDashBoardContent: string;
+  AddRequestsDashBoardContent:string
 }
 //Page Name
 export interface ISideNavPageNames {
@@ -120,10 +126,23 @@ export interface ISectionColumnsConfig {
   columnName: string;
   columnType: string;
   isRequired: boolean;
+  viewStage: IViewStage[];
+}
+interface IViewStage {
+  Stage: [];
 }
 
 //TabView Details
 export interface ITabviewDetails {
   id: number;
   name: string;
+}
+
+//Approval Details
+export interface IApprovalDetails {
+  parentID: number;
+  stage: number;
+  approverEmail: string;
+  status: string;
+  comments: string;
 }

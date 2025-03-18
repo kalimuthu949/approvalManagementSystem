@@ -9,6 +9,7 @@ import {
   IRightSideBarContents,
   IUserDetails,
   ITabviewDetails,
+  IBasicFilterCategoryDrop,
 } from "../../../../CommonServices/interface";
 import SPServices from "../../../../CommonServices/SPServices";
 //Style Imports:
@@ -31,12 +32,14 @@ import MyRequestPage from "../Dashboard/MyRequest";
 import ApprovalWorkFlow from "../Admin/ApprovalWorkFlow/ApprovalWorkFlow";
 import MyApprovalPage from "../Dashboard/MyApproval";
 import AllRequestPage from "../Dashboard/AllRequest";
+import AddRequestsFields from "../DynamicsRequests/AddRequestFields";
 
 const Header = ({ context, currentPage }) => {
   //UseStates
   const [categoryFilterValue, setCategoryFilterValue] =
     useState<IDropdownDetails>({ ...Config.initialConfigDrop });
-  const [selectedCategory, setSelectedCategory] = useState<number>(null);
+  const [selectedCategory, setSelectedCategory] =
+    useState<IBasicFilterCategoryDrop>();
   const [sideBarVisible, setSideBarVisible] = useState<boolean>(false);
   const [sideBarcontent, setSideBarContent] = useState<IRightSideBarContents>({
     ...Config.rightSideBarContents,
@@ -46,6 +49,7 @@ const Header = ({ context, currentPage }) => {
     name: context._pageContext._user.displayName,
     email: context._pageContext._user.email,
   };
+  const [addRequest, setAddRequest] = useState<boolean>(false);
   //Get Category From List
   const categoryFilter = () => {
     SPServices.SPReadItems({
@@ -55,9 +59,9 @@ const Header = ({ context, currentPage }) => {
       Orderbydecorasc: false,
     })
       .then((res: any) => {
-        const TempArr: IBasicDropDown[] = [];
+        const TempArr: IBasicFilterCategoryDrop[] = [];
         res?.forEach((item: any) => {
-          TempArr.push({ name: item.Category });
+          TempArr.push({ name: item.Category, id: item.ID });
         });
         setCategoryFilterValue((prev: IDropdownDetails) => ({
           ...prev,
@@ -69,14 +73,17 @@ const Header = ({ context, currentPage }) => {
       });
   };
 
-  const openSidebar = () => {
+  const openSidebar = async () => {
+    if (currentPage === Config.sideNavPageNames.Request) {
+      await setAddRequest(true);
+    }
     setSideBarVisible(true);
   };
 
   //Set TabView Content
   const declareTabViewBar = () => {
     switch (currentPage) {
-      case "Request":
+      case Config.sideNavPageNames.Request:
         const TemptabContent: ITabviewDetails[] = [
           {
             id: 1,
@@ -97,13 +104,13 @@ const Header = ({ context, currentPage }) => {
           setActiveTabViewBar
         );
         return <>{tempTabView}</>;
-      case "CategoryConfig":
+      case Config.sideNavPageNames.CategoryConfig:
         return (
           <>
             <label>{currentPage}</label>
           </>
         );
-      case "ApproveConfig":
+      case Config.sideNavPageNames.ApproveConfig:
         return (
           <>
             <label>{currentPage}</label>
@@ -116,6 +123,11 @@ const Header = ({ context, currentPage }) => {
     categoryFilter();
     declareTabViewBar();
   }, []);
+  useEffect(() => {
+    if (!sideBarVisible) {
+      setAddRequest(false);
+    }
+  }, [sideBarVisible]);
   return (
     <>
       <div className="headerContainer">
@@ -141,7 +153,11 @@ const Header = ({ context, currentPage }) => {
           <Dropdown
             value={selectedCategory}
             options={categoryFilterValue.categoryDrop}
-            onChange={(e) => setSelectedCategory(e.value)}
+            onChange={(e) => {
+              setSelectedCategory(e.value);
+            }}
+            showClear
+            filter
             optionLabel="name"
             placeholder="Category"
             className="w-full md:w-14rem"
@@ -149,17 +165,23 @@ const Header = ({ context, currentPage }) => {
           <div className="addNewButton">
             <Button
               label="Add new"
-              onClick={() => openSidebar()}
+              onClick={async () => {
+                openSidebar();
+              }}
               icon={<LuBadgePlus />}
             />
             <RightSidebar
               visible={sideBarVisible}
-              onHide={() => setSideBarVisible(false)}
+              onHide={() => {
+                setSideBarVisible(false);
+              }}
               contents={
                 currentPage == Config.sideNavPageNames.CategoryConfig
                   ? sideBarcontent?.categoryConfigContent
                   : currentPage == Config.sideNavPageNames.Request
-                  ? sideBarcontent?.RequestsDashBoardContent
+                  ? addRequest
+                    ? sideBarcontent?.AddRequestsDashBoardContent
+                    : sideBarcontent?.RequestsDashBoardContent
                   : currentPage == Config.sideNavPageNames.ApproveConfig
                   ? sideBarcontent?.ApprovalConfigContent
                   : ""
@@ -171,13 +193,25 @@ const Header = ({ context, currentPage }) => {
       <div>
         {currentPage == Config.sideNavPageNames.Request ? (
           <>
+            {addRequest && (
+              <AddRequestsFields
+                categoryFilterValue={categoryFilterValue}
+                context={context}
+                setRequestsDashBoardContent={setSideBarContent}
+                setDynamicRequestsSideBarVisible={setSideBarVisible}
+              />
+            )}
+
             {/* <DashboardPage
+            sideBarVisible={sideBarVisible}
               context={context}
               setRequestsDashBoardContent={setSideBarContent}
               setDynamicRequestsSideBarVisible={setSideBarVisible}
             /> */}
             {activeTabViewBar === 0 && (
               <AllRequestPage
+                filterCategory={selectedCategory}
+                sideBarVisible={sideBarVisible}
                 context={context}
                 setRequestsDashBoardContent={setSideBarContent}
                 setDynamicRequestsSideBarVisible={setSideBarVisible}
@@ -185,6 +219,8 @@ const Header = ({ context, currentPage }) => {
             )}
             {activeTabViewBar === 1 && (
               <MyRequestPage
+                filterCategory={selectedCategory}
+                sideBarVisible={sideBarVisible}
                 context={context}
                 setRequestsDashBoardContent={setSideBarContent}
                 setDynamicRequestsSideBarVisible={setSideBarVisible}
@@ -192,6 +228,8 @@ const Header = ({ context, currentPage }) => {
             )}
             {activeTabViewBar === 2 && (
               <MyApprovalPage
+                filterCategory={selectedCategory}
+                sideBarVisible={sideBarVisible}
                 context={context}
                 setRequestsDashBoardContent={setSideBarContent}
                 setDynamicRequestsSideBarVisible={setSideBarVisible}

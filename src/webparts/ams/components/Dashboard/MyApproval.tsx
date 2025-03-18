@@ -26,10 +26,13 @@ import RequestsFields from "../DynamicsRequests/RequestsFields";
 import { Item } from "@pnp/sp/items";
 
 const MyApprovalPage = ({
+  filterCategory,
   context,
+  sideBarVisible,
   setRequestsDashBoardContent,
   setDynamicRequestsSideBarVisible,
 }) => {
+  const loginUser = context._pageContext._user.email;
   //State Variables:
   const [requestsDetails, setRequestsDetails] = useState<IRequestHubDetails[]>(
     []
@@ -52,20 +55,25 @@ const MyApprovalPage = ({
         setDynamicRequestsSideBarVisible(true);
       },
     },
-    {
-      label: "Edit",
-      icon: "pi pi-file-edit",
-      className: "customEdit",
-      command: (event: any) => {
-        setRecordAction("Edit");
+    rowData.status === "Pending" &&
+      rowData.approvalJson[0].stages
+        .flatMap((e) => e.approvers)
+        .find((e) => e.email === loginUser)?.statusCode === 0 && {
+        label: "Edit",
+        icon: "pi pi-file-edit",
+        className: "customEdit",
+        command: (event: any) => {
+          setRecordAction("Edit");
+          setCurrentRecord(rowData);
+          setDynamicRequestsSideBarVisible(true);
+        },
       },
-    },
-    {
-      label: "Delete",
-      icon: "pi pi-trash",
-      className: "customDelete",
-      command: (event: any) => {},
-    },
+    // {
+    //   label: "Delete",
+    //   icon: "pi pi-trash",
+    //   className: "customDelete",
+    //   command: (event: any) => {},
+    // },
   ];
 
   //Get RequestHub Details:
@@ -103,13 +111,19 @@ const MyApprovalPage = ({
 
   //Filter records for approvers
   const filterRecords = (tempArr) => {
-    const userEmail = context._pageContext._user.email;
     const filterTempArr = tempArr.filter((item) =>
-      item.approvalJson[0].stages.some(
-        (stage) =>
-          stage.stage <= item.approvalJson[0].Currentstage &&
-          stage.approvers.some((approver) => approver.email === userEmail)
-      )
+      filterCategory
+        ? item?.CategoryId === filterCategory.id &&
+          item.approvalJson[0].stages.some(
+            (stage) =>
+              stage.stage <= item.approvalJson[0].Currentstage &&
+              stage.approvers.some((approver) => approver.email === loginUser)
+          )
+        : item.approvalJson[0].stages.some(
+            (stage) =>
+              stage.stage <= item.approvalJson[0].Currentstage &&
+              stage.approvers.some((approver) => approver.email === loginUser)
+          )
     );
     setRequestsDetails([...filterTempArr]);
   };
@@ -201,7 +215,7 @@ const MyApprovalPage = ({
 
   useEffect(() => {
     getRequestsHubDetails();
-  }, []);
+  }, [null, filterCategory]);
 
   return (
     <>
@@ -252,6 +266,10 @@ const MyApprovalPage = ({
       </div>
       {currentRecord && (
         <RequestsFields
+          context={context}
+          requestsDetails={requestsDetails}
+          setRequestsDetails={setRequestsDetails}
+          sideBarVisible={sideBarVisible}
           currentRecord={currentRecord}
           recordAction={recordAction}
           setRequestsDashBoardContent={setRequestsDashBoardContent}

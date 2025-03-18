@@ -326,3 +326,15 @@ li.p-highlight .p-tabview-nav-link {
 .p-menuitem-link {
   border: 0;
 }
+
+/* Required Fields........................ */
+.required {
+  color: red;
+  margin-left: 4px;
+}
+
+.errorMsg {
+  color: #ef250f;
+  font-size: 12px;
+  font-weight: 600;
+}

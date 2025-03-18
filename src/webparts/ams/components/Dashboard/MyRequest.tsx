@@ -25,7 +25,9 @@ import AttachmentUploader from "../AttachmentUploader/AttachmentUploader";
 import RequestsFields from "../DynamicsRequests/RequestsFields";
 
 const MyRequestPage = ({
+  filterCategory,
   context,
+  sideBarVisible,
   setRequestsDashBoardContent,
   setDynamicRequestsSideBarVisible,
 }) => {
@@ -50,20 +52,23 @@ const MyRequestPage = ({
         setDynamicRequestsSideBarVisible(true);
       },
     },
-    {
+    rowData.status === "Rejected" && {
       label: "Edit",
       icon: "pi pi-file-edit",
       className: "customEdit",
       command: (event: any) => {
         setRecordAction("Edit");
+        setCurrentRecord(rowData);
+        // setSelectedCategoryId(rowData.CategoryId);
+        setDynamicRequestsSideBarVisible(true);
       },
     },
-    {
-      label: "Delete",
-      icon: "pi pi-trash",
-      className: "customDelete",
-      command: (event: any) => {},
-    },
+    // {
+    //   label: "Delete",
+    //   icon: "pi pi-trash",
+    //   className: "customDelete",
+    //   command: (event: any) => {},
+    // },
   ];
 
   //Get RequestHub Details:
@@ -98,10 +103,18 @@ const MyRequestPage = ({
           };
         })
       );
-      setRequestsDetails([...temArr]);
+      filterCategory ? filterRecords(temArr) : setRequestsDetails([...temArr]);
     } catch (e) {
       console.log("RequestsHub Error", e);
     }
+  };
+
+  //Filter records for approvers
+  const filterRecords = (tempArr) => {
+    const filterTempArr = tempArr.filter(
+      (item) => item?.CategoryId === filterCategory.id
+    );
+    setRequestsDetails([...filterTempArr]);
   };
 
   //Render Status Column:
@@ -191,8 +204,7 @@ const MyRequestPage = ({
 
   useEffect(() => {
     getRequestsHubDetails();
-  }, []);
-
+  }, [null, sideBarVisible, filterCategory]);
   return (
     <>
       <div className="customDataTableContainer">
@@ -242,6 +254,10 @@ const MyRequestPage = ({
       </div>
       {currentRecord && (
         <RequestsFields
+          context={context}
+          requestsDetails={requestsDetails}
+          setRequestsDetails={setRequestsDetails}
+          sideBarVisible={sideBarVisible}
           currentRecord={currentRecord}
           // categoryId={selectedCategoryId}
           recordAction={recordAction}
