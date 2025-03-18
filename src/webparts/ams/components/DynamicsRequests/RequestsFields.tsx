@@ -5,8 +5,10 @@ import { useState, useEffect } from "react";
 import SPServices from "../../../../CommonServices/SPServices";
 import { Config } from "../../../../CommonServices/Config";
 import {
+  IPeoplePickerDetails,
   IRightSideBarContents,
   ISectionColumnsConfig,
+  IApprovalDetails,
 } from "../../../../CommonServices/interface";
 //primeReact Imports:
 import { InputText } from "primereact/inputtext";
@@ -17,9 +19,14 @@ import { classNames } from "primereact/utils";
 //Styles Imports:
 import dynamicFieldsStyles from "./RequestsFields.module.scss";
 import "../../../../External/style.css";
+import WorkflowActionButtons from "../WorkflowButtons/WorkflowActionButtons";
 
 const RequestsFields = ({
+  context,
+  requestsDetails,
+  setRequestsDetails,
   currentRecord,
+  sideBarVisible,
   recordAction,
   setRequestsDashBoardContent,
   setDynamicRequestsSideBarVisible,
@@ -29,16 +36,16 @@ const RequestsFields = ({
   );
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
-  const [editFields, setEditFields] = useState<boolean>(false);
+  const [author, setAuthor] = useState<IPeoplePickerDetails>();
+  const loginUser = context._pageContext._user.email;
+  const [approvalDetails, setApprovalDetails] = useState<IApprovalDetails>({
+    parentID: currentRecord.id,
+    stage: currentRecord.approvalJson[0].Currentstage,
+    approverEmail: loginUser,
+    status: "",
+    comments: "",
+  });
 
-  //set Edit fields based on view and edit
-  const setEditFieldsFlag = () => {
-    if (recordAction === "Edit") {
-      setEditFields(true);
-    } else {
-      setEditFields(false);
-    }
-  };
   //CategorySectionConfig List
   const getCategorySectionConfigDetails = () => {
     SPServices.SPReadItems({
@@ -97,6 +104,7 @@ const RequestsFields = ({
             columnName: item?.ColumnInternalName,
             columnType: item?.ColumnType,
             isRequired: item?.IsRequired,
+            viewStage: JSON.parse(item?.ViewStage),
           });
           setDynamicFields([...tempArr]);
         });
@@ -108,23 +116,35 @@ const RequestsFields = ({
 
   //Get RequestHub details
   const getRequestHubDetails = () => {
-    SPServices.SPReadItemUsingID({
+    SPServices.SPReadItemUsingId({
       Listname: Config.ListNames.RequestsHub,
-      Select: "*",
+      Select: "*,Author/ID,Author/Title,Author/EMail",
+      Expand: "Author",
       SelectedId: currentRecord.id,
     })
       .then((item: any) => {
         const tempArr = {};
-        dynamicFields.map(
-          (e) => (tempArr[e.columnName] = item[e.columnName])
-        );
+        dynamicFields.map((e) => (tempArr[e.columnName] = item[e.columnName]));
         setFormData(tempArr);
+        setAuthor({
+          id: item.Author.ID,
+          name: item.Author.Title,
+          email: item.Author.EMail,
+        });
       })
       .catch((e) => {
         console.log("Get Current Record from RequestHup Details error", e);
       });
   };
 
+  //Set Approval Details
+  const getApprovalDetails = async (columnName, value) => {
+    let data = { ...approvalDetails };
+    data[`${columnName}`] = value;
+    // approvalDetails[columnName] = value;
+    await setApprovalDetails({ ...data });
+  };
+  //handleInputChange
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
     if (errors[name]) {
@@ -161,9 +181,12 @@ const RequestsFields = ({
                 <div key={field.id} className={dynamicFieldsStyles.inputField}>
                   <Label className={dynamicFieldsStyles.label}>
                     {field.columnName}
+                    {field?.isRequired && <span className="required">*</span>}
                   </Label>
                   <InputText
-                    readOnly={!editFields}
+                    readOnly={
+                      !(recordAction === "Edit" && author?.email === loginUser)
+                    }
                     id={field.columnName}
                     value={formData[field.columnName] || ""}
                     onChange={(e) =>
@@ -184,11 +207,15 @@ const RequestsFields = ({
               .map((field) => (
                 <div key={field.id} className={dynamicFieldsStyles.inputField}>
                   <Label className={dynamicFieldsStyles.label}>
-                    {field.columnName}
+                    {field.columnName}{" "}
+                    {field?.isRequired && <span className="required">*</span>}
                   </Label>
                   <InputTextarea
                     id={field.columnName}
-                    readOnly={!editFields}
+                    autoResize
+                    readOnly={
+                      !(recordAction === "Edit" && author?.email === loginUser)
+                    }
                     value={formData[field.columnName] || ""}
                     onChange={(e) =>
                       handleInputChange(field.columnName, e.target.value)
@@ -203,24 +230,50 @@ const RequestsFields = ({
                 </div>
               ))}
           </div>
+          {recordAction === "Edit" && author?.email !== loginUser && (
+            <>
+              <Label className={dynamicFieldsStyles.label}>
+                Approver Description
+              </Label>
+              <InputTextarea
+                autoResize
+                value={approvalDetails?.comments}
+                onChange={(e) => {
+                  getApprovalDetails("comments", e.target?.value || "");
+                }}
+                rows={3}
+              />
+            </>
+          )}
           <div className={`${dynamicFieldsStyles.sideBarButtonContainer}`}>
             {recordAction === "Edit" && (
-              <>
-                <Button
-                  icon="pi pi-times"
-                  label="Cancel"
-                  className="customCancelButton"
-                  onClick={() => handleCancel()}
-                />
-                <Button
-                  icon="pi pi-save"
-                  label="Submit"
-                  className="customSubmitButton"
-                  onClick={() => {
-                    handleSubmit();
-                  }}
-                />
-              </>
+              <WorkflowActionButtons
+                validateForm={validateForm}
+                approvalDetails={approvalDetails}
+                setApprovalDetails={setApprovalDetails}
+                setRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
+                context={context}
+                updatedRecord={formData}
+                requestsHubDetails={requestsDetails}
+                setRequestsHubDetails={setRequestsDetails}
+                itemID={currentRecord.id}
+              />
+              // <>
+              //   <Button
+              //     icon="pi pi-times"
+              //     label="Cancel"
+              //     className="customCancelButton"
+              //     onClick={() => handleCancel()}
+              //   />
+              //   <Button
+              //     icon="pi pi-save"
+              //     label="Submit"
+              //     className="customSubmitButton"
+              //     onClick={() => {
+              //       handleSubmit();
+              //     }}
+              //   />
+              // </>
             )}
             {recordAction === "View" && (
               <>
@@ -251,21 +304,19 @@ const RequestsFields = ({
     if (currentRecord.CategoryId) {
       getCategorySectionConfigDetails();
     }
-  }, [currentRecord.CategoryId]);
+  }, [null, currentRecord.CategoryId]);
 
   useEffect(() => {
     setRequestsDashBoardContent((prev: IRightSideBarContents) => ({
       ...prev,
       RequestsDashBoardContent: DynamicRequestsFieldsSideBarContent(),
     }));
-  }, [dynamicFields, formData, errors]);
+  }, [dynamicFields, formData, errors, approvalDetails]);
 
   useEffect(() => {
-    setEditFieldsFlag();
-  }, []);
-  useEffect(() => {
     getRequestHubDetails();
-  }, [dynamicFields]);
+  }, [dynamicFields, sideBarVisible]);
+
 
   return <></>;
 };

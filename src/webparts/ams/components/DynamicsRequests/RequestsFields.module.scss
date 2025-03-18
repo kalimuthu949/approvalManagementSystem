@@ -55,3 +55,13 @@
   gap: 3%;
   width: 100%;
 }
+
+///Add request Filder dropdown
+.filterHeader{
+  width: 100%;
+  display: block;
+  margin-bottom: 20px;
+  .filterdropdown{
+    width: 50%;
+  }
+}

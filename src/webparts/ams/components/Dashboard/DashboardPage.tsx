@@ -26,6 +26,7 @@ import RequestsFields from "../DynamicsRequests/RequestsFields";
 
 const DashboardPage = ({
   context,
+  sideBarVisible,
   setRequestsDashBoardContent,
   setDynamicRequestsSideBarVisible,
 }) => {
@@ -47,7 +48,7 @@ const DashboardPage = ({
       command: () => {
         setRecordAction("View");
         // setSelectedCategoryId(rowData.CategoryId);
-        setCurrentRecord(rowData)
+        setCurrentRecord(rowData);
         setDynamicRequestsSideBarVisible(true);
       },
     },
@@ -217,25 +218,16 @@ const DashboardPage = ({
       </div>
       {currentRecord && (
         <RequestsFields
-        currentRecord={currentRecord}
+          context={context}
+          requestsDetails={requestsDetails}
+          setRequestsDetails={setRequestsDetails}
+          sideBarVisible={sideBarVisible}
+          currentRecord={currentRecord}
           recordAction={recordAction}
           setRequestsDashBoardContent={setRequestsDashBoardContent}
           setDynamicRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
         />
       )}
-      <div>
-        {requestsDetails?.length > 0 && (
-          <div>
-            <WorkflowActionButtons
-              context={context}
-              requestsHubDetails={requestsDetails}
-              setRequestsHubDetails={setRequestsDetails}
-              itemID={1}
-            />
-            <AttachmentUploader context={context} />
-          </div>
-        )}
-      </div>
     </>
   );
 };

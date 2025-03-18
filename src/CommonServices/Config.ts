@@ -20,6 +20,7 @@ export namespace Config {
     ApprovalStageConfig: "ApprovalStageConfig",
     CategorySectionConfig: "CategorySectionConfig",
     SectionColumnsConfig: "SectionColumnsConfig",
+    ApprovalHistory: "ApprovalHistory",
   };
 
   //Dropdown Config:
@@ -39,6 +40,7 @@ export namespace Config {
     categoryConfigContent: "",
     ApprovalConfigContent: "",
     RequestsDashBoardContent: "",
+    AddRequestsDashBoardContent: "",
   };
 
   //PageNames Config:
@@ -71,6 +73,7 @@ export namespace Config {
     columnName: "",
     columnType: "",
     isRequired: false,
+    viewStage: [],
   };
 
   //TabViewContent Config

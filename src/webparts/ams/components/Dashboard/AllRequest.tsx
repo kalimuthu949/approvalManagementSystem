@@ -25,7 +25,9 @@ import AttachmentUploader from "../AttachmentUploader/AttachmentUploader";
 import RequestsFields from "../DynamicsRequests/RequestsFields";
 
 const AllRequestPage = ({
+  filterCategory,
   context,
+  sideBarVisible,
   setRequestsDashBoardContent,
   setDynamicRequestsSideBarVisible,
 }) => {
@@ -51,20 +53,20 @@ const AllRequestPage = ({
         setDynamicRequestsSideBarVisible(true);
       },
     },
-    {
-      label: "Edit",
-      icon: "pi pi-file-edit",
-      className: "customEdit",
-      command: (event: any) => {
-        setRecordAction("Edit");
-      },
-    },
-    {
-      label: "Delete",
-      icon: "pi pi-trash",
-      className: "customDelete",
-      command: (event: any) => {},
-    },
+    // {
+    //   label: "Edit",
+    //   icon: "pi pi-file-edit",
+    //   className: "customEdit",
+    //   command: (event: any) => {
+    //     setRecordAction("Edit");
+    //   },
+    // },
+    // {
+    //   label: "Delete",
+    //   icon: "pi pi-trash",
+    //   className: "customDelete",
+    //   command: (event: any) => {},
+    // },
   ];
 
   //Get RequestHub Details:
@@ -94,12 +96,17 @@ const AllRequestPage = ({
           };
         })
       );
-      setRequestsDetails([...temArr]);
+      filterCategory ? filterRecords(temArr) : setRequestsDetails([...temArr]);
     } catch (e) {
       console.log("RequestsHub Error", e);
     }
   };
 
+  //Filter Condition
+  const filterRecords = (tempArr) => {
+    const filterArr = tempArr.filter((e) => e.CategoryId === filterCategory.id);
+    setRequestsDetails([...filterArr]);
+  };
   //Render Status Column:
   const renderStatusColumn = (rowData: IRequestHubDetails) => {
     return <div>{statusTemplate(rowData?.status)}</div>;
@@ -187,7 +194,7 @@ const AllRequestPage = ({
 
   useEffect(() => {
     getRequestsHubDetails();
-  }, []);
+  }, [null,filterCategory]);
 
   return (
     <>
@@ -238,6 +245,10 @@ const AllRequestPage = ({
       </div>
       {currentRecord && (
         <RequestsFields
+          context={context}
+          requestsDetails={requestsDetails}
+          setRequestsDetails={setRequestsDetails}
+          sideBarVisible={sideBarVisible}
           currentRecord={currentRecord}
           recordAction={recordAction}
           setRequestsDashBoardContent={setRequestsDashBoardContent}
