@@ -280,8 +280,8 @@ export const multiplePeoplePickerTemplate = (users: IPeoplePickerDetails[]) => {
 //TabView
 export const tabViewBar = (
   data: ITabviewDetails[],
-  activeTabViewBar,
-  setActiveTabViewBar
+  activeTabViewBar: number,
+  setActiveTabViewBar: any
 ) => {
   return (
     <TabView

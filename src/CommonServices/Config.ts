@@ -6,6 +6,7 @@ import {
   IListNames,
   IRequestHubDetails,
   IRightSideBarContents,
+  IRightSideBarContentsDetails,
   ISectionColumnsConfig,
   ISideNavPageNames,
   ITabviewDetails,
@@ -41,6 +42,13 @@ export namespace Config {
     ApprovalConfigContent: "",
     RequestsDashBoardContent: "",
     AddRequestsDashBoardContent: "",
+  };
+
+  //RightSideBarContents Initialize Details:
+  export const rightSideBarContentsDetails: IRightSideBarContentsDetails = {
+    addRequestDetails: false,
+    categoryConfigDetails: false,
+    approvalConfigDetails: false,
   };
 
   //PageNames Config:

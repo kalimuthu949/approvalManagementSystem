@@ -10,6 +10,7 @@ import {
   IUserDetails,
   ITabviewDetails,
   IBasicFilterCategoryDrop,
+  IRightSideBarContentsDetails,
 } from "../../../../CommonServices/interface";
 import SPServices from "../../../../CommonServices/SPServices";
 //Style Imports:
@@ -34,6 +35,7 @@ import MyApprovalPage from "../Dashboard/MyApproval";
 import AllRequestPage from "../Dashboard/AllRequest";
 import AddRequestsFields from "../DynamicsRequests/AddRequestFields";
 import { InputText } from "primereact/inputtext";
+import ApprovalConfig from "../ApprovalConfig/ApprovalConfig";
 
 const Header = ({ context, currentPage }) => {
   //UseStates
@@ -52,6 +54,10 @@ const Header = ({ context, currentPage }) => {
     email: context._pageContext._user.email,
   };
   const [addRequest, setAddRequest] = useState<boolean>(false);
+  const [addSideBarContentBooleans, setAddSideBarContentBooleans] =
+    useState<IRightSideBarContentsDetails>({
+      ...Config.rightSideBarContentsDetails,
+    });
   //Get Category From List
   const categoryFilter = () => {
     SPServices.SPReadItems({
@@ -77,7 +83,10 @@ const Header = ({ context, currentPage }) => {
 
   const openSidebar = async () => {
     if (currentPage === Config.sideNavPageNames.Request) {
-      await setAddRequest(true);
+      setAddSideBarContentBooleans((prev: IRightSideBarContentsDetails) => ({
+        ...prev,
+        addRequestDetails: true,
+      }));
     }
     setSideBarVisible(true);
   };
@@ -100,34 +109,25 @@ const Header = ({ context, currentPage }) => {
             name: "My Approval",
           },
         ];
+
         const tempTabView = tabViewBar(
           TemptabContent,
           activeTabViewBar,
           setActiveTabViewBar
         );
         return <>{tempTabView}</>;
-      case Config.sideNavPageNames.CategoryConfig:
-        return (
-          <>
-            <label>{currentPage}</label>
-          </>
-        );
-      case Config.sideNavPageNames.ApproveConfig:
-        return (
-          <>
-            <label>{currentPage}</label>
-          </>
-        );
     }
   };
+
   //useEffect
   useEffect(() => {
     categoryFilter();
     declareTabViewBar();
   }, []);
+
   useEffect(() => {
     if (!sideBarVisible) {
-      setAddRequest(false);
+      setAddSideBarContentBooleans({ ...Config.rightSideBarContentsDetails });
     }
   }, [sideBarVisible]);
   return (
@@ -195,10 +195,10 @@ const Header = ({ context, currentPage }) => {
               setSideBarVisible(false);
             }}
             contents={
-              currentPage == Config.sideNavPageNames.CategoryConfig
+              currentPage == Config.sideNavPageNames.ApproveConfig
                 ? sideBarcontent?.categoryConfigContent
                 : currentPage == Config.sideNavPageNames.Request
-                ? addRequest
+                ? addSideBarContentBooleans?.addRequestDetails
                   ? sideBarcontent?.AddRequestsDashBoardContent
                   : sideBarcontent?.RequestsDashBoardContent
                 : currentPage == Config.sideNavPageNames.ApproveConfig
@@ -256,17 +256,21 @@ const Header = ({ context, currentPage }) => {
               />
             )}
           </>
-        ) : currentPage == Config.sideNavPageNames.CategoryConfig ? (
-          <CategoryConfig
-            setCategorySideBarContent={setSideBarContent}
-            setCategorySideBarVisible={setSideBarVisible}
+        ) : currentPage == Config.sideNavPageNames.ApproveConfig ? (
+          // <CategoryConfig
+          //   setCategorySideBarContent={setSideBarContent}
+          //   setCategorySideBarVisible={setSideBarVisible}
+          // />
+          <ApprovalConfig
+            setApprovalConfigSideBarContent={setSideBarContent}
+            setApprovalConfigSideBarVisible={setSideBarVisible}
           />
         ) : (
           <>
-            <ApprovalWorkFlow
+            {/* <ApprovalWorkFlow
               setApprovalSideBarContent={setSideBarContent}
               setApprovalSideBarVisible={setSideBarVisible}
-            />
+            /> */}
           </>
         )}
       </div>
