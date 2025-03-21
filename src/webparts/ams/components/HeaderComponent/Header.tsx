@@ -28,8 +28,6 @@ import headerStyles from "./Header.module.scss";
 import "./HeaderStyle.css";
 //Children's component import
 import DashboardPage from "../Dashboard/DashboardPage";
-import CategoryConfig from "../Admin/CategoryConfig/CategoryConfig";
-import ApprovalWorkFlow from "../Admin/ApprovalWorkFlow/ApprovalWorkFlow";
 import { InputText } from "primereact/inputtext";
 import ApprovalConfig from "../ApprovalConfig/ApprovalConfig";
 
@@ -49,7 +47,6 @@ const Header = ({ context, currentPage }) => {
     name: context._pageContext._user.displayName,
     email: context._pageContext._user.email,
   };
-  const [addRequest, setAddRequest] = useState<boolean>(false);
   const [addSideBarContentBooleans, setAddSideBarContentBooleans] =
     useState<IRightSideBarContentsDetails>({
       ...Config.rightSideBarContentsDetails,
@@ -119,7 +116,6 @@ const Header = ({ context, currentPage }) => {
   useEffect(() => {
     categoryFilter();
     declareTabViewBar();
-    setGlobelSearchValue(globelSearchValue);
   }, []);
 
   useEffect(() => {
@@ -144,10 +140,12 @@ const Header = ({ context, currentPage }) => {
             />
           </div>
         </div>
+        
         <div className={headerStyles.filter_header_container}>
           <div className={headerStyles.filter_header_pageName}>
             {declareTabViewBar()}
           </div>
+
           {((activeTabViewBar === 1 &&
             currentPage === Config.sideNavPageNames.Request) ||
             currentPage !== Config.sideNavPageNames.Request) && (
@@ -175,6 +173,7 @@ const Header = ({ context, currentPage }) => {
               </div>
             </>
           )}
+
           {currentPage === Config.sideNavPageNames.Request &&
             activeTabViewBar !== 1 && (
               <div className={headerStyles.searchFilter}>
@@ -186,6 +185,7 @@ const Header = ({ context, currentPage }) => {
                 />
               </div>
             )}
+
           <RightSidebar
             visible={sideBarVisible}
             onHide={() => {
@@ -205,13 +205,14 @@ const Header = ({ context, currentPage }) => {
           ></RightSidebar>
         </div>
       </div>
+
       <div>
         {currentPage == Config.sideNavPageNames.Request ? (
           <>
             <DashboardPage
               categoryFilterValue={categoryFilterValue}
               activeTabViewBar={activeTabViewBar}
-              addRequest={addRequest}
+              addRequest={addSideBarContentBooleans?.addRequestDetails}
               globelSearchValue={globelSearchValue}
               selectedCategory={selectedCategory}
               sideBarVisible={sideBarVisible}
