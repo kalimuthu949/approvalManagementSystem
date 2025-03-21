@@ -57,6 +57,7 @@ div[data-automationid="SiteHeader"] {
   box-shadow: -4px 4px 12px #f5f5f5, 4px 0px 6px #f5f5f5;
   padding: 10px;
   border-radius: 6px;
+  margin-bottom:10px ;
 }
 .customDataTableContainer .p-datatable .p-datatable-thead > tr > th {
   background-color: var(--dataTableHeaderBgColor);
@@ -64,7 +65,7 @@ div[data-automationid="SiteHeader"] {
   font-size: var(--dataTableHeaderFontSize);
   color: var(--dataTableHeaderTextColor);
   border: none;
-  border-radius: var(--dataTableHeaderBorderRadius);
+  /* border-radius: var(--dataTableHeaderBorderRadius); */
   font-weight: var(--dataTableHeaderFontWeight);
 }
 .customDataTableContainer .p-datatable .p-datatable-tbody > tr > td {

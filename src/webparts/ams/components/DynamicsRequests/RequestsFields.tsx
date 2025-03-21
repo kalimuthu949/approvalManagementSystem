@@ -10,6 +10,8 @@ import {
   ISectionColumnsConfig,
   IApprovalDetails,
   IApprovalStages,
+  IApprovalHistoryDetails,
+  IRequestHubDetails,
 } from "../../../../CommonServices/interface";
 //primeReact Imports:
 import { InputText } from "primereact/inputtext";
@@ -21,6 +23,13 @@ import { classNames } from "primereact/utils";
 import dynamicFieldsStyles from "./RequestsFields.module.scss";
 import "../../../../External/style.css";
 import WorkflowActionButtons from "../WorkflowButtons/WorkflowActionButtons";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import {
+  peoplePickerTemplate,
+  statusTemplate,
+} from "../../../../CommonServices/CommonTemplates";
+import { orderBy } from "lodash";
 
 const RequestsFields = ({
   context,
@@ -47,7 +56,9 @@ const RequestsFields = ({
     status: "",
     comments: "",
   });
-
+  const [approvalHistoryDetails, setApprovalHistoryDetails] =
+    useState<IApprovalHistoryDetails[]>();
+  console.log("approvalHistoryDetails", approvalHistoryDetails);
   //CategorySectionConfig List
   const getCategorySectionConfigDetails = () => {
     SPServices.SPReadItems({
@@ -154,11 +165,39 @@ const RequestsFields = ({
       ],
     })
       .then((res) => {
-        console.log("res", res);
+        const tempArr = [];
+        res.forEach((item: any) => {
+          tempArr.push({
+            createdDate: item?.Created,
+            itemID: item?.ID,
+            stage: item?.Stage,
+            approver: {
+              id: item?.Approver?.Id,
+              name: item?.Approver?.Title,
+              email: item?.Approver?.EMail,
+            },
+            status: item?.Status,
+            comments: item?.Comments,
+          });
+          setApprovalHistoryDetails(tempArr);
+        });
       })
       .catch((e) => console.log("getApprovalHistory errror", e));
   };
-
+  //Render Status Column:
+  const renderStatusColumn = (rowData: IApprovalHistoryDetails) => {
+    return <div>{statusTemplate(rowData?.status)}</div>;
+  };
+  //Render Comments Column:
+  const renderCommentsColumn = (rowData: IApprovalHistoryDetails) => {
+    return (
+      <div title={rowData?.comments}>
+        {rowData?.comments.length > 100
+          ? `${rowData?.comments.substring(0, 100)}...`
+          : rowData?.comments}
+      </div>
+    );
+  };
   //Set Approval Details
   const getApprovalDetails = async (columnName, value) => {
     debugger;
@@ -166,6 +205,7 @@ const RequestsFields = ({
     data[`${columnName}`] = value;
     await setApprovalDetails({ ...data });
   };
+
   //handleInputChange
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
@@ -310,6 +350,41 @@ const RequestsFields = ({
               />
             </div>
           )}
+          <div className="customDataTableContainer">
+            <Label className={dynamicFieldsStyles.labelHeader}>
+              Approval history
+            </Label>
+            <DataTable
+              sortField="itemID"
+              scrollable
+              scrollHeight="350px"
+              value={approvalHistoryDetails}
+              tableStyle={{ width: "100%" }}
+              emptyMessage={
+                <>
+                  <p style={{ textAlign: "center" }}>No Records Found</p>
+                </>
+              }
+            >
+              <Column field="stage" header="Stage"></Column>
+              <Column
+                field="approver"
+                header="Name"
+                body={(rowdata) => peoplePickerTemplate(rowdata?.approver)}
+              ></Column>
+              <Column
+                field="status"
+                header="Action"
+                body={renderStatusColumn}
+                style={{ width: "10rem" }}
+              ></Column>
+              <Column
+                field="comments"
+                header="Comments"
+                body={renderCommentsColumn}
+              ></Column>
+            </DataTable>
+          </div>
           <div className={`${dynamicFieldsStyles.sideBarButtonContainer}`}>
             {recordAction === "Edit" && (
               <>
@@ -357,7 +432,9 @@ const RequestsFields = ({
       getCategorySectionConfigDetails();
     }
   }, [null, currentRecord.CategoryId]);
-
+  useEffect(() => {
+    getApprovalHistory();
+  }, [null, currentRecord]);
   useEffect(() => {
     setRequestsDashBoardContent((prev: IRightSideBarContents) => ({
       ...prev,

@@ -154,3 +154,13 @@ export interface IApprovalDetails {
   status: string;
   comments: string;
 }
+
+//Approval History Details
+export interface IApprovalHistoryDetails {
+  createdDate: string;
+  itemID: number;
+  stage: number;
+  approver: IPeoplePickerDetails;
+  status: string;
+  comments: string;
+}
