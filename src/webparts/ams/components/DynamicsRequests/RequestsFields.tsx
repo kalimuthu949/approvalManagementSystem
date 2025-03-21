@@ -9,6 +9,7 @@ import {
   IRightSideBarContents,
   ISectionColumnsConfig,
   IApprovalDetails,
+  IApprovalStages,
 } from "../../../../CommonServices/interface";
 //primeReact Imports:
 import { InputText } from "primereact/inputtext";
@@ -28,6 +29,7 @@ const RequestsFields = ({
   currentRecord,
   sideBarVisible,
   recordAction,
+  navigateFrom,
   setRequestsDashBoardContent,
   setDynamicRequestsSideBarVisible,
 }) => {
@@ -110,7 +112,7 @@ const RequestsFields = ({
         });
       })
       .catch((e) => {
-        console.log(e, "getSectionColumnsConfig");
+        console.log(e, "getSectionColumnsConfig err");
       });
   };
 
@@ -139,9 +141,9 @@ const RequestsFields = ({
 
   //Set Approval Details
   const getApprovalDetails = async (columnName, value) => {
+    debugger;
     let data = { ...approvalDetails };
     data[`${columnName}`] = value;
-    // approvalDetails[columnName] = value;
     await setApprovalDetails({ ...data });
   };
   //handleInputChange
@@ -163,9 +165,21 @@ const RequestsFields = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      // Call update function here
+  //Show columns based on view stage
+  const showColumnsByStage = (field) => {
+    if (
+      (navigateFrom === "MyApproval" &&
+        currentRecord?.approvalJson[0]?.stages
+          .filter((stage) => field?.viewStage[0]?.Stage.includes(stage.stage))
+          .some((stage) =>
+            stage.approvers.some((e) => e.email === loginUser)
+          )) ||
+      navigateFrom === "MyRequest" ||
+      navigateFrom === "AllRequest"
+    ) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -174,106 +188,123 @@ const RequestsFields = ({
     return (
       <>
         <div className={dynamicFieldsStyles.formContainer}>
+          <Label className={dynamicFieldsStyles.labelHeader}>
+            Request details
+          </Label>
           <div className={dynamicFieldsStyles.singlelineFields}>
             {dynamicFields
               .filter((f) => f.columnType === "Singleline")
-              .map((field) => (
-                <div key={field.id} className={dynamicFieldsStyles.inputField}>
-                  <Label className={dynamicFieldsStyles.label}>
-                    {field.columnName}
-                    {field?.isRequired && <span className="required">*</span>}
-                  </Label>
-                  <InputText
-                    readOnly={
-                      !(recordAction === "Edit" && author?.email === loginUser)
-                    }
-                    id={field.columnName}
-                    value={formData[field.columnName] || ""}
-                    onChange={(e) =>
-                      handleInputChange(field.columnName, e.target.value)
-                    }
-                  />
-                  {errors[field.columnName] && (
-                    <span className={dynamicFieldsStyles.errorMsg}>
-                      {errors[field.columnName]}
-                    </span>
-                  )}
-                </div>
-              ))}
+              .map(
+                (field) =>
+                  showColumnsByStage(field) && (
+                    <div
+                      key={field.id}
+                      className={dynamicFieldsStyles.inputField}
+                    >
+                      <Label className={dynamicFieldsStyles.label}>
+                        {field.columnName}
+                        {field?.isRequired && (
+                          <span className="required">*</span>
+                        )}
+                      </Label>
+                      <InputText
+                        readOnly={
+                          !(
+                            recordAction === "Edit" &&
+                            author?.email === loginUser &&
+                            navigateFrom === "MyRequest"
+                          )
+                        }
+                        id={field.columnName}
+                        value={formData[field.columnName] || ""}
+                        onChange={(e) =>
+                          handleInputChange(field.columnName, e.target.value)
+                        }
+                      />
+                      {errors[field.columnName] && (
+                        <span className={dynamicFieldsStyles.errorMsg}>
+                          {errors[field.columnName]}
+                        </span>
+                      )}
+                    </div>
+                  )
+              )}
           </div>
           <div className={dynamicFieldsStyles.multilineFields}>
             {dynamicFields
               .filter((f) => f.columnType === "Multiline")
-              .map((field) => (
-                <div key={field.id} className={dynamicFieldsStyles.inputField}>
-                  <Label className={dynamicFieldsStyles.label}>
-                    {field.columnName}{" "}
-                    {field?.isRequired && <span className="required">*</span>}
-                  </Label>
-                  <InputTextarea
-                    id={field.columnName}
-                    autoResize
-                    readOnly={
-                      !(recordAction === "Edit" && author?.email === loginUser)
-                    }
-                    value={formData[field.columnName] || ""}
-                    onChange={(e) =>
-                      handleInputChange(field.columnName, e.target.value)
-                    }
-                    rows={3}
-                  />
-                  {errors[field.columnName] && (
-                    <span className={dynamicFieldsStyles.errorMsg}>
-                      {errors[field.columnName]}
-                    </span>
-                  )}
-                </div>
-              ))}
+              .map(
+                (field) =>
+                  showColumnsByStage(field) && (
+                    <div
+                      key={field.id}
+                      className={dynamicFieldsStyles.inputField}
+                    >
+                      <Label className={dynamicFieldsStyles.label}>
+                        {field.columnName}{" "}
+                        {field?.isRequired && (
+                          <span className="required">*</span>
+                        )}
+                      </Label>
+                      <InputTextarea
+                        id={field.columnName}
+                        autoResize
+                        readOnly={
+                          !(
+                            recordAction === "Edit" &&
+                            author?.email === loginUser &&
+                            navigateFrom === "MyRequest"
+                          )
+                        }
+                        value={formData[field.columnName] || ""}
+                        onChange={(e) =>
+                          handleInputChange(field.columnName, e.target.value)
+                        }
+                        rows={3}
+                      />
+                      {errors[field.columnName] && (
+                        <span className={dynamicFieldsStyles.errorMsg}>
+                          {errors[field.columnName]}
+                        </span>
+                      )}
+                    </div>
+                  )
+              )}
           </div>
-          {recordAction === "Edit" && author?.email !== loginUser && (
-            <>
+          {recordAction === "Edit" && navigateFrom === "MyApproval" && (
+            <div className={dynamicFieldsStyles.approverSection}>
+              <Label className={dynamicFieldsStyles.labelHeader}>
+                Approvers section
+              </Label>
               <Label className={dynamicFieldsStyles.label}>
                 Approver Description
               </Label>
               <InputTextarea
                 autoResize
+                style={{ width: "100%" }}
                 value={approvalDetails?.comments}
                 onChange={(e) => {
                   getApprovalDetails("comments", e.target?.value || "");
                 }}
                 rows={3}
               />
-            </>
+            </div>
           )}
           <div className={`${dynamicFieldsStyles.sideBarButtonContainer}`}>
             {recordAction === "Edit" && (
-              <WorkflowActionButtons
-                validateForm={validateForm}
-                approvalDetails={approvalDetails}
-                setApprovalDetails={setApprovalDetails}
-                setRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
-                context={context}
-                updatedRecord={formData}
-                requestsHubDetails={requestsDetails}
-                setRequestsHubDetails={setRequestsDetails}
-                itemID={currentRecord.id}
-              />
-              // <>
-              //   <Button
-              //     icon="pi pi-times"
-              //     label="Cancel"
-              //     className="customCancelButton"
-              //     onClick={() => handleCancel()}
-              //   />
-              //   <Button
-              //     icon="pi pi-save"
-              //     label="Submit"
-              //     className="customSubmitButton"
-              //     onClick={() => {
-              //       handleSubmit();
-              //     }}
-              //   />
-              // </>
+              <>
+                <WorkflowActionButtons
+                  validateForm={validateForm}
+                  approvalDetails={approvalDetails}
+                  setApprovalDetails={setApprovalDetails}
+                  setRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
+                  context={context}
+                  updatedRecord={formData}
+                  requestsHubDetails={requestsDetails}
+                  setRequestsHubDetails={setRequestsDetails}
+                  itemID={currentRecord.id}
+                />
+              </>
             )}
             {recordAction === "View" && (
               <>
@@ -315,8 +346,14 @@ const RequestsFields = ({
 
   useEffect(() => {
     getRequestHubDetails();
+    setApprovalDetails({
+      parentID: currentRecord.id,
+      stage: currentRecord.approvalJson[0].Currentstage,
+      approverEmail: loginUser,
+      status: "",
+      comments: "",
+    });
   }, [dynamicFields, sideBarVisible]);
-
 
   return <></>;
 };

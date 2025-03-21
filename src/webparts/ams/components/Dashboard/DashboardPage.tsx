@@ -36,6 +36,7 @@ const DashboardPage = ({
   );
   //Record Action
   const [recordAction, setRecordAction] = useState<string>("");
+  const [navigateFrom, setNavigateFrom] = useState<string>("");
   //CategoryId
   // const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
   const [currentRecord, setCurrentRecord] = useState<IRequestHubDetails>();
@@ -91,6 +92,12 @@ const DashboardPage = ({
             CategoryId: item?.CategoryId,
             // approvers,
             approvalJson: JSON.parse(item?.ApprovalJson),
+            createdDate: item?.Created,
+            author: {
+              id: item?.Author.Id,
+              email: item?.Author.EMail,
+              name: item?.Author.Title,
+            },
           };
         })
       );
@@ -182,6 +189,7 @@ const DashboardPage = ({
 
   useEffect(() => {
     getRequestsHubDetails();
+    setNavigateFrom("");
   }, []);
 
   return (
@@ -224,6 +232,7 @@ const DashboardPage = ({
           sideBarVisible={sideBarVisible}
           currentRecord={currentRecord}
           recordAction={recordAction}
+          navigateFrom={navigateFrom}
           setRequestsDashBoardContent={setRequestsDashBoardContent}
           setDynamicRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
         />

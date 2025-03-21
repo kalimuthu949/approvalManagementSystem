@@ -15,10 +15,15 @@
     font-weight: var(--dataTableHeaderFontWeight);
     width: 75%;
   }
-  .filter_header_pageName{
+  .filter_header_pageName {
     width: 80%;
   }
-
+  .searchFilter {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }
 }
 .profile_header_container {
   @extend .filter_header_container;

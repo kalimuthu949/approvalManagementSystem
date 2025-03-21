@@ -3,7 +3,7 @@
 .formContainer {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  // gap: 1rem;
 
   .singlelineFields,
   .multilineFields {
@@ -13,22 +13,18 @@
 
   .singlelineFields {
     grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 20px;
   }
 
   .multilineFields {
     grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 20px;
   }
 
   .inputField {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-
-    .label {
-      font-weight: bold;
-      font-size: 13px;
-      color: var(--dataTableHeaderTextColor);
-    }
+    // gap: 0.5rem;
 
     .inputText,
     .inputTextArea {
@@ -48,6 +44,24 @@
       font-weight: 600;
     }
   }
+  .approverSection {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .labelHeader {
+    width: max-content;
+    font-weight: bold;
+    font-size: 13px;
+    color: var(--green);
+    border-bottom: 2px solid var(--green);
+    margin-bottom: 15px;
+  }
+}
+.label {
+  font-weight: bold;
+  font-size: 13px;
+  color: var(--dataTableHeaderTextColor);
 }
 .sideBarButtonContainer {
   display: flex;
@@ -57,11 +71,11 @@
 }
 
 ///Add request Filder dropdown
-.filterHeader{
+.filterHeader {
   width: 100%;
   display: block;
   margin-bottom: 20px;
-  .filterdropdown{
+  .filterdropdown {
     width: 50%;
   }
 }

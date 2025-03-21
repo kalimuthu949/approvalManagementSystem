@@ -46,7 +46,7 @@ export interface IBasicDropDown {
 }
 export interface IBasicFilterCategoryDrop {
   name: string;
-  id:number
+  id: number;
 }
 export interface IDropdownDetails {
   categoryDrop: IBasicFilterCategoryDrop[];
@@ -62,7 +62,7 @@ export interface IRightSideBarContents {
   categoryConfigContent: string;
   ApprovalConfigContent: string;
   RequestsDashBoardContent: string;
-  AddRequestsDashBoardContent:string
+  AddRequestsDashBoardContent: string;
 }
 //Page Name
 export interface ISideNavPageNames {
@@ -93,6 +93,8 @@ export interface IRequestHubDetails {
   category: string;
   CategoryId: number;
   approvalJson: IApprovalFlow[];
+  createdDate: string;
+  author: IPeoplePickerDetails;
 }
 
 export interface IApprovalFlow {

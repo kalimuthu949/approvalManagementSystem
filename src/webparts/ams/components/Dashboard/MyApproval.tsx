@@ -26,6 +26,7 @@ import RequestsFields from "../DynamicsRequests/RequestsFields";
 import { Item } from "@pnp/sp/items";
 
 const MyApprovalPage = ({
+  searchValue,
   filterCategory,
   context,
   sideBarVisible,
@@ -39,6 +40,7 @@ const MyApprovalPage = ({
   );
   //Record Action
   const [recordAction, setRecordAction] = useState<string>("");
+  const [navigateFrom, setNavigateFrom] = useState<string>("");
   //CategoryId
   // const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
   const [currentRecord, setCurrentRecord] = useState<IRequestHubDetails>();
@@ -99,6 +101,12 @@ const MyApprovalPage = ({
             category: item?.Category?.Category,
             CategoryId: item?.CategoryId,
             approvalJson: JSON.parse(item?.ApprovalJson),
+            createdDate: item?.Created,
+            author: {
+              id: item?.Author.Id,
+              email: item?.Author.EMail,
+              name: item?.Author.Title,
+            },
           };
         })
       );
@@ -112,18 +120,18 @@ const MyApprovalPage = ({
   //Filter records for approvers
   const filterRecords = (tempArr) => {
     const filterTempArr = tempArr.filter((item) =>
-      filterCategory
-        ? item?.CategoryId === filterCategory.id &&
-          item.approvalJson[0].stages.some(
-            (stage) =>
-              stage.stage <= item.approvalJson[0].Currentstage &&
-              stage.approvers.some((approver) => approver.email === loginUser)
-          )
-        : item.approvalJson[0].stages.some(
-            (stage) =>
-              stage.stage <= item.approvalJson[0].Currentstage &&
-              stage.approvers.some((approver) => approver.email === loginUser)
-          )
+      // filterCategory
+      //   ? item?.CategoryId === filterCategory.id &&
+      //     item.approvalJson[0].stages.some(
+      //       (stage) =>
+      //         stage.stage <= item.approvalJson[0].Currentstage &&
+      //         stage.approvers.some((approver) => approver.email === loginUser)
+      //     ):
+      item.approvalJson[0].stages.some(
+        (stage) =>
+          stage.stage <= item.approvalJson[0].Currentstage &&
+          stage.approvers.some((approver) => approver.email === loginUser)
+      )
     );
     setRequestsDetails([...filterTempArr]);
   };
@@ -215,12 +223,14 @@ const MyApprovalPage = ({
 
   useEffect(() => {
     getRequestsHubDetails();
+    setNavigateFrom("MyApproval");
   }, [null, filterCategory]);
 
   return (
     <>
       <div className="customDataTableContainer">
         <DataTable
+          globalFilter={searchValue}
           value={requestsDetails}
           tableStyle={{ minWidth: "50rem" }}
           emptyMessage={
@@ -236,24 +246,38 @@ const MyApprovalPage = ({
           ></Column>
           <Column field="category" header="Category"></Column>
           <Column
+            hidden
             field="approvalJson"
             header="Current Stage"
             body={(e) => renderStagelevelApproverColumns(e, 4)}
           ></Column>
           <Column
+            hidden
             field="approvalJson"
             header="Approvers"
             body={(e) => renderStagelevelApproverColumns(e, 1)}
           ></Column>
           <Column
+            hidden
             field="approvalJson"
             header="Pending Approval"
             body={(e) => renderStagelevelApproverColumns(e, 2)}
           ></Column>
           <Column
+            hidden
             field="approvalJson"
             header="Approved by"
             body={(e) => renderStagelevelApproverColumns(e, 3)}
+          ></Column>
+          <Column
+            field="author"
+            header="User name"
+            body={(e) => peoplePickerTemplate(e?.author)}
+          ></Column>
+          <Column
+            field="author"
+            header="E mail"
+            body={(e) => e?.author?.email}
           ></Column>
           <Column
             field="status"
@@ -272,6 +296,7 @@ const MyApprovalPage = ({
           sideBarVisible={sideBarVisible}
           currentRecord={currentRecord}
           recordAction={recordAction}
+          navigateFrom={navigateFrom}
           setRequestsDashBoardContent={setRequestsDashBoardContent}
           setDynamicRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
         />

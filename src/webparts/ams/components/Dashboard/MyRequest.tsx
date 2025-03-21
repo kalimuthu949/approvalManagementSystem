@@ -23,6 +23,7 @@ import {
 import WorkflowActionButtons from "../WorkflowButtons/WorkflowActionButtons";
 import AttachmentUploader from "../AttachmentUploader/AttachmentUploader";
 import RequestsFields from "../DynamicsRequests/RequestsFields";
+import * as moment from "moment";
 
 const MyRequestPage = ({
   filterCategory,
@@ -39,6 +40,7 @@ const MyRequestPage = ({
   const [recordAction, setRecordAction] = useState<string>("");
   // const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
   const [currentRecord, setCurrentRecord] = useState<IRequestHubDetails>();
+  const [navigateFrom, setNavigateFrom] = useState<string>("");
   //Set Actions PopUp:
   const actionsWithIcons = (rowData: IRequestHubDetails) => [
     {
@@ -91,6 +93,7 @@ const MyRequestPage = ({
         ],
         FilterCondition: "and",
       });
+      console.log("res", res);
       const temArr: IRequestHubDetails[] = await Promise.all(
         res.map(async (item: any) => {
           return {
@@ -100,6 +103,12 @@ const MyRequestPage = ({
             category: item?.Category?.Category,
             CategoryId: item?.CategoryId,
             approvalJson: JSON.parse(item?.ApprovalJson),
+            createdDate: item?.Created,
+            author: {
+              id: item?.Author.Id,
+              email: item?.Author.EMail,
+              name: item?.Author.Title,
+            },
           };
         })
       );
@@ -204,6 +213,7 @@ const MyRequestPage = ({
 
   useEffect(() => {
     getRequestsHubDetails();
+    setNavigateFrom("MyRequest");
   }, [null, sideBarVisible, filterCategory]);
   return (
     <>
@@ -224,21 +234,30 @@ const MyRequestPage = ({
           ></Column>
           <Column field="category" header="Category"></Column>
           <Column
+            field="createdDate"
+            body={(rowData) => moment(rowData.createdDate).format("DD/MM/YYYY")}
+            header="Request date"
+          ></Column>
+          <Column
+            hidden
             field="approvalJson"
             header="Current Stage"
             body={(e) => renderStagelevelApproverColumns(e, 4)}
           ></Column>
           <Column
+            hidden
             field="approvalJson"
             header="Approvers"
             body={(e) => renderStagelevelApproverColumns(e, 1)}
           ></Column>
           <Column
+            hidden
             field="approvalJson"
             header="Pending Approval"
             body={(e) => renderStagelevelApproverColumns(e, 2)}
           ></Column>
           <Column
+            hidden
             field="approvalJson"
             header="Approved by"
             body={(e) => renderStagelevelApproverColumns(e, 3)}
@@ -259,7 +278,7 @@ const MyRequestPage = ({
           setRequestsDetails={setRequestsDetails}
           sideBarVisible={sideBarVisible}
           currentRecord={currentRecord}
-          // categoryId={selectedCategoryId}
+          navigateFrom={navigateFrom}
           recordAction={recordAction}
           setRequestsDashBoardContent={setRequestsDashBoardContent}
           setDynamicRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
