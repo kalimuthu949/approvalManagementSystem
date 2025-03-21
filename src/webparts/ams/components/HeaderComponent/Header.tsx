@@ -151,7 +151,9 @@ const Header = ({ context, currentPage }) => {
           <div className={headerStyles.filter_header_pageName}>
             {declareTabViewBar()}
           </div>
-          {activeTabViewBar === 1 && (
+          {((activeTabViewBar === 1 &&
+            currentPage === Config.sideNavPageNames.Request) ||
+            currentPage !== Config.sideNavPageNames.Request) && (
             <>
               <Dropdown
                 value={selectedCategory}
@@ -176,16 +178,17 @@ const Header = ({ context, currentPage }) => {
               </div>
             </>
           )}
-          {activeTabViewBar !== 1 && (
-            <div className={headerStyles.searchFilter}>
-              <InputText
-                style={{ width: "80%" }}
-                type="Search"
-                value={globelSearchValue}
-                onChange={(e) => setGlobelSearchValue(e.target.value)}
-              />
-            </div>
-          )}
+          {currentPage === Config.sideNavPageNames.Request &&
+            activeTabViewBar !== 1 && (
+              <div className={headerStyles.searchFilter}>
+                <InputText
+                  style={{ width: "80%" }}
+                  type="Search"
+                  value={globelSearchValue}
+                  onChange={(e) => setGlobelSearchValue(e.target.value)}
+                />
+              </div>
+            )}
           <RightSidebar
             visible={sideBarVisible}
             onHide={() => {

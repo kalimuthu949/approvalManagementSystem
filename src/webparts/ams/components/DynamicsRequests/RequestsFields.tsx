@@ -139,6 +139,26 @@ const RequestsFields = ({
       });
   };
 
+  //Get Approval History
+  const getApprovalHistory = () => {
+    SPServices.SPReadItems({
+      Listname: Config.ListNames.ApprovalHistory,
+      Select: "*,ParentID/Id,Approver/Title,Approver/EMail,Approver/Id",
+      Expand: "ParentID,Approver",
+      Filter: [
+        {
+          FilterKey: "ParentIDId",
+          Operator: "eq",
+          FilterValue: currentRecord.id.toString(),
+        },
+      ],
+    })
+      .then((res) => {
+        console.log("res", res);
+      })
+      .catch((e) => console.log("getApprovalHistory errror", e));
+  };
+
   //Set Approval Details
   const getApprovalDetails = async (columnName, value) => {
     debugger;
@@ -332,6 +352,7 @@ const RequestsFields = ({
     setDynamicFields([]);
     setFormData({});
     setErrors({});
+    getApprovalHistory();
     if (currentRecord.CategoryId) {
       getCategorySectionConfigDetails();
     }
