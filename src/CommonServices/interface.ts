@@ -64,6 +64,12 @@ export interface IRightSideBarContents {
   RequestsDashBoardContent: string;
   AddRequestsDashBoardContent: string;
 }
+//RightSideBarContents Initialize Details:
+export interface IRightSideBarContentsDetails {
+  addRequestDetails: boolean;
+  categoryConfigDetails: boolean;
+  approvalConfigDetails: boolean;
+}
 //Page Name
 export interface ISideNavPageNames {
   Request: string;

@@ -27,14 +27,6 @@ const ProductSideNav = ({ updatePage, currentPage }) => {
     },
     {
       img:
-        currentPage == Config.sideNavPageNames.CategoryConfig
-          ? sampleImg
-          : sampleImgBlue,
-      name: "Category config",
-      pageName: Config.sideNavPageNames.CategoryConfig,
-    },
-    {
-      img:
         currentPage == Config.sideNavPageNames.ApproveConfig
           ? sampleImg
           : sampleImgBlue,
