@@ -219,13 +219,6 @@ const Header = ({ context, currentPage }) => {
                 setDynamicRequestsSideBarVisible={setSideBarVisible}
               />
             )}
-
-            {/* <DashboardPage
-            sideBarVisible={sideBarVisible}
-              context={context}
-              setRequestsDashBoardContent={setSideBarContent}
-              setDynamicRequestsSideBarVisible={setSideBarVisible}
-            /> */}
             {activeTabViewBar === 0 && (
               <AllRequestPage
                 searchValue={globelSearchValue}
@@ -257,21 +250,12 @@ const Header = ({ context, currentPage }) => {
             )}
           </>
         ) : currentPage == Config.sideNavPageNames.ApproveConfig ? (
-          // <CategoryConfig
-          //   setCategorySideBarContent={setSideBarContent}
-          //   setCategorySideBarVisible={setSideBarVisible}
-          // />
           <ApprovalConfig
             setApprovalConfigSideBarContent={setSideBarContent}
             setApprovalConfigSideBarVisible={setSideBarVisible}
           />
         ) : (
-          <>
-            {/* <ApprovalWorkFlow
-              setApprovalSideBarContent={setSideBarContent}
-              setApprovalSideBarVisible={setSideBarVisible}
-            /> */}
-          </>
+          ""
         )}
       </div>
     </>
