@@ -28,11 +28,7 @@ import "./HeaderStyle.css";
 //Children's component import
 import DashboardPage from "../Dashboard/DashboardPage";
 import CategoryConfig from "../Admin/CategoryConfig/CategoryConfig";
-import MyRequestPage from "../Dashboard/MyRequest";
 import ApprovalWorkFlow from "../Admin/ApprovalWorkFlow/ApprovalWorkFlow";
-import MyApprovalPage from "../Dashboard/MyApproval";
-import AllRequestPage from "../Dashboard/AllRequest";
-import AddRequestsFields from "../DynamicsRequests/AddRequestFields";
 import { InputText } from "primereact/inputtext";
 
 const Header = ({ context, currentPage }) => {
@@ -124,6 +120,7 @@ const Header = ({ context, currentPage }) => {
   useEffect(() => {
     categoryFilter();
     declareTabViewBar();
+    setGlobelSearchValue(globelSearchValue);
   }, []);
   useEffect(() => {
     if (!sideBarVisible) {
@@ -211,50 +208,17 @@ const Header = ({ context, currentPage }) => {
       <div>
         {currentPage == Config.sideNavPageNames.Request ? (
           <>
-            {addRequest && (
-              <AddRequestsFields
-                categoryFilterValue={categoryFilterValue}
-                context={context}
-                setRequestsDashBoardContent={setSideBarContent}
-                setDynamicRequestsSideBarVisible={setSideBarVisible}
-              />
-            )}
-
-            {/* <DashboardPage
-            sideBarVisible={sideBarVisible}
+            <DashboardPage
+              categoryFilterValue={categoryFilterValue}
+              activeTabViewBar={activeTabViewBar}
+              addRequest={addRequest}
+              globelSearchValue={globelSearchValue}
+              selectedCategory={selectedCategory}
+              sideBarVisible={sideBarVisible}
               context={context}
               setRequestsDashBoardContent={setSideBarContent}
               setDynamicRequestsSideBarVisible={setSideBarVisible}
-            /> */}
-            {activeTabViewBar === 0 && (
-              <AllRequestPage
-                searchValue={globelSearchValue}
-                filterCategory={selectedCategory}
-                sideBarVisible={sideBarVisible}
-                context={context}
-                setRequestsDashBoardContent={setSideBarContent}
-                setDynamicRequestsSideBarVisible={setSideBarVisible}
-              />
-            )}
-            {activeTabViewBar === 1 && (
-              <MyRequestPage
-                filterCategory={selectedCategory}
-                sideBarVisible={sideBarVisible}
-                context={context}
-                setRequestsDashBoardContent={setSideBarContent}
-                setDynamicRequestsSideBarVisible={setSideBarVisible}
-              />
-            )}
-            {activeTabViewBar === 2 && (
-              <MyApprovalPage
-                searchValue={globelSearchValue}
-                filterCategory={selectedCategory}
-                sideBarVisible={sideBarVisible}
-                context={context}
-                setRequestsDashBoardContent={setSideBarContent}
-                setDynamicRequestsSideBarVisible={setSideBarVisible}
-              />
-            )}
+            />
           </>
         ) : currentPage == Config.sideNavPageNames.CategoryConfig ? (
           <CategoryConfig
