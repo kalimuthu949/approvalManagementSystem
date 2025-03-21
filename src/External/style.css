@@ -210,9 +210,21 @@ div[data-automationid="SiteHeader"] {
   border: transparent;
   font-size: 14px;
 }
+.customRejectButton {
+  background-color: var(--red);
+  color: white;
+  padding: 6px 12px 6px 12px;
+  border: transparent;
+  font-size: 14px;
+}
 .customSubmitButton .pi,
-.customCancelButton .pi {
+.customCancelButton .pi,
+.customRejectButton .pi {
   font-size: var(--dataTableHeaderFontSize);
+}
+.customRejectButton:hover {
+  background-color: var(--liteRed);
+  color: var(--red);
 }
 .customSubmitButton:hover {
   background-color: var(--liteGreen);

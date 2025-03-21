@@ -57,8 +57,9 @@ export namespace Config {
     status: "",
     category: "",
     CategoryId: null,
-
     approvalJson: [],
+    createdDate: "",
+    author: { id: null, email: "", name: "" },
   };
 
   //LibraryNames Config:

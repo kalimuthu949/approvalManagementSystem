@@ -25,6 +25,7 @@ import AttachmentUploader from "../AttachmentUploader/AttachmentUploader";
 import RequestsFields from "../DynamicsRequests/RequestsFields";
 
 const AllRequestPage = ({
+  searchValue,
   filterCategory,
   context,
   sideBarVisible,
@@ -37,6 +38,7 @@ const AllRequestPage = ({
   );
   //Record Action
   const [recordAction, setRecordAction] = useState<string>("");
+  const [navigateFrom, setNavigateFrom] = useState<string>("");
   //CategoryId
   // const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
   const [currentRecord, setCurrentRecord] = useState<IRequestHubDetails>();
@@ -93,10 +95,17 @@ const AllRequestPage = ({
             category: item?.Category?.Category,
             CategoryId: item?.CategoryId,
             approvalJson: JSON.parse(item?.ApprovalJson),
+            createdDate:item?.Created,
+            author:{
+              id: item?.Author.Id,
+              email: item?.Author.EMail,
+              name: item?.Author.Title,
+            }
           };
         })
       );
-      filterCategory ? filterRecords(temArr) : setRequestsDetails([...temArr]);
+      // filterCategory ? filterRecords(temArr) : setRequestsDetails([...temArr]);
+      setRequestsDetails([...temArr]);
     } catch (e) {
       console.log("RequestsHub Error", e);
     }
@@ -194,12 +203,14 @@ const AllRequestPage = ({
 
   useEffect(() => {
     getRequestsHubDetails();
-  }, [null,filterCategory]);
+    setNavigateFrom("AllRequest");
+  }, [null, filterCategory]);
 
   return (
     <>
       <div className="customDataTableContainer">
         <DataTable
+          globalFilter={searchValue}
           value={requestsDetails}
           tableStyle={{ minWidth: "50rem" }}
           emptyMessage={
@@ -251,6 +262,7 @@ const AllRequestPage = ({
           sideBarVisible={sideBarVisible}
           currentRecord={currentRecord}
           recordAction={recordAction}
+          navigateFrom={navigateFrom}
           setRequestsDashBoardContent={setRequestsDashBoardContent}
           setDynamicRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
         />

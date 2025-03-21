@@ -294,3 +294,8 @@ export const tabViewBar = (
     </TabView>
   );
 };
+
+//Request ID
+export const generateRequestID = (value, count, char) => {
+  return value.toString().padStart(count, char);
+};

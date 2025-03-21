@@ -33,6 +33,7 @@ import ApprovalWorkFlow from "../Admin/ApprovalWorkFlow/ApprovalWorkFlow";
 import MyApprovalPage from "../Dashboard/MyApproval";
 import AllRequestPage from "../Dashboard/AllRequest";
 import AddRequestsFields from "../DynamicsRequests/AddRequestFields";
+import { InputText } from "primereact/inputtext";
 
 const Header = ({ context, currentPage }) => {
   //UseStates
@@ -45,6 +46,7 @@ const Header = ({ context, currentPage }) => {
     ...Config.rightSideBarContents,
   });
   const [activeTabViewBar, setActiveTabViewBar] = useState(0);
+  const [globelSearchValue, setGlobelSearchValue] = useState<string>("");
   const userDetails: IUserDetails = {
     name: context._pageContext._user.displayName,
     email: context._pageContext._user.email,
@@ -149,45 +151,58 @@ const Header = ({ context, currentPage }) => {
           <div className={headerStyles.filter_header_pageName}>
             {declareTabViewBar()}
           </div>
-
-          <Dropdown
-            value={selectedCategory}
-            options={categoryFilterValue.categoryDrop}
-            onChange={(e) => {
-              setSelectedCategory(e.value);
+          {activeTabViewBar === 1 && (
+            <>
+              <Dropdown
+                value={selectedCategory}
+                options={categoryFilterValue.categoryDrop}
+                onChange={(e) => {
+                  setSelectedCategory(e.value);
+                }}
+                showClear
+                filter
+                optionLabel="name"
+                placeholder="Category"
+                className="w-full md:w-14rem"
+              />
+              <div className="addNewButton">
+                <Button
+                  label="Add new"
+                  onClick={async () => {
+                    openSidebar();
+                  }}
+                  icon={<LuBadgePlus />}
+                />
+              </div>
+            </>
+          )}
+          {activeTabViewBar !== 1 && (
+            <div className={headerStyles.searchFilter}>
+              <InputText
+                style={{ width: "80%" }}
+                type="Search"
+                value={globelSearchValue}
+                onChange={(e) => setGlobelSearchValue(e.target.value)}
+              />
+            </div>
+          )}
+          <RightSidebar
+            visible={sideBarVisible}
+            onHide={() => {
+              setSideBarVisible(false);
             }}
-            showClear
-            filter
-            optionLabel="name"
-            placeholder="Category"
-            className="w-full md:w-14rem"
-          />
-          <div className="addNewButton">
-            <Button
-              label="Add new"
-              onClick={async () => {
-                openSidebar();
-              }}
-              icon={<LuBadgePlus />}
-            />
-            <RightSidebar
-              visible={sideBarVisible}
-              onHide={() => {
-                setSideBarVisible(false);
-              }}
-              contents={
-                currentPage == Config.sideNavPageNames.CategoryConfig
-                  ? sideBarcontent?.categoryConfigContent
-                  : currentPage == Config.sideNavPageNames.Request
-                  ? addRequest
-                    ? sideBarcontent?.AddRequestsDashBoardContent
-                    : sideBarcontent?.RequestsDashBoardContent
-                  : currentPage == Config.sideNavPageNames.ApproveConfig
-                  ? sideBarcontent?.ApprovalConfigContent
-                  : ""
-              }
-            ></RightSidebar>
-          </div>
+            contents={
+              currentPage == Config.sideNavPageNames.CategoryConfig
+                ? sideBarcontent?.categoryConfigContent
+                : currentPage == Config.sideNavPageNames.Request
+                ? addRequest
+                  ? sideBarcontent?.AddRequestsDashBoardContent
+                  : sideBarcontent?.RequestsDashBoardContent
+                : currentPage == Config.sideNavPageNames.ApproveConfig
+                ? sideBarcontent?.ApprovalConfigContent
+                : ""
+            }
+          ></RightSidebar>
         </div>
       </div>
       <div>
@@ -210,6 +225,7 @@ const Header = ({ context, currentPage }) => {
             /> */}
             {activeTabViewBar === 0 && (
               <AllRequestPage
+                searchValue={globelSearchValue}
                 filterCategory={selectedCategory}
                 sideBarVisible={sideBarVisible}
                 context={context}
@@ -228,6 +244,7 @@ const Header = ({ context, currentPage }) => {
             )}
             {activeTabViewBar === 2 && (
               <MyApprovalPage
+                searchValue={globelSearchValue}
                 filterCategory={selectedCategory}
                 sideBarVisible={sideBarVisible}
                 context={context}

@@ -11,6 +11,7 @@ import {
   IApprovalDetails,
   IBasicFilterCategoryDrop,
 } from "../../../../CommonServices/interface";
+import { generateRequestID } from "../../../../CommonServices/CommonTemplates";
 //primeReact Imports:
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -36,8 +37,6 @@ const AddRequestsFields = ({
   const [errors, setErrors] = useState({});
   const [selectedCategory, setSelectedCategory] =
     useState<IBasicFilterCategoryDrop>();
-
-  console.log("formData", formData);
 
   //CategorySectionConfig List
   const getCategorySectionConfigDetails = () => {
@@ -121,7 +120,6 @@ const AddRequestsFields = ({
       ],
     })
       .then(async (res: any) => {
-        console.log("item", res);
         const approvalJson: any = {
           ApprovalFlowName: res[0]?.ApprovalFlowName,
           Currentstage: 1,
@@ -135,7 +133,6 @@ const AddRequestsFields = ({
           ApprovalType: res[0]?.ApprovalProcess,
           stages: await getApprovalStageConfig(res[0]?.ID),
         };
-        console.log("approvalJson", approvalJson);
         setFormData({
           ...formData,
           ["ApprovalJson"]: `[${JSON.stringify(approvalJson)}]`,
@@ -205,12 +202,12 @@ const AddRequestsFields = ({
         Listname: Config.ListNames.RequestsHub,
         RequestJSON: formData,
       })
-        .then((e) => {
+        .then(async (e) => {
           SPServices.SPUpdateItem({
             Listname: Config.ListNames.RequestsHub,
             ID: e.data.ID,
             RequestJSON: {
-              RequestID: `R-000${e.data.ID}`,
+              RequestID: `R-${generateRequestID(e.data.ID, 5, 0)}`,
             },
           })
             .then(() => setDynamicRequestsSideBarVisible(false))
@@ -229,8 +226,9 @@ const AddRequestsFields = ({
     return (
       <>
         <div className={dynamicFieldsStyles.filterHeader}>
-          <Label className={dynamicFieldsStyles.label}>Select category</Label>
+          <Label className={dynamicFieldsStyles.label}>Category</Label>
           <Dropdown
+            style={{ width: "185px" }}
             value={selectedCategory}
             options={categoryFilterValue.categoryDrop}
             onChange={(e) => {
@@ -325,7 +323,7 @@ const AddRequestsFields = ({
     );
   };
 
-  const handleCancel =  () => {
+  const handleCancel = () => {
     setDynamicRequestsSideBarVisible(false);
     setErrors({});
     setFormData({});

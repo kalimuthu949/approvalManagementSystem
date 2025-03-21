@@ -189,7 +189,13 @@ const WorkflowActionButtons = ({
         Status: Process,
         Comments: approvalDetails?.comments || "",
       },
-    });
+    })
+      .then((e) => {
+        console.log("Add approval history sucessfully", e);
+      })
+      .catch((e) => {
+        console.log("Add approval history error", e);
+      });
   };
 
   //On Approval Click
@@ -299,8 +305,14 @@ const WorkflowActionButtons = ({
         {approvalBtn && (
           <>
             <span className="errorMsg">{approverDescriptionErrMsg}</span>
-            <Button label="Reject" onClick={onRejectionClick} />
-            <Button label="Approve" onClick={onApprovalClick} />
+            <Button
+              icon="pi pi-times"
+              label="Cancel"
+              className="customCancelButton"
+              onClick={() => setRequestsSideBarVisible(false)}
+            />
+            <Button label="Reject"  className="customRejectButton"  icon="pi pi-times-circle" onClick={onRejectionClick} />
+            <Button label="Approve" className="customSubmitButton" icon="pi pi-check-circle" onClick={onApprovalClick} />
           </>
         )}
         {reSubmit && <Button label="Re_submit" onClick={onResubmitClick} />}
