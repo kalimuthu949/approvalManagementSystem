@@ -95,12 +95,12 @@ const AllRequestPage = ({
             category: item?.Category?.Category,
             CategoryId: item?.CategoryId,
             approvalJson: JSON.parse(item?.ApprovalJson),
-            createdDate:item?.Created,
-            author:{
+            createdDate: item?.Created,
+            author: {
               id: item?.Author.Id,
               email: item?.Author.EMail,
               name: item?.Author.Title,
-            }
+            },
           };
         })
       );
@@ -204,7 +204,7 @@ const AllRequestPage = ({
   useEffect(() => {
     getRequestsHubDetails();
     setNavigateFrom("AllRequest");
-  }, [null, filterCategory]);
+  }, [null, filterCategory, searchValue]);
 
   return (
     <>

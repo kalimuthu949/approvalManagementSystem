@@ -315,7 +315,7 @@ const WorkflowActionButtons = ({
             <Button label="Approve" className="customSubmitButton" icon="pi pi-check-circle" onClick={onApprovalClick} />
           </>
         )}
-        {reSubmit && <Button label="Re_submit" onClick={onResubmitClick} />}
+        {reSubmit && <Button label="Re_submit" className="customSubmitButton" icon="pi pi-save" onClick={onResubmitClick} />}
       </div>
     </>
   );
