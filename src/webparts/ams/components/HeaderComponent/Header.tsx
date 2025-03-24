@@ -140,7 +140,9 @@ const Header = ({ context, currentPage }) => {
     categoryFilter();
     declareTabViewBar();
   }, []);
-
+  useEffect(() => {
+    setGlobelSearchValue("");
+  }, [activeTabViewBar]);
   useEffect(() => {
     if (!sideBarVisible) {
       setAddSideBarContentBooleans({ ...Config.rightSideBarContentsDetails });
@@ -205,6 +207,7 @@ const Header = ({ context, currentPage }) => {
                   style={{ width: "80%" }}
                   type="Search"
                   value={globelSearchValue}
+                  placeholder="Search here..."
                   onChange={(e) => setGlobelSearchValue(e.target.value)}
                 />
               </div>

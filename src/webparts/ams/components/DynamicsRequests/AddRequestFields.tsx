@@ -55,8 +55,9 @@ const AddRequestsFields = ({
       ],
     })
       .then((res: any) => {
-        res.forEach((item: any) => {
-          getSectionColumnsConfigDetails(item?.SectionName, item?.ID);
+        console.log("res", res);
+        res.forEach(async (item: any) => {
+          await getSectionColumnsConfigDetails(item?.SectionName, item?.ID);
         });
       })
       .catch((err) => {
@@ -98,8 +99,8 @@ const AddRequestsFields = ({
             isRequired: item?.IsRequired,
             viewStage: JSON.parse(item?.ViewStage),
           });
-          setDynamicFields([...tempArr]);
         });
+        setDynamicFields((prevFields) => [...prevFields, ...tempArr]);
       })
       .catch((e) => {
         console.log(e, "getSectionColumnsConfig");

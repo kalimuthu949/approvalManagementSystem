@@ -326,9 +326,10 @@ input::placeholder {
 .p-tabview-nav-link {
   font-size: var(--fontSizebig);
   font-weight: 500;
+  border: 0;
 }
 li.p-highlight .p-tabview-nav-link {
-  border-bottom: 3px solid var(--green);
+  border-bottom: 4px solid var(--green);
   font-weight: bold;
   color: var(--green);
 }

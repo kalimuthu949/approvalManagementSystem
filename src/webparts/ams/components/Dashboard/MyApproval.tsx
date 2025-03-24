@@ -59,8 +59,8 @@ const MyApprovalPage = ({
     },
     rowData.status === "Pending" &&
       rowData.approvalJson[0].stages
-        .flatMap((e) => e.approvers)
-        .find((e) => e.email === loginUser)?.statusCode === 0 && {
+        .find((e) => e.stage === rowData.approvalJson[0].Currentstage)
+        .approvers.find((e) => e.email === loginUser)?.statusCode === 0 && {
         label: "Edit",
         icon: "pi pi-file-edit",
         className: "customEdit",
@@ -219,11 +219,6 @@ const MyApprovalPage = ({
   const renderActionColumn = (rowData: IRequestHubDetails) => {
     const menuModel = actionsWithIcons(rowData);
     return <ActionsMenu items={menuModel} />;
-  };
-
-  //search record in table
-  const searchData = (searchFilterValue: string) => {
-    return searchFilterValue;
   };
 
   useEffect(() => {
