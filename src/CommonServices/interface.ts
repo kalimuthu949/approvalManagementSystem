@@ -19,6 +19,7 @@ export interface IListNames {
   CategorySectionConfig: string;
   SectionColumnsConfig: string;
   ApprovalHistory: string;
+  EmailTemplateConfig: string;
 }
 //CategoryConfig Details:
 export interface ICategoryDetails {
@@ -63,6 +64,7 @@ export interface IRightSideBarContents {
   ApprovalConfigContent: string;
   RequestsDashBoardContent: string;
   AddRequestsDashBoardContent: string;
+  EmailWorkFlowContent: string;
 }
 //RightSideBarContents Initialize Details:
 export interface IRightSideBarContentsDetails {
@@ -163,4 +165,11 @@ export interface IApprovalHistoryDetails {
   approver: IPeoplePickerDetails;
   status: string;
   comments: string;
+}
+
+//EmailTemplateContents Details
+export interface IEmailTemplateConfigDetails {
+  id: number;
+  templateName: string;
+  emailBody: string;
 }

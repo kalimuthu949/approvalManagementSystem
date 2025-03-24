@@ -101,3 +101,10 @@ $darkblue: #353862;
     visibility: visible;
   }
 }
+
+//Label Common Style:
+@mixin label {
+  font-weight: bold;
+  font-size: 13px;
+  color: var(--dataTableHeaderTextColor);
+}

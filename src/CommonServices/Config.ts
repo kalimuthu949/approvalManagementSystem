@@ -2,6 +2,7 @@
 import {
   IActionBooleans,
   IDropdownDetails,
+  IEmailTemplateConfigDetails,
   ILibraryNames,
   IListNames,
   IRequestHubDetails,
@@ -12,8 +13,8 @@ import {
   ITabviewDetails,
 } from "./interface";
 
+//ListNames Config:
 export namespace Config {
-  //ListNames Config:
   export const ListNames: IListNames = {
     CategoryConfig: "CategoryConfig",
     RequestsHub: "RequestsHub",
@@ -22,6 +23,7 @@ export namespace Config {
     CategorySectionConfig: "CategorySectionConfig",
     SectionColumnsConfig: "SectionColumnsConfig",
     ApprovalHistory: "ApprovalHistory",
+    EmailTemplateConfig: "EmailTemplateConfig",
   };
 
   //Dropdown Config:
@@ -42,6 +44,7 @@ export namespace Config {
     ApprovalConfigContent: "",
     RequestsDashBoardContent: "",
     AddRequestsDashBoardContent: "",
+    EmailWorkFlowContent: "",
   };
 
   //RightSideBarContents Initialize Details:
@@ -89,5 +92,12 @@ export namespace Config {
   export const TabViewConfigDetails: ITabviewDetails = {
     id: null,
     name: "",
+  };
+
+  //EmailTemplateContents Config
+  export const EmailTemplateConfigDetails: IEmailTemplateConfigDetails = {
+    id: null,
+    templateName: "",
+    emailBody: "",
   };
 }
