@@ -1,0 +1,8 @@
+//Common Style Imports;
+@import "../../../../../External/commonStyles.module.scss";
+.EmailWorkFlowSideBarHeading {
+  @include sideBarHeader;
+}
+.label {
+  @include label;
+}

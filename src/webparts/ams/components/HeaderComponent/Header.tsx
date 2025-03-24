@@ -51,6 +51,7 @@ const Header = ({ context, currentPage }) => {
     useState<IRightSideBarContentsDetails>({
       ...Config.rightSideBarContentsDetails,
     });
+  const [activeTabView, setActiveTabView] = useState(0);
   //Get Category From List
   const categoryFilter = () => {
     SPServices.SPReadItems({
@@ -109,6 +110,28 @@ const Header = ({ context, currentPage }) => {
           setActiveTabViewBar
         );
         return <>{tempTabView}</>;
+      case Config.sideNavPageNames.ApproveConfig:
+        const TempApproveConfigTabContent: ITabviewDetails[] = [
+          {
+            id: 1,
+            name: "Category",
+          },
+          {
+            id: 2,
+            name: "Approver Workflow",
+          },
+          {
+            id: 3,
+            name: "Email Workflow",
+          },
+        ];
+
+        const tempApproveConfigTabView = tabViewBar(
+          TempApproveConfigTabContent,
+          activeTabView,
+          setActiveTabView
+        );
+        return <>{tempApproveConfigTabView}</>;
     }
   };
 
@@ -123,6 +146,7 @@ const Header = ({ context, currentPage }) => {
       setAddSideBarContentBooleans({ ...Config.rightSideBarContentsDetails });
     }
   }, [sideBarVisible]);
+
   return (
     <>
       <div className="headerContainer">
@@ -140,7 +164,7 @@ const Header = ({ context, currentPage }) => {
             />
           </div>
         </div>
-        
+
         <div className={headerStyles.filter_header_container}>
           <div className={headerStyles.filter_header_pageName}>
             {declareTabViewBar()}
@@ -192,14 +216,19 @@ const Header = ({ context, currentPage }) => {
               setSideBarVisible(false);
             }}
             contents={
-              currentPage == Config.sideNavPageNames.ApproveConfig
+              currentPage == Config.sideNavPageNames.ApproveConfig &&
+              activeTabView == 0
                 ? sideBarcontent?.categoryConfigContent
                 : currentPage == Config.sideNavPageNames.Request
                 ? addSideBarContentBooleans?.addRequestDetails
                   ? sideBarcontent?.AddRequestsDashBoardContent
                   : sideBarcontent?.RequestsDashBoardContent
-                : currentPage == Config.sideNavPageNames.ApproveConfig
+                : currentPage == Config.sideNavPageNames.ApproveConfig &&
+                  activeTabView == 1
                 ? sideBarcontent?.ApprovalConfigContent
+                : currentPage == Config.sideNavPageNames.ApproveConfig &&
+                  activeTabView == 2
+                ? sideBarcontent?.EmailWorkFlowContent
                 : ""
             }
           ></RightSidebar>
@@ -223,6 +252,7 @@ const Header = ({ context, currentPage }) => {
           </>
         ) : currentPage == Config.sideNavPageNames.ApproveConfig ? (
           <ApprovalConfig
+            setTabView={activeTabView}
             setApprovalConfigSideBarContent={setSideBarContent}
             setApprovalConfigSideBarVisible={setSideBarVisible}
           />
