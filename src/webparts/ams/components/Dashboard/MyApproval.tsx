@@ -221,10 +221,15 @@ const MyApprovalPage = ({
     return <ActionsMenu items={menuModel} />;
   };
 
+  //search record in table
+  const searchData = (searchFilterValue: string) => {
+    return searchFilterValue;
+  };
+
   useEffect(() => {
     getRequestsHubDetails();
     setNavigateFrom("MyApproval");
-  }, [null, filterCategory]);
+  }, [null, filterCategory, searchValue]);
 
   return (
     <>

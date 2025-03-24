@@ -24,6 +24,7 @@ const DashboardPage = ({
   setRequestsDashBoardContent,
   setDynamicRequestsSideBarVisible,
 }) => {
+  console.log("globelSearchValue", globelSearchValue);
   return (
     <>
       {addRequest && (
