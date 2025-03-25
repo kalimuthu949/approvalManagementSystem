@@ -9,13 +9,13 @@ import ApprovalWorkFlow from "../Admin/ApprovalWorkFlow/ApprovalWorkFlow";
 import EmailWorkFlow from "../Admin/EmailWorkFlow/EmailWorkFlow";
 
 const ApprovalConfig = ({
+  context,
   setTabView,
   setApprovalConfigSideBarContent,
   setApprovalConfigSideBarVisible,
 }) => {
   return (
     <>
-      {/* <div className="ViewMenTabs">{viewMenu}</div> */}
       <div className="tabViewContents">
         {setTabView == 0 ? (
           <CategoryConfig
@@ -26,6 +26,7 @@ const ApprovalConfig = ({
           <ApprovalWorkFlow
             setApprovalSideBarContent={setApprovalConfigSideBarContent}
             setApprovalSideBarVisible={setApprovalConfigSideBarVisible}
+            context={context}
           />
         ) : setTabView == 2 ? (
           <EmailWorkFlow

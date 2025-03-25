@@ -15,6 +15,7 @@ export default class Ams extends React.Component<IAmsProps, {}> {
     });
   }
   public render(): React.ReactElement<IAmsProps> {
+    console.log(this.props.context);
     return <MainComponent context={this.props.context} />;
   }
 }

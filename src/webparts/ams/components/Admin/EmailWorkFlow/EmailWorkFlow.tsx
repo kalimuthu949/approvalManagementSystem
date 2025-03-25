@@ -1,5 +1,7 @@
+//Default Imports:
 import * as React from "react";
 import { useState, useEffect } from "react";
+//Common Services Imports:
 import SPServices from "../../../../../CommonServices/SPServices";
 import { Config } from "../../../../../CommonServices/Config";
 import {
@@ -8,13 +10,17 @@ import {
   IRightSideBarContents,
 } from "../../../../../CommonServices/interface";
 import { ActionsMenu } from "../../../../../CommonServices/CommonTemplates";
+//PrimeReact Imports:
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Editor } from "primereact/editor";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Label } from "office-ui-fabric-react";
+//Styles Imports:
 import EmailWorkFlowStyles from "./EmailWorkFlow.module.scss";
+import "./EmailWorkFlowStyle.css";
+import "../../../../../External/style.css";
 
 const EmailWorkFlow = ({
   setEmailWorkFlowSideBarContent,
@@ -32,7 +38,7 @@ const EmailWorkFlow = ({
       ...Config?.EmailTemplateConfigDetails,
     }
   );
-  console.log(templateData, "templateData");
+  const [isValidation, setValidation] = useState<boolean>(false);
 
   //Get Email Template Contents:
   const getEmailTemplateContents = () => {
@@ -104,6 +110,7 @@ const EmailWorkFlow = ({
   //Handle Change in Template Data:
   const handleChange = (key: string, value: string) => {
     setTemplateData((prev) => ({ ...prev, [key]: value }));
+    console.log(value);
   };
 
   //Submit the Email Template:
@@ -163,6 +170,19 @@ const EmailWorkFlow = ({
     },
   ];
 
+  //check validation:
+  const validateFunction = () => {
+    let isValidation: boolean =
+      !templateData?.templateName || !templateData?.emailBody;
+    setValidation(isValidation);
+    return !isValidation;
+  };
+
+  //Render Action Column:
+  const renderActionColumn = (rowData: IEmailTemplateConfigDetails) => {
+    return <ActionsMenu items={getActionsWithIcons(rowData)} />;
+  };
+
   //MainContents Goes to RightSideBar:
   const EmailWorkFlowSideBarContents = () => (
     <>
@@ -179,16 +199,27 @@ const EmailWorkFlow = ({
           value={templateData?.templateName}
           onChange={(e) => handleChange("templateName", e.target.value)}
           disabled={actionsBooleans.isView}
+          style={{ width: "38%" }}
         />
-        <div className="card">
+        <div>
+          {isValidation && !templateData?.templateName && (
+            <span className="errorMsg">Name is required</span>
+          )}
+        </div>
+        <div className={`${EmailWorkFlowStyles.EditorSection} card`}>
           <Editor
             value={templateData?.emailBody}
             onTextChange={(e) => handleChange("emailBody", e.htmlValue)}
             style={{ height: "320px" }}
             readOnly={actionsBooleans?.isView}
           />
+          <div>
+            {isValidation && !templateData?.emailBody && (
+              <span className="errorMsg">EmailBody is required</span>
+            )}
+          </div>
         </div>
-        <div>
+        <div className={EmailWorkFlowStyles.EmailWorkFlowSideBarButtons}>
           <Button
             icon="pi pi-times"
             label="Cancel"
@@ -197,6 +228,7 @@ const EmailWorkFlow = ({
               setEmailWorkFlowSideBarVisible(false);
               setActionsBooleans({ ...Config.InitialActionsBooleans });
               setTemplateData({ ...Config?.EmailTemplateConfigDetails });
+              setValidation(false);
             }}
           />
           {!actionsBooleans.isView && (
@@ -204,7 +236,11 @@ const EmailWorkFlow = ({
               icon="pi pi-save"
               label="Submit"
               className="customSubmitButton"
-              onClick={handleSubmit}
+              onClick={() => {
+                if (validateFunction()) {
+                  handleSubmit();
+                }
+              }}
             />
           )}
         </div>
@@ -221,7 +257,7 @@ const EmailWorkFlow = ({
       ...prev,
       EmailWorkFlowContent: EmailWorkFlowSideBarContents(),
     }));
-  }, [actionsBooleans, templateData]);
+  }, [actionsBooleans, templateData, isValidation]);
 
   return (
     <div className="customDataTableContainer">
@@ -238,9 +274,10 @@ const EmailWorkFlow = ({
         <Column
           style={{ width: "20%" }}
           field="Action"
-          body={(rowData) => (
-            <ActionsMenu items={getActionsWithIcons(rowData)} />
-          )}
+          body={renderActionColumn}
+          //   body={(rowData) => (
+          //     <ActionsMenu items={getActionsWithIcons(rowData)} />
+          //   )}
         />
       </DataTable>
     </div>

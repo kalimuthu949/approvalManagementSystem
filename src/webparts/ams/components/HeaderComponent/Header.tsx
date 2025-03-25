@@ -252,6 +252,7 @@ const Header = ({ context, currentPage }) => {
           </>
         ) : currentPage == Config.sideNavPageNames.ApproveConfig ? (
           <ApprovalConfig
+            context={context}
             setTabView={activeTabView}
             setApprovalConfigSideBarContent={setSideBarContent}
             setApprovalConfigSideBarVisible={setSideBarVisible}
