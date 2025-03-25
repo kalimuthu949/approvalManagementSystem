@@ -131,7 +131,6 @@ const AddRequestsFields = ({
               : res[0]?.RejectionFlow === "Restart from rejected stage"
               ? 1
               : 2,
-          ApprovalType: res[0]?.ApprovalProcess,
           stages: await getApprovalStageConfig(res[0]?.ID),
         };
         setFormData({
@@ -163,6 +162,7 @@ const AddRequestsFields = ({
       });
       return res.flatMap((Stage: any) => ({
         stage: Stage?.Stage,
+        ApprovalType: Stage?.ApprovalProcess,
         approvers: Stage.Approver.map((e) => ({
           id: e.Id,
           name: e.Title,
