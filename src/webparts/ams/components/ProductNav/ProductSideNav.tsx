@@ -13,6 +13,11 @@ const ProductSideNav = ({ updatePage, currentPage }) => {
   //Image Variables:
   const sampleImg: any = require("../../../../External/sidenavImages/sampleImg.png");
   const sampleImgBlue: any = require("../../../../External/sidenavImages/sampleImgBlue.png");
+  const companyLogo: any = require("../../../../External/sidenavImages/imageCompanyLogo.png");
+  const requestImgDark: any = require("../../../../External/sidenavImages/requestDark.png");
+  const requestImgLight: any = require("../../../../External/sidenavImages/requestLight.png");
+  const approvalImgDark: any = require("../../../../External/sidenavImages/approvalDark.png");
+  const approvalImgLight: any = require("../../../../External/sidenavImages/approvalLight.png");
 
   //Get SideNav Details:
   const sideNavContents: ISideNavDetails[] = [];
@@ -20,16 +25,16 @@ const ProductSideNav = ({ updatePage, currentPage }) => {
     {
       img:
         currentPage == Config.sideNavPageNames.Request
-          ? sampleImg
-          : sampleImgBlue,
+          ? requestImgLight
+          : requestImgDark,
       name: "Request",
       pageName: Config.sideNavPageNames.Request,
     },
     {
       img:
         currentPage == Config.sideNavPageNames.ApproveConfig
-          ? sampleImg
-          : sampleImgBlue,
+          ? approvalImgLight
+          : approvalImgDark,
       name: "Approval config",
       pageName: Config.sideNavPageNames.ApproveConfig,
     }
@@ -48,6 +53,9 @@ const ProductSideNav = ({ updatePage, currentPage }) => {
 
   return (
     <>
+      <div className={sideNavStyles.companyLogoStyle}>
+        <img src={companyLogo}></img>
+      </div>
       <div>
         {sideNavContents?.map((contents, index) => {
           return (

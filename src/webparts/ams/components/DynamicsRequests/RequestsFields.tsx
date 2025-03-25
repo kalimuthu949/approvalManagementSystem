@@ -58,7 +58,6 @@ const RequestsFields = ({
   });
   const [approvalHistoryDetails, setApprovalHistoryDetails] =
     useState<IApprovalHistoryDetails[]>();
-  console.log("approvalHistoryDetails", approvalHistoryDetails);
   //CategorySectionConfig List
   const getCategorySectionConfigDetails = () => {
     SPServices.SPReadItems({
@@ -119,8 +118,8 @@ const RequestsFields = ({
             isRequired: item?.IsRequired,
             viewStage: JSON.parse(item?.ViewStage),
           });
-          setDynamicFields([...tempArr]);
         });
+        setDynamicFields((prevFields) => [...prevFields, ...tempArr]);
       })
       .catch((e) => {
         console.log(e, "getSectionColumnsConfig err");
@@ -149,7 +148,7 @@ const RequestsFields = ({
         console.log("Get Current Record from RequestHup Details error", e);
       });
   };
-
+  console.log("approvalHistoryDetails", approvalHistoryDetails);
   //Get Approval History
   const getApprovalHistory = () => {
     SPServices.SPReadItems({
@@ -166,7 +165,7 @@ const RequestsFields = ({
     })
       .then((res) => {
         const tempArr = [];
-        res.forEach((item: any) => {
+        res?.forEach((item: any) => {
           tempArr.push({
             createdDate: item?.Created,
             itemID: item?.ID,
@@ -179,8 +178,8 @@ const RequestsFields = ({
             status: item?.Status,
             comments: item?.Comments,
           });
-          setApprovalHistoryDetails(tempArr);
         });
+        setApprovalHistoryDetails(tempArr);
       })
       .catch((e) => console.log("getApprovalHistory errror", e));
   };
@@ -200,7 +199,6 @@ const RequestsFields = ({
   };
   //Set Approval Details
   const getApprovalDetails = async (columnName, value) => {
-    debugger;
     let data = { ...approvalDetails };
     data[`${columnName}`] = value;
     await setApprovalDetails({ ...data });
@@ -356,6 +354,7 @@ const RequestsFields = ({
             </Label>
             <DataTable
               sortField="itemID"
+              sortOrder={-1}
               scrollable
               scrollHeight="350px"
               value={approvalHistoryDetails}
@@ -427,7 +426,6 @@ const RequestsFields = ({
     setDynamicFields([]);
     setFormData({});
     setErrors({});
-    getApprovalHistory();
     if (currentRecord.CategoryId) {
       getCategorySectionConfigDetails();
     }

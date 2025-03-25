@@ -32,7 +32,6 @@ const EmailWorkFlow = ({
       ...Config?.EmailTemplateConfigDetails,
     }
   );
-  console.log(templateData, "templateData");
 
   //Get Email Template Contents:
   const getEmailTemplateContents = () => {

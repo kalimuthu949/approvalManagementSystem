@@ -54,17 +54,18 @@ const MyRequestPage = ({
         setDynamicRequestsSideBarVisible(true);
       },
     },
-    rowData.status === "Rejected" && {
-      label: "Edit",
-      icon: "pi pi-file-edit",
-      className: "customEdit",
-      command: (event: any) => {
-        setRecordAction("Edit");
-        setCurrentRecord(rowData);
-        // setSelectedCategoryId(rowData.CategoryId);
-        setDynamicRequestsSideBarVisible(true);
+    rowData.status === "Rejected" &&
+      rowData.approvalJson[0].RejectionFlow !== 2 && {
+        label: "Edit",
+        icon: "pi pi-file-edit",
+        className: "customEdit",
+        command: (event: any) => {
+          setRecordAction("Edit");
+          setCurrentRecord(rowData);
+          // setSelectedCategoryId(rowData.CategoryId);
+          setDynamicRequestsSideBarVisible(true);
+        },
       },
-    },
     // {
     //   label: "Delete",
     //   icon: "pi pi-trash",
@@ -93,7 +94,6 @@ const MyRequestPage = ({
         ],
         FilterCondition: "and",
       });
-      console.log("res", res);
       const temArr: IRequestHubDetails[] = await Promise.all(
         res.map(async (item: any) => {
           return {
