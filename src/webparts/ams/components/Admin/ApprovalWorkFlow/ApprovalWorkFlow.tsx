@@ -280,7 +280,7 @@ const ApprovalWorkFlow = ({
             </h4>
             <div className={`${ApprovalWorkFlowStyles.stage}`}>
               <div>
-                {/* <PeoplePicker
+                <PeoplePicker
               context={context}
               titleText="People"
               personSelectionLimit={3}
@@ -296,7 +296,7 @@ const ApprovalWorkFlow = ({
               onChange={(items) => updateApprover(stageIndex, items)}
               principalTypes={[PrincipalType.User]}
               resolveDelay={1000}
-            /> */}
+            />
               </div>
               <div>
                 <Label className={`${ApprovalWorkFlowStyles.label}`}>
