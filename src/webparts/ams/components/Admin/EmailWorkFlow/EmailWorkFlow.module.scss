@@ -6,3 +6,11 @@
 .label {
   @include label;
 }
+.EditorSection {
+  padding: 30px 0px 30px 0px;
+}
+.EmailWorkFlowSideBarButtons {
+  display: flex;
+  gap: 3%;
+  justify-content: flex-end;
+}
