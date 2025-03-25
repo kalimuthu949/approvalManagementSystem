@@ -59,7 +59,7 @@ const WorkflowActionButtons = ({
     const updatedDetails = requestsHubDetails?.map(
       (item: IRequestHubDetails) => {
         if (item.id === itemID) {
-          var updateStatge = null;
+          var updateStage = null;
           var statusUpdate = item?.status;
           const updatedItem: any = {
             ...item,
@@ -75,11 +75,11 @@ const WorkflowActionButtons = ({
                   );
                   // Then, check if all approvers have statusCode === 1
                   const allApproved =
-                    approvalFlow.ApprovalType === 2
+                    stage.ApprovalType === 2
                       ? updatedApprovers.every(
                           (approver) => approver.statusCode === 1
                         )
-                      : approvalFlow.ApprovalType === 1 &&
+                      : stage.ApprovalType === 1 &&
                         updatedApprovers.some(
                           (approver) => approver.statusCode === 1
                         );
@@ -88,12 +88,12 @@ const WorkflowActionButtons = ({
                     (approver) => approver.statusCode === 2
                   );
                   // Update CurrentStage
-                  const updateStatgeVal = allApproved
+                  const updateStageVal = allApproved
                     ? approvalFlow.Currentstage === approvalFlow.TotalStages
                       ? ((statusUpdate = "Approved"),
-                        (updateStatge = approvalFlow.Currentstage))
-                      : (updateStatge = approvalFlow.Currentstage + 1)
-                    : ((updateStatge = approvalFlow.Currentstage),
+                        (updateStage = approvalFlow.Currentstage))
+                      : (updateStage = approvalFlow.Currentstage + 1)
+                    : ((updateStage = approvalFlow.Currentstage),
                       anyoneRejected
                         ? (statusUpdate = "Rejected")
                         : (statusUpdate = statusUpdate));
@@ -111,7 +111,7 @@ const WorkflowActionButtons = ({
                   return { ...stage };
                 }
               }),
-              Currentstage: updateStatge,
+              Currentstage: updateStage,
             })),
             status: statusUpdate,
           };
@@ -311,11 +311,28 @@ const WorkflowActionButtons = ({
               className="customCancelButton"
               onClick={() => setRequestsSideBarVisible(false)}
             />
-            <Button label="Reject"  className="customRejectButton"  icon="pi pi-times-circle" onClick={onRejectionClick} />
-            <Button label="Approve" className="customSubmitButton" icon="pi pi-check-circle" onClick={onApprovalClick} />
+            <Button
+              label="Reject"
+              className="customRejectButton"
+              icon="pi pi-times-circle"
+              onClick={onRejectionClick}
+            />
+            <Button
+              label="Approve"
+              className="customSubmitButton"
+              icon="pi pi-check-circle"
+              onClick={onApprovalClick}
+            />
           </>
         )}
-        {reSubmit && <Button label="Re_submit" className="customSubmitButton" icon="pi pi-save" onClick={onResubmitClick} />}
+        {reSubmit && (
+          <Button
+            label="Re_submit"
+            className="customSubmitButton"
+            icon="pi pi-save"
+            onClick={onResubmitClick}
+          />
+        )}
       </div>
     </>
   );

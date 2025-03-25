@@ -110,11 +110,11 @@ export interface IApprovalFlow {
   Currentstage: number;
   TotalStages: number;
   RejectionFlow: number;
-  ApprovalType: number;
   stages: Stage[];
 }
 interface Stage {
   stage: number;
+  ApprovalType: number;
   stageStatusCode: number;
   approvers: Approver[];
 }
