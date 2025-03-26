@@ -7,37 +7,45 @@ import { Config } from "../../../../../CommonServices/Config";
 import {
   IActionBooleans,
   ICategoryDetails,
+  INextStageFromCategorySideBar,
   IRightSideBarContents,
 } from "../../../../../CommonServices/interface";
-//React Icons:
-import { FaRegTrashAlt } from "react-icons/fa";
+import { ActionsMenu } from "../../../../../CommonServices/CommonTemplates";
 //Styles Imports:
 import "../../../../../External/style.css";
 import categoryConfigStyles from "./CategoryConfig.module.scss";
 //primeReact Imports:
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Button } from "primereact/button";
+import { RadioButton } from "primereact/radiobutton";
 import { Toast } from "primereact/toast";
 import { InputText } from "primereact/inputtext";
-import { Menu } from "primereact/menu";
-import { toastNotify } from "../../../../../CommonServices/CommonTemplates";
+import { Label } from "office-ui-fabric-react";
+import ExistingApprover from "./ExistingApprover";
+import CustomApprover from "./CustomApprover";
+import DynamicSectionWithField from "./DynamicSectionWithField/DynamicSectionWithField";
 
 const CategoryConfig = ({
   setCategorySideBarContent,
   setCategorySideBarVisible,
 }) => {
-  const menuLeft = useRef(null);
+  //state variables:
   const toast = useRef<Toast>(null);
   const [categoryDetails, setCategoryDetails] = useState<ICategoryDetails[]>(
     []
   );
-  const [categoryInputs, setCategoryInputs] = useState<string[]>([""]);
-  const [categoryIndex, setCategoryIndex] = useState<number>(null);
+  const [categoryInputs, setCategoryInputs] = useState<string>("");
   const [actionsBooleans, setActionsBooleans] = useState<IActionBooleans>({
     ...Config.InitialActionsBooleans,
   });
+  const [selectedApprover, setSelectedApprover] = useState<string>("");
+  const [nextStageFromCategory, setNextStageFromCategory] =
+    useState<INextStageFromCategorySideBar>({
+      ...Config.NextStageFromCategorySideBar,
+    });
+  console.log(nextStageFromCategory, "nextStageFromCategory");
 
+  //Get Category Config Details:
   const getCategoryConfigDetails = () => {
     SPServices.SPReadItems({
       Listname: Config.ListNames.CategoryConfig,
@@ -69,258 +77,117 @@ const CategoryConfig = ({
   };
 
   //Set Actions PopUp:
-  const actionsWithIcons = [
+  const actionsWithIcons = (rowData: ICategoryDetails) => [
     {
       label: "View",
       icon: "pi pi-eye",
-      className: "customView",
-      command: (event: any) => {
-        handleViewCategory(
-          categoryDetails.find((item: any) => item.id === categoryIndex)
-        );
-      },
+      command: () => {},
     },
     {
       label: "Edit",
-      icon: "pi pi-file-edit",
-      className: "customEdit",
-      command: (event: any) => {
-        handleEditCategory(
-          categoryDetails.find((item: any) => item.id === categoryIndex)
-        );
-      },
+      icon: "pi pi-pencil ",
+      command: () => {},
     },
     {
       label: "Delete",
       icon: "pi pi-trash",
-      className: "customDelete",
-      command: (event: any) => {
-        hanldeDeleteCategory();
-      },
+      command: () => {},
     },
   ];
 
-  const handleViewCategory = (rowData: ICategoryDetails) => {
-    setActionsBooleans((prev) => ({
-      ...prev,
-      isView: true,
-    }));
-    setCategoryInputs([rowData.category]);
-    setCategoryIndex(rowData.id);
-    setCategorySideBarVisible(true);
-  };
-
-  const handleEditCategory = (rowData: ICategoryDetails) => {
-    setActionsBooleans((prev) => ({
-      ...prev,
-      isEdit: true,
-    }));
-    setCategoryInputs([rowData.category]);
-    setCategoryIndex(rowData.id);
-    setCategorySideBarVisible(true);
-  };
-
-  const hanldeDeleteCategory = () => {
-    const currObj = {
-      IsDelete: true,
-    };
-    SPServices.SPUpdateItem({
-      Listname: Config.ListNames.CategoryConfig,
-      ID: categoryIndex,
-      RequestJSON: currObj,
-    })
-      .then((res) => {
-        getCategoryConfigDetails();
-      })
-      .catch((err) => {
-        console.log("Delete Category Error", err);
-      });
-  };
-
+  //Render Action Column:
   const renderActionColumn = (rowData: ICategoryDetails) => {
-    return (
-      <div className="customActionMenu">
-        <Menu
-          model={actionsWithIcons}
-          popup
-          ref={menuLeft}
-          id="popup_menu_left"
-          style={{ width: "8.5rem" }}
-        />
-        <Button
-          icon="pi pi-ellipsis-v"
-          className="mr-2"
-          onClick={(event) => {
-            menuLeft.current.toggle(event);
-            setCategoryIndex(rowData?.id);
-          }}
-          aria-controls="popup_menu_left"
-          aria-haspopup
-        />
-      </div>
-    );
-  };
-
-  const handleCategoryChange = (index: number, value: string) => {
-    const updatedInputs = [...categoryInputs];
-    updatedInputs[index] = value;
-    setCategoryInputs(updatedInputs);
-  };
-
-  const addCategoryInput = () => {
-    let DataEmptyCheck = categoryInputs[categoryInputs.length - 1];
-    if (DataEmptyCheck) {
-      setCategoryInputs([...categoryInputs, ""]);
-    } else {
-      toast.current?.show({
-        severity: "warn",
-        summary: "Warning",
-        content: (prop) =>
-          toastNotify({
-            iconName: "pi-exclamation-triangle",
-            ClsName: "toast-imgcontainer-warning",
-            type: "Warning",
-            msg: "Please fill the current category before adding a new one",
-          }),
-      });
-    }
-  };
-
-  const removeCategoryInput = (index: number) => {
-    const updatedInputs = categoryInputs.filter((_, i) => i !== index);
-    setCategoryInputs(updatedInputs);
-  };
-
-  const submitCategories = () => {
-    const validCategories = categoryInputs.filter(
-      (category) => category !== ""
-    );
-    if (validCategories.length > 0) {
-      if (actionsBooleans?.isEdit) {
-        // Update the existing category
-        SPServices.SPUpdateItem({
-          Listname: Config.ListNames.CategoryConfig,
-          ID: categoryIndex,
-          RequestJSON: { Category: validCategories[0] },
-        })
-          .then(() => {
-            toast.current?.show({
-              severity: "success",
-              summary: "Success",
-              // detail: Config.NextContent,
-              content: (prop) =>
-                toastNotify({
-                  iconName: "pi-check-square",
-                  ClsName: "toast-imgcontainer-success",
-                  type: "Success",
-                  msg: "Category Updated Successfully",
-                }),
-            });
-            getCategoryConfigDetails();
-            setCategorySideBarVisible(false);
-            setCategoryInputs([""]);
-            setCategoryIndex(null);
-            setActionsBooleans((prev) => ({
-              ...prev,
-              isEdit: false,
-            }));
-          })
-          .catch((err) => console.log("Update Category Error", err));
-      } else {
-        // Add a new category
-        const jsonArray = validCategories.map((item: string) => ({
-          Category: item,
-        }));
-        jsonArray.forEach((json) => {
-          SPServices.SPAddItem({
-            Listname: Config.ListNames.CategoryConfig,
-            RequestJSON: json,
-          }).then(() => {
-            toast.current?.show({
-              severity: "success",
-              summary: "Success",
-              content: (prop) =>
-                toastNotify({
-                  iconName: "pi-check-square",
-                  ClsName: "toast-imgcontainer-success",
-                  type: "Success",
-                  msg: "Category Added Successfully",
-                }),
-            });
-            getCategoryConfigDetails();
-            setCategorySideBarVisible(false);
-            setCategoryInputs([""]);
-          });
-        });
-      }
-    }
+    const menuModel = actionsWithIcons(rowData);
+    return <ActionsMenu items={menuModel} />;
   };
 
   //CategoryRightSideBar Contents:
   const categoryConfigSideBarContents = () => {
     return (
       <>
-        <h4 className={categoryConfigStyles.categorySideBarHeading}>
-          {actionsBooleans?.isEdit
-            ? "Edit category"
-            : actionsBooleans?.isView
-            ? "View category"
-            : "Add new category"}
-        </h4>
-        <div className={categoryConfigStyles.categoryContainer}>
-          {categoryInputs.map((input, index) => (
-            <div key={index} className={categoryConfigStyles.inputWrapper}>
-              <InputText
-                disabled={actionsBooleans?.isView}
-                value={input}
-                onChange={(e) => {
-                  handleCategoryChange(index, e.target.value);
-                }}
-                placeholder="Enter category"
-              />
+        <div>
+          {nextStageFromCategory.dynamicSectionWithField ||
+          nextStageFromCategory.EmailTemplateSection ? (
+            <></>
+          ) : (
+            <>
+              <div className={`${categoryConfigStyles.inputContainer}`}>
+                <div style={{ paddingBottom: "10px" }}>
+                  <Label className={`${categoryConfigStyles.label}`}>
+                    Category
+                  </Label>
+                </div>
+                <InputText
+                  className={`${categoryConfigStyles.input}`}
+                  value={categoryInputs}
+                  placeholder="Enter Category"
+                  onChange={(e) => setCategoryInputs(e.target.value)}
+                />
+              </div>
 
-              {index !== categoryInputs.length - 1 && (
-                <FaRegTrashAlt onClick={() => removeCategoryInput(index)} />
-              )}
-            </div>
-          ))}
-          <div
-            className={`${categoryConfigStyles.buttonWrapper} customButtonWrapper`}
-          >
-            <Button
-              style={{ padding: "5px" }}
-              icon="pi pi-plus"
-              disabled={actionsBooleans?.isEdit || actionsBooleans?.isView}
-              className="p-button-success"
-              onClick={() => addCategoryInput()}
-            />
-          </div>
-        </div>
-
-        <div className={`${categoryConfigStyles.sideBarButtonContainer}`}>
-          <Button
-            icon="pi pi-times"
-            label="Cancel"
-            className="customCancelButton"
-            onClick={() => {
-              setCategorySideBarVisible(false);
-              setCategoryInputs([""]);
-              setActionsBooleans({
-                isEdit: false,
-                isView: false,
-              });
-            }}
-          />
-          {!actionsBooleans?.isView && (
-            <Button
-              icon="pi pi-save"
-              label="Submit"
-              className="customSubmitButton"
-              onClick={() => {
-                submitCategories();
-              }}
-            />
+              <div className={`${categoryConfigStyles.radioContainer}`}>
+                <div className={`${categoryConfigStyles.radioDiv}`}>
+                  <RadioButton
+                    inputId="existing"
+                    name="approver"
+                    value="existing"
+                    onChange={(e) => {
+                      setSelectedApprover(e?.value);
+                    }}
+                    checked={selectedApprover === "existing"}
+                  />
+                  <label
+                    className={`${categoryConfigStyles.radioDivLabel}`}
+                    htmlFor="existing"
+                  >
+                    Existing approver
+                  </label>
+                </div>
+                <div className={`${categoryConfigStyles.radioDiv}`}>
+                  <RadioButton
+                    inputId="custom"
+                    name="approver"
+                    value="custom"
+                    onChange={(e) => setSelectedApprover(e?.value)}
+                    checked={selectedApprover === "custom"}
+                  />
+                  <label
+                    className={`${categoryConfigStyles.radioDivLabel}`}
+                    htmlFor="custom"
+                  >
+                    Custom approver
+                  </label>
+                </div>
+              </div>
+            </>
           )}
+          <div>
+            {selectedApprover === "existing" &&
+            nextStageFromCategory.ApproverSection ? (
+              <ExistingApprover
+                setNextStageFromCategory={setNextStageFromCategory}
+                setSelectedApprover={setSelectedApprover}
+                setExistingApproverSideBarVisible={setCategorySideBarVisible}
+                category={categoryInputs}
+              />
+            ) : selectedApprover === "custom" &&
+              nextStageFromCategory.ApproverSection ? (
+              <CustomApprover />
+            ) : (
+              <></>
+            )}
+            {nextStageFromCategory.dynamicSectionWithField ? (
+              <DynamicSectionWithField
+                setNextStageFromCategory={setNextStageFromCategory}
+                setSelectedApprover={setSelectedApprover}
+                setDynamicSectionWithFieldSideBarVisible={
+                  setCategorySideBarVisible
+                }
+              />
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
       </>
     );
@@ -335,7 +202,7 @@ const CategoryConfig = ({
       ...prev,
       categoryConfigContent: categoryConfigSideBarContents(),
     }));
-  }, [categoryInputs]);
+  }, [categoryInputs, selectedApprover, nextStageFromCategory]);
 
   return (
     <>

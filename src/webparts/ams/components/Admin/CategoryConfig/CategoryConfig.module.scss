@@ -5,45 +5,107 @@
   @include sideBarHeader;
 }
 
-.categoryContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.label {
+  @include label;
+}
+.inputContainer {
   width: 100%;
-  align-items: flex-start;
-
-  .inputWrapper {
+  .input {
+    width: 46%;
+    padding: 10px;
+  }
+}
+.radioContainer {
+  display: flex;
+  padding-top: 28px;
+  .radioDiv {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    width: auto;
-
-    input {
-      width: 260px;
-    }
-
-    .iconWrapper {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    svg {
-      cursor: pointer;
-      color: red;
+    .radioDivLabel {
+      padding: 0 50px 0 10px;
+      color: #353862;
+      font-weight: 500;
       font-size: 14px;
     }
   }
-
-  .buttonWrapper {
-    display: flex;
-    align-items: center;
+}
+.CategoryContainer {
+  display: flex;
+  gap: 5%;
+  align-items: baseline;
+  .dropDownDiv {
+    padding-top: 20px;
+    width: 46%;
+    .dropDown {
+      padding: 5px;
+      width: 100%;
+    }
+  }
+  .RejectionDiv {
+    width: 34%;
+    background-color: var(--liteGreen);
+    color: var(--green);
+    padding: 8px;
+    height: 37px;
+    border-radius: 20px;
+    text-align: center;
+    font-size: 14px;
   }
 }
+.approversContainer {
+  .stageSection {
+    margin-bottom: 20px;
 
-.sideBarButtonContainer {
+    h3 {
+      color: var(--green);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .approvalMessage {
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: inline-block;
+
+      &.onlyOne {
+        background-color: lightblue;
+        color: #00008b91;
+      }
+
+      &.everyone {
+        background-color: var(--liteGreen);
+        color: var(--green);
+      }
+    }
+
+    .approversList {
+      display: flex;
+      gap: 10px;
+    }
+
+    .approversChip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border: 1px solid var(--green);
+      border-radius: 50px;
+      padding: 3px 6px;
+      font-size: 12px;
+      width: 25%;
+      font-weight: 500;
+      transition: all 0.3s ease-in-out;
+
+      &:hover {
+        background-color: rgba(22, 136, 33, 0.1);
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+.FlowSideBarButtons {
   display: flex;
-  justify-content: flex-end;
   gap: 3%;
-  width: 100%;
+  justify-content: flex-end;
 }
