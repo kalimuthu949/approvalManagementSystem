@@ -355,7 +355,6 @@ li.p-highlight .p-tabview-nav-link {
   font-weight: 600;
 }
 
-
 /* Editor Quill styles.................... */
 .quill .ql-toolbar {
   height: 15%;
@@ -395,8 +394,9 @@ li.p-highlight .p-tabview-nav-link {
 
   li {
     list-style-type: none; /* Removes default numbering */
-    font-size:14px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 14px;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+      sans-serif;
   }
 
   li::before {
@@ -404,7 +404,7 @@ li.p-highlight .p-tabview-nav-link {
     color: var(--green); /* Optional: Change color */
     margin-right: 8px;
   }
-
+}
 /* Common Styles for the RadioButtons.......................................... */
 .p-radiobutton.p-highlight .p-radiobutton-box {
   border-color: var(--green);
@@ -412,5 +412,4 @@ li.p-highlight .p-tabview-nav-link {
 }
 .p-radiobutton .p-radiobutton-box {
   border: 2px solid var(--green);
-
 }
