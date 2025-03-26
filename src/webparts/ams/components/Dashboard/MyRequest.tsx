@@ -23,7 +23,7 @@ import {
 import WorkflowActionButtons from "../WorkflowButtons/WorkflowActionButtons";
 import AttachmentUploader from "../AttachmentUploader/AttachmentUploader";
 import RequestsFields from "../DynamicsRequests/RequestsFields";
-import * as moment from "moment";
+import moment from "moment";
 
 const MyRequestPage = ({
   filterCategory,
@@ -54,24 +54,19 @@ const MyRequestPage = ({
         setDynamicRequestsSideBarVisible(true);
       },
     },
-    rowData.status === "Rejected" &&
-      rowData.approvalJson[0].RejectionFlow !== 2 && {
-        label: "Edit",
-        icon: "pi pi-file-edit",
-        className: "customEdit",
-        command: (event: any) => {
-          setRecordAction("Edit");
-          setCurrentRecord(rowData);
-          // setSelectedCategoryId(rowData.CategoryId);
-          setDynamicRequestsSideBarVisible(true);
-        },
-      },
-    // {
-    //   label: "Delete",
-    //   icon: "pi pi-trash",
-    //   className: "customDelete",
-    //   command: (event: any) => {},
-    // },
+    rowData.status === "Rejected" && rowData.approvalJson[0].RejectionFlow !== 2
+      ? {
+          label: "Edit",
+          icon: "pi pi-file-edit",
+          className: "customEdit",
+          command: (event: any) => {
+            setRecordAction("Edit");
+            setCurrentRecord(rowData);
+            // setSelectedCategoryId(rowData.CategoryId);
+            setDynamicRequestsSideBarVisible(true);
+          },
+        }
+      : "",
   ];
 
   //Get RequestHub Details:
@@ -208,7 +203,7 @@ const MyRequestPage = ({
   //Render Action Column:
   const renderActionColumn = (rowData: IRequestHubDetails) => {
     const menuModel = actionsWithIcons(rowData);
-    return <ActionsMenu items={menuModel} />;
+    return <ActionsMenu items={menuModel.filter((e) => e !== "")} />;
   };
 
   useEffect(() => {

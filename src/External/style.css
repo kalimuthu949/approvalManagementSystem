@@ -351,3 +351,53 @@ li.p-highlight .p-tabview-nav-link {
   font-size: 12px;
   font-weight: 600;
 }
+
+/* Editor Quill styles.................... */
+.quill .ql-toolbar {
+  height: 15%;
+}
+.ql-toolbar.ql-snow {
+  background-color: rgba(206, 206, 206, 0.91);
+  border: 1px solid var(--InputBoxLiteGreen) !important;
+}
+.ql-toolbar.ql-snow:active {
+  border-color: var(--green);
+}
+.quill .ql-container {
+  height: 85%;
+}
+.ql-container.ql-snow {
+  border: 0px 1px 1px 1px;
+  border-color: var(--InputBoxLiteGreen) !important;
+}
+.ql-container.ql-snow:active {
+  border-color: var(--green);
+}
+
+/* Info notes styles...................... */
+
+.notesContainer {
+  width: 100%;
+  padding: 10px;
+  box-shadow: var(--sideBarBoxShadow);
+  background-color: var(--liteGrayBackgorund);
+  border: 0;
+  border-radius: 10px;
+  margin-top: 30px;
+  h1 {
+    font-size: var(--fontSizebig);
+    font-family: "Courier New", Courier, monospace;
+  }
+
+  li {
+    list-style-type: none; /* Removes default numbering */
+    font-size:14px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+
+  li::before {
+    content: "➱ "; /* Use any symbol */
+    color: var(--green); /* Optional: Change color */
+    margin-right: 8px;
+  }
+}

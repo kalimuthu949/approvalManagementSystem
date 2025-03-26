@@ -9,7 +9,10 @@ import {
   IEmailTemplateConfigDetails,
   IRightSideBarContents,
 } from "../../../../../CommonServices/interface";
-import { ActionsMenu } from "../../../../../CommonServices/CommonTemplates";
+import {
+  ActionsMenu,
+  notesContainerDetails,
+} from "../../../../../CommonServices/CommonTemplates";
 //PrimeReact Imports:
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -17,6 +20,8 @@ import { Editor } from "primereact/editor";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Label } from "office-ui-fabric-react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 //Styles Imports:
 import EmailWorkFlowStyles from "./EmailWorkFlow.module.scss";
 import "./EmailWorkFlowStyle.css";
@@ -39,6 +44,14 @@ const EmailWorkFlow = ({
     }
   );
   const [isValidation, setValidation] = useState<boolean>(false);
+  const infoNotes = [
+    { info: " Enter [$ApproverName] for replace of approver name" },
+    { info: " Enter [$SubmitterName] for replace of submitter name" },
+    { info: " Enter [$SubmissionDate] for replace of Submission Date" },
+    {
+      info: " Enter [$RequestBriefDetails] for replace of Request entire details",
+    },
+  ];
 
   //Get Email Template Contents:
   const getEmailTemplateContents = () => {
@@ -74,6 +87,7 @@ const EmailWorkFlow = ({
     const selected = getEmailTemplateContent.find(
       (item) => item?.id === rowData?.id
     );
+    console.log("rowData", rowData);
     if (selected) {
       if (action === "view") {
         setActionsBooleans({ isView: true, isEdit: false });
@@ -180,7 +194,8 @@ const EmailWorkFlow = ({
 
   //Render Action Column:
   const renderActionColumn = (rowData: IEmailTemplateConfigDetails) => {
-    return <ActionsMenu items={getActionsWithIcons(rowData)} />;
+    const menuModel = getActionsWithIcons(rowData);
+    return <ActionsMenu items={menuModel} />;
   };
 
   //MainContents Goes to RightSideBar:
@@ -207,12 +222,18 @@ const EmailWorkFlow = ({
           )}
         </div>
         <div className={`${EmailWorkFlowStyles.EditorSection} card`}>
-          <Editor
+          <ReactQuill
+            value={templateData?.emailBody}
+            onChange={(e) => handleChange("emailBody", e)}
+            style={{ height: "100%" }}
+            readOnly={actionsBooleans.isView}
+          />
+          {/* <Editor
             value={templateData?.emailBody}
             onTextChange={(e) => handleChange("emailBody", e.htmlValue)}
             style={{ height: "320px" }}
-            readOnly={actionsBooleans?.isView}
-          />
+            readOnly={actionsBooleans.isView}
+          /> */}
           <div>
             {isValidation && !templateData?.emailBody && (
               <span className="errorMsg">EmailBody is required</span>
@@ -220,30 +241,48 @@ const EmailWorkFlow = ({
           </div>
         </div>
         <div className={EmailWorkFlowStyles.EmailWorkFlowSideBarButtons}>
-          <Button
-            icon="pi pi-times"
-            label="Cancel"
-            className="customCancelButton"
-            onClick={() => {
-              setEmailWorkFlowSideBarVisible(false);
-              setActionsBooleans({ ...Config.InitialActionsBooleans });
-              setTemplateData({ ...Config?.EmailTemplateConfigDetails });
-              setValidation(false);
-            }}
-          />
-          {!actionsBooleans.isView && (
+          {actionsBooleans.isView && (
             <Button
-              icon="pi pi-save"
-              label="Submit"
-              className="customSubmitButton"
+              icon="pi pi-times"
+              label="Close"
+              className="customCancelButton"
               onClick={() => {
-                if (validateFunction()) {
-                  handleSubmit();
-                }
+                setEmailWorkFlowSideBarVisible(false);
+                setActionsBooleans({ ...Config.InitialActionsBooleans });
+                setTemplateData({ ...Config?.EmailTemplateConfigDetails });
+                setValidation(false);
               }}
             />
           )}
+          {!actionsBooleans.isView && (
+            <>
+              <Button
+                icon="pi pi-times"
+                label="Cancel"
+                className="customCancelButton"
+                onClick={() => {
+                  setEmailWorkFlowSideBarVisible(false);
+                  setActionsBooleans({ ...Config.InitialActionsBooleans });
+                  setTemplateData({ ...Config?.EmailTemplateConfigDetails });
+                  setValidation(false);
+                }}
+              />
+              <Button
+                icon="pi pi-save"
+                label="Submit"
+                className="customSubmitButton"
+                onClick={() => {
+                  if (validateFunction()) {
+                    handleSubmit();
+                  }
+                }}
+              />
+            </>
+          )}
         </div>
+        {!actionsBooleans.isView && (
+          <>{notesContainerDetails("Info notes", infoNotes)}</>
+        )}
       </div>
     </>
   );
@@ -270,15 +309,12 @@ const EmailWorkFlow = ({
           style={{ width: "80%" }}
           field="templateName"
           header="Template Name"
-        />
+        ></Column>
         <Column
           style={{ width: "20%" }}
           field="Action"
           body={renderActionColumn}
-          //   body={(rowData) => (
-          //     <ActionsMenu items={getActionsWithIcons(rowData)} />
-          //   )}
-        />
+        ></Column>
       </DataTable>
     </div>
   );
