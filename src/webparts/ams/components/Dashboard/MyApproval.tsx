@@ -58,24 +58,20 @@ const MyApprovalPage = ({
       },
     },
     rowData.status === "Pending" &&
-      rowData.approvalJson[0].stages
-        .find((e) => e.stage === rowData.approvalJson[0].Currentstage)
-        .approvers.find((e) => e.email === loginUser)?.statusCode === 0 && {
-        label: "Edit",
-        icon: "pi pi-file-edit",
-        className: "customEdit",
-        command: (event: any) => {
-          setRecordAction("Edit");
-          setCurrentRecord(rowData);
-          setDynamicRequestsSideBarVisible(true);
-        },
-      },
-    // {
-    //   label: "Delete",
-    //   icon: "pi pi-trash",
-    //   className: "customDelete",
-    //   command: (event: any) => {},
-    // },
+    rowData.approvalJson[0].stages
+      .find((e) => e.stage === rowData.approvalJson[0].Currentstage)
+      .approvers.find((e) => e.email === loginUser)?.statusCode === 0
+      ? {
+          label: "Edit",
+          icon: "pi pi-file-edit",
+          className: "customEdit",
+          command: (event: any) => {
+            setRecordAction("Edit");
+            setCurrentRecord(rowData);
+            setDynamicRequestsSideBarVisible(true);
+          },
+        }
+      : "",
   ];
 
   //Get RequestHub Details:
@@ -218,7 +214,7 @@ const MyApprovalPage = ({
   //Render Action Column:
   const renderActionColumn = (rowData: IRequestHubDetails) => {
     const menuModel = actionsWithIcons(rowData);
-    return <ActionsMenu items={menuModel} />;
+    return <ActionsMenu items={menuModel.filter((e) => e !== "")} />;
   };
 
   useEffect(() => {

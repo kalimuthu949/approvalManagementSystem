@@ -16,6 +16,7 @@ import SPServices from "../../../../../CommonServices/SPServices";
 import "../../../../../External/style.css";
 import ApprovalWorkFlowStyles from "./ApprovalWorkFlow.module.scss";
 import { Label } from "office-ui-fabric-react";
+import { IRightSideBarContents } from "../../../../../CommonServices/interface";
 
 interface IApprover {
   name: string;
@@ -37,19 +38,13 @@ const ApprovalWorkFlow = ({
   context,
 }) => {
   const [workflowName, setWorkflowName] = useState("");
+  console.log("workflowName",workflowName)
   const [rejectType, setRejectType] = useState("");
   const [stages, setStages] = useState<IStage[]>([]);
   const [removedStageIds, setRemovedStageIds] = useState<number[]>([]);
   const [validationError, setValidationError] = useState("");
 
   const approvalConfigId = 12; // Assuming this is passed as a prop
-
-  useEffect(() => {
-    if (approvalConfigId) {
-      fetchApprovalData(approvalConfigId);
-    }
-  }, [approvalConfigId]);
-
   const fetchApprovalData = async (id) => {
     try {
       // Fetch data from ApprovalConfig list
@@ -244,8 +239,9 @@ const ApprovalWorkFlow = ({
     { label: "Reject Option 3", value: 3 },
   ];
 
-  return (
-    <div>
+  ///ApprovalConfigFlowContent
+  const ApprovalConfigSidebarContent = () => (
+    <>
       <div
         className={`${ApprovalWorkFlowStyles.topSection}`}
         style={{ marginBottom: "1rem" }}
@@ -279,25 +275,25 @@ const ApprovalWorkFlow = ({
               Stage {stage.stage} Approver
             </h4>
             <div className={`${ApprovalWorkFlowStyles.stage}`}>
-              <div>
+              {/* <div>
                 <PeoplePicker
-              context={context}
-              titleText="People"
-              personSelectionLimit={3}
-              required={true}
-              groupName={""}
-              webAbsoluteUrl={context._pageContext._web.absoluteUrl}
-              showtooltip={true}
-              disabled={false}
-              ensureUser={true}
-              defaultSelectedUsers={stage.approvers.map(
-                (approver) => approver.email
-              )}
-              onChange={(items) => updateApprover(stageIndex, items)}
-              principalTypes={[PrincipalType.User]}
-              resolveDelay={1000}
-            />
-              </div>
+                  context={context}
+                  titleText="People"
+                  personSelectionLimit={3}
+                  required={true}
+                  groupName={""}
+                  webAbsoluteUrl={context._pageContext._web.absoluteUrl}
+                  showtooltip={true}
+                  disabled={false}
+                  ensureUser={true}
+                  defaultSelectedUsers={stage.approvers.map(
+                    (approver) => approver.email
+                  )}
+                  onChange={(items) => updateApprover(stageIndex, items)}
+                  principalTypes={[PrincipalType.User]}
+                  resolveDelay={1000}
+                />
+              </div> */}
               <div>
                 <Label className={`${ApprovalWorkFlowStyles.label}`}>
                   Type
@@ -339,8 +335,23 @@ const ApprovalWorkFlow = ({
           />
         </div>
       </div>
-    </div>
+    </>
   );
+
+  //useEffects
+  useEffect(() => {
+    if (approvalConfigId) {
+      fetchApprovalData(approvalConfigId);
+    }
+  }, [approvalConfigId]);
+  useEffect(() => {
+    setApprovalSideBarContent((prev: IRightSideBarContents) => ({
+      ...prev,
+      ApprovalConfigContent: ApprovalConfigSidebarContent(),
+    }));
+  }, [null, setApprovalSideBarVisible,workflowName]);
+
+  return <></>;
 };
 
 export default ApprovalWorkFlow;

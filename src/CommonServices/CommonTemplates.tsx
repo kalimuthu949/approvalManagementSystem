@@ -96,11 +96,12 @@ const getIcons = (status: string) => {
 
     case "Rejected":
       return <FaRegTimesCircle />;
-    case "Only one can approve":
+    case "Restart from first stage":
       return "";
-    case "Everyone should approve":
+    case "Restart from rejected stage":
       return "";
-
+    case "Resubmission not allowed":
+      return "";
     default:
       return null;
   }
@@ -125,15 +126,17 @@ const getColors = (status: string) => {
       colors.bgColor = "#f6e8e8";
       colors.color = "#b23d3f";
       break;
-    case "Only one can approve":
-      colors.bgColor = "#ebf7ff";
-      colors.color = "#2a6d9c";
-      colors.borderColor = "#2d68de";
+    case "Restart from rejected stage":
+      colors.bgColor = "#eaf1f6";
+      colors.color = "##2a6d9c";
       break;
-    case "Everyone should approve":
-      colors.bgColor = "#ffebfd";
-      colors.color = "#9c2a87";
-      colors.borderColor = "#d013e8";
+    case "Restart from first stage":
+      colors.bgColor = "#e8f6ed";
+      colors.color = "#16a34a";
+      break;
+    case "Resubmission not allowed":
+      colors.bgColor = "#f6e8e8";
+      colors.color = "#b23d3f";
       break;
     default:
       return null;
@@ -300,6 +303,21 @@ export const generateRequestID = (value, count, char) => {
   return value.toString().padStart(count, char);
 };
 
+
+//Notes Container
+export const notesContainerDetails = (header, data) => {
+  return (
+    <div className="notesContainer">
+      <h1>{header}</h1>
+      <ul>
+        {data.map((e: any) => {
+          return <li> {e?.info}</li>;
+        })}
+      </ul>
+    </div>
+  );
+};
+
 //DynamicSectionWithFieldsDropDown Options:
 export const columnTypes = [
   { name: "Single line of text", value: "text" },
@@ -340,3 +358,4 @@ const getColor = (stage: string) => {
   };
   return colors[stage] || "#000";
 };
+

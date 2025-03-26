@@ -33,12 +33,12 @@ export interface IApprovalConfigDetails {
   category: [];
   apprvalFlowName: string;
   totalStages: number;
-  approvalProcess: number;
   rejectionFlow: string;
   stages: IApprovalStages[];
 }
 export interface IApprovalStages {
   stage: number;
+  approvalProcess: number;
   approver: IPeoplePickerDetails[];
 }
 //Dropdown Details:
