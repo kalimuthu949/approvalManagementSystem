@@ -1,0 +1,167 @@
+@import "../../../../../../External/commonStyles.module.scss";
+.FlowButtonsContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  .FlowPreviousButton {
+    width: 26%;
+  }
+  .FlowSideBarButtons {
+    display: flex;
+    gap: 4%;
+    width: 70%;
+    justify-content: flex-end;
+  }
+}
+.sectionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border-bottom: 20px solid white;
+}
+
+.columnContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: transparent;
+  border-radius: 8px;
+}
+
+.container {
+  background-color: #fff6f6;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.addSectionBtnIcon {
+  font-size: 18px;
+}
+
+.addButton {
+  background-color: transparent;
+  color: var(--green);
+  font-weight: 500;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.sectionInput {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid white;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.addFieldButton {
+  background-color: transparent;
+  color: var(--green);
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  width: 15%;
+  padding: 0px !important;
+  cursor: pointer;
+}
+
+.dialog {
+  width: 30%;
+  .p-dialog-header {
+    background-color: #007ad9;
+    color: white;
+    font-weight: bold;
+  }
+
+  .p-dialog-content {
+    padding: 15px;
+  }
+}
+
+.dialogButtons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+  gap: 12px;
+}
+
+.cancelButton {
+  background-color: #dc3545;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #b02a37;
+  }
+}
+
+.saveButton {
+  background-color: #007ad9;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #005fa3;
+  }
+}
+
+.choiceContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+
+  .choiceInput {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .addChoiceButton {
+    background-color: #007ad9;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #005fa3;
+    }
+  }
+}
+.columnNameContainer {
+  width: 100%;
+  padding-top: 10px;
+  .columnNameInput {
+    width: 100%;
+  }
+}
+.label {
+  @include label;
+}
+.stageContainer {
+  padding-bottom: 10px;
+  font-size: 13px;
+  display: flex;
+  gap: 10px;
+}
