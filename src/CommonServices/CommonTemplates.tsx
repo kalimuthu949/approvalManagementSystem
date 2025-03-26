@@ -303,6 +303,7 @@ export const generateRequestID = (value, count, char) => {
   return value.toString().padStart(count, char);
 };
 
+
 //Notes Container
 export const notesContainerDetails = (header, data) => {
   return (
@@ -316,3 +317,45 @@ export const notesContainerDetails = (header, data) => {
     </div>
   );
 };
+
+//DynamicSectionWithFieldsDropDown Options:
+export const columnTypes = [
+  { name: "Single line of text", value: "text" },
+  { name: "Multiple lines of text", value: "textarea" },
+  { name: "Choice", value: "Choice" },
+];
+
+//StageTemplate :
+export const stageBodyTemplate = (rowData) => {
+  const sortedStages = [...rowData.stages].sort();
+  return (
+    <div style={{ display: "flex", gap: "8px" }}>
+      {sortedStages.map((stage, index) => (
+        <span
+          key={index}
+          style={{
+            padding: "5px",
+            border: "1px solid",
+            borderRadius: "20px",
+            color: getColor(stage),
+            borderColor: getColor(stage),
+          }}
+        >
+          {stage}
+        </span>
+      ))}
+    </div>
+  );
+};
+
+//SetStageColors:
+const getColor = (stage: string) => {
+  const colors = {
+    "Stage 1": "#B98B00",
+    "Stage 2": "#C21892",
+    "Stage 3": "#2196F3",
+    "Stage 4": "#512DA8",
+  };
+  return colors[stage] || "#000";
+};
+

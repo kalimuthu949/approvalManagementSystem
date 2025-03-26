@@ -173,3 +173,10 @@ export interface IEmailTemplateConfigDetails {
   templateName: string;
   emailBody: string;
 }
+
+//Next Stage From Category RighSideBar:
+export interface INextStageFromCategorySideBar {
+  ApproverSection: boolean;
+  dynamicSectionWithField: boolean;
+  EmailTemplateSection: boolean;
+}

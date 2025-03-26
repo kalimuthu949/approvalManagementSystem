@@ -1,0 +1,40 @@
+.container .p-button .p-button-label {
+  padding-left: 8px;
+}
+.InputSwitch .p-inputswitch-slider {
+  border: 1px solid #16a34a;
+}
+.InputSwitch .p-inputswitch-slider {
+  border-radius: 20px !important;
+  background: transparent;
+}
+.InputSwitch .p-inputswitch-slider:before {
+  background: #16a34a;
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  margin-top: -9px;
+}
+.InputSwitch.p-highlight .p-inputswitch-slider {
+  background-color: #16a34a !important;
+}
+.InputSwitch.p-highlight .p-inputswitch-slider:before {
+  background: white !important;
+}
+.InputSwitch {
+  width: 12%;
+  height: 23px;
+}
+.stageContainer .p-checkbox .p-checkbox-box {
+  border: 1px solid #16a34a;
+}
+.stageContainer .p-checkbox.p-highlight .p-checkbox-box {
+  background: #16a34a;
+}
+.p-dialog .p-dialog-header .p-dialog-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: green;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}

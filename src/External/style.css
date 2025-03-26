@@ -1,5 +1,4 @@
 /* Common WebPart FullWidth and CanvasZone Default Code */
-
 #workbenchPageContent > div > div > div {
   padding: 0px !important;
 }
@@ -36,6 +35,10 @@ div[data-automationid="SiteHeader"] {
 .spAppAndPropertyPanelContainer {
   padding: 0px;
 }
+[data-automationid="SimpleFooter"] {
+  display: none !important;
+}
+
 .p-button:focus {
   box-shadow: none;
 }
@@ -352,6 +355,7 @@ li.p-highlight .p-tabview-nav-link {
   font-weight: 600;
 }
 
+
 /* Editor Quill styles.................... */
 .quill .ql-toolbar {
   height: 15%;
@@ -400,4 +404,13 @@ li.p-highlight .p-tabview-nav-link {
     color: var(--green); /* Optional: Change color */
     margin-right: 8px;
   }
+
+/* Common Styles for the RadioButtons.......................................... */
+.p-radiobutton.p-highlight .p-radiobutton-box {
+  border-color: var(--green);
+  background-color: var(--green);
+}
+.p-radiobutton .p-radiobutton-box {
+  border: 2px solid var(--green);
+
 }

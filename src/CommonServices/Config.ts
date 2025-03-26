@@ -5,6 +5,7 @@ import {
   IEmailTemplateConfigDetails,
   ILibraryNames,
   IListNames,
+  INextStageFromCategorySideBar,
   IRequestHubDetails,
   IRightSideBarContents,
   IRightSideBarContentsDetails,
@@ -99,5 +100,12 @@ export namespace Config {
     id: null,
     templateName: "",
     emailBody: "",
+  };
+
+  //Next Stage From Category RighSideBar:
+  export const NextStageFromCategorySideBar: INextStageFromCategorySideBar = {
+    ApproverSection: true,
+    dynamicSectionWithField: false,
+    EmailTemplateSection: false,
   };
 }
