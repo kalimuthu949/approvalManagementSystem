@@ -50,8 +50,11 @@ const DynamicSectionWithField = ({
     stages: [],
     choices: [],
   });
+
+
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewFields, setPreviewFields] = useState<any>([]);
+
 
   const addDynamicSection = () => {
     setSections([...sections, { name: "", columns: [] }]);

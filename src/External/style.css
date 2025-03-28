@@ -117,6 +117,7 @@ div[data-automationid="SiteHeader"] {
   border: 1px solid var(--InputBoxLiteGreen);
   box-shadow: none;
   padding: 2px;
+  margin: 0 !important;
 }
 .p-dropdown:focus-within {
   border-color: var(--green);
@@ -412,4 +413,20 @@ li.p-highlight .p-tabview-nav-link {
 }
 .p-radiobutton .p-radiobutton-box {
   border: 2px solid var(--green);
+}
+/* People Picker styles.............................................. */
+.ms-PeoplePicker {
+  padding: 0;
+  margin: 0;
+}
+.ms-BasePicker-text {
+  font-size: var(--dataTableHeaderFontSize);
+  border: 1px solid var(--InputBoxLiteGreen);
+}
+.ms-BasePicker-text:hover {
+  border: 1px solid var(--InputBoxLiteGreen) !important;
+}
+.ms-BasePicker-text::after {
+  border: 1px solid var(--green);
+  box-shadow: none;
 }

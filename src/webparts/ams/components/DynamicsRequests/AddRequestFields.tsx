@@ -55,7 +55,6 @@ const AddRequestsFields = ({
       ],
     })
       .then((res: any) => {
-        console.log("res", res);
         res.forEach(async (item: any) => {
           await getSectionColumnsConfigDetails(item?.SectionName, item?.ID);
         });

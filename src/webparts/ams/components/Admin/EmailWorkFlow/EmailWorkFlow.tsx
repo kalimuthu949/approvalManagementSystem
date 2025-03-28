@@ -86,7 +86,6 @@ const EmailWorkFlow = ({
     const selected = getEmailTemplateContent.find(
       (item) => item?.id === rowData?.id
     );
-    console.log("rowData", rowData);
     if (selected) {
       if (action === "view") {
         setActionsBooleans({ isView: true, isEdit: false });
@@ -123,7 +122,6 @@ const EmailWorkFlow = ({
   //Handle Change in Template Data:
   const handleChange = (key: string, value: string) => {
     setTemplateData((prev) => ({ ...prev, [key]: value }));
-    console.log(value);
   };
 
   //Submit the Email Template:
