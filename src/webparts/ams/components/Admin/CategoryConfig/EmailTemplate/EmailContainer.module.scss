@@ -1,0 +1,31 @@
+@import "../../../../../../External/commonStyles.module.scss";
+.heading {
+  @include heading;
+}
+.FlowButtonsContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  .FlowPreviousButton {
+    width: 26%;
+  }
+  .FlowSideBarButtons {
+    display: flex;
+    gap: 4%;
+    width: 70%;
+    justify-content: flex-end;
+  }
+}
+.radioContainer {
+  display: flex;
+  padding-bottom: 28px;
+  .radioDiv {
+    display: flex;
+    .radioDivLabel {
+      padding: 0 50px 0 10px;
+      color: #353862;
+      font-weight: 500;
+      font-size: 14px;
+    }
+  }
+}

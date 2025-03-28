@@ -1,6 +1,3 @@
-.container .p-button .p-button-label {
-  padding-left: 8px;
-}
 .InputSwitch .p-inputswitch-slider {
   border: 1px solid #16a34a;
 }
@@ -13,6 +10,7 @@
   border-radius: 50%;
   width: 17px;
   height: 17px;
+  left: 0.16rem;
   margin-top: -9px;
 }
 .InputSwitch.p-highlight .p-inputswitch-slider {
@@ -22,8 +20,8 @@
   background: white !important;
 }
 .InputSwitch {
-  width: 12%;
-  height: 23px;
+  width: 43px;
+  height: 22px;
 }
 .stageContainer .p-checkbox .p-checkbox-box {
   border: 1px solid #16a34a;

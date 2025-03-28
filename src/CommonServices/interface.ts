@@ -180,3 +180,13 @@ export interface INextStageFromCategorySideBar {
   dynamicSectionWithField: boolean;
   EmailTemplateSection: boolean;
 }
+
+//Category Config Last Final Submit Interface:
+export interface IFinalSubmitDetails {
+  categoryConfig: {
+    category: string;
+    ExistingApprover: number;
+    customApprover: string;
+  };
+  dynamicSectionWithField: [];
+}

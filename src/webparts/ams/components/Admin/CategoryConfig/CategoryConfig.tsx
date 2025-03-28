@@ -7,6 +7,7 @@ import { Config } from "../../../../../CommonServices/Config";
 import {
   IActionBooleans,
   ICategoryDetails,
+  IFinalSubmitDetails,
   INextStageFromCategorySideBar,
   IRightSideBarContents,
 } from "../../../../../CommonServices/interface";
@@ -23,7 +24,10 @@ import { InputText } from "primereact/inputtext";
 import { Label } from "office-ui-fabric-react";
 import ExistingApprover from "./ExistingApprover";
 import CustomApprover from "./CustomApprover";
+import { Button } from "primereact/button";
+//Component Imports:
 import DynamicSectionWithField from "./DynamicSectionWithField/DynamicSectionWithField";
+import EmailContainer from "./EmailTemplate/EmailContainer";
 
 const CategoryConfig = ({
   setCategorySideBarContent,
@@ -43,7 +47,9 @@ const CategoryConfig = ({
     useState<INextStageFromCategorySideBar>({
       ...Config.NextStageFromCategorySideBar,
     });
-  console.log(nextStageFromCategory, "nextStageFromCategory");
+  const [finalSubmit, setFinalSubmit] = useState<IFinalSubmitDetails>({
+    ...Config.finalSubmitDetails,
+  });
 
   //Get Category Config Details:
   const getCategoryConfigDetails = () => {
@@ -165,9 +171,8 @@ const CategoryConfig = ({
             {selectedApprover === "existing" &&
             nextStageFromCategory.ApproverSection ? (
               <ExistingApprover
-                setNextStageFromCategory={setNextStageFromCategory}
-                setSelectedApprover={setSelectedApprover}
-                setExistingApproverSideBarVisible={setCategorySideBarVisible}
+                setFinalSubmit={setFinalSubmit}
+                setExisitingApproverSideBarVisible={setCategorySideBarVisible}
                 category={categoryInputs}
               />
             ) : selectedApprover === "custom" &&
@@ -178,16 +183,62 @@ const CategoryConfig = ({
             )}
             {nextStageFromCategory.dynamicSectionWithField ? (
               <DynamicSectionWithField
+                setFinalSubmit={setFinalSubmit}
                 setNextStageFromCategory={setNextStageFromCategory}
                 setSelectedApprover={setSelectedApprover}
                 setDynamicSectionWithFieldSideBarVisible={
                   setCategorySideBarVisible
                 }
               />
+            ) : nextStageFromCategory.EmailTemplateSection ? (
+              <EmailContainer
+                setFinalSubmit={setFinalSubmit}
+                getCategoryConfigDetails={getCategoryConfigDetails}
+                finalSubmit={finalSubmit}
+                setNextStageFromCategory={setNextStageFromCategory}
+                setSelectedApprover={setSelectedApprover}
+                setCategoryInputs={setCategoryInputs}
+                setEmailContainerFieldSideBarVisible={setCategorySideBarVisible}
+              />
             ) : (
               <></>
             )}
           </div>
+          {nextStageFromCategory.ApproverSection ? (
+            <div className={`${categoryConfigStyles.FlowSideBarButtons}`}>
+              <Button
+                icon="pi pi-times"
+                label="Cancel"
+                onClick={() => {
+                  sessionStorage.clear();
+                  setCategorySideBarVisible(false);
+                  setSelectedApprover("");
+                  setNextStageFromCategory({
+                    ...Config.NextStageFromCategorySideBar,
+                  });
+                  setCategoryInputs("");
+                }}
+                className="customCancelButton"
+              />
+
+              <Button
+                icon="pi pi-angle-double-right"
+                label="Next"
+                className="customSubmitButton"
+                onClick={() => {
+                  setNextStageFromCategory(
+                    (prev: INextStageFromCategorySideBar) => ({
+                      ...prev,
+                      dynamicSectionWithField: true,
+                      ApproverSection: false,
+                    })
+                  );
+                }}
+              />
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </>
     );

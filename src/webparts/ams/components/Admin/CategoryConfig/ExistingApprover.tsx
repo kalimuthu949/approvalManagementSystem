@@ -5,27 +5,25 @@ import { useState, useEffect } from "react";
 import SPServices from "../../../../../CommonServices/SPServices";
 import { Config } from "../../../../../CommonServices/Config";
 import {
+  IFinalSubmitDetails,
   INextStageFromCategorySideBar,
   IPeoplePickerDetails,
 } from "../../../../../CommonServices/interface";
 //Prime React Imports:
 import { Dropdown } from "primereact/dropdown";
 import { Persona, PersonaSize } from "@fluentui/react";
-import { Button } from "primereact/button";
 //Styles Imports:
 import ExistingApproverStyles from "./CategoryConfig.module.scss";
 
 const ExistingApprover = ({
+  setExisitingApproverSideBarVisible,
   category,
-  setExistingApproverSideBarVisible,
-  setSelectedApprover,
-  setNextStageFromCategory,
+  setFinalSubmit,
 }) => {
   //State Variables:
   const [approvalConfigDetails, setApprovalConfigDetails] = useState<any[]>([]);
   const [approvalFlowOptions, setApprovalFlowOptions] = useState([]);
   const [selectedFlow, setSelectedFlow] = useState(null);
-  console.log(selectedFlow, "selectedFlow");
   const [selectedFlowID, setSelectedFlowID] = useState<number>(null);
   const [selectedFlowObj, setSelectedFlowObj] = useState<any>({});
   const [approvalStageConfigDetails, setApprovalStageConfigDetails] = useState<
@@ -35,6 +33,25 @@ const ExistingApprover = ({
   //Initial Render:
   useEffect(() => {
     getApprovalConfigDetails();
+
+    const storedFlow = sessionStorage.getItem("selectedFlow");
+    const storedFlowID = sessionStorage.getItem("selectedFlowID");
+
+    if (storedFlow) {
+      setSelectedFlow(storedFlow);
+    }
+    if (storedFlowID) {
+      setSelectedFlowID(Number(storedFlowID));
+    }
+    //Handle ReLoad Browser then clear session Storage:
+    // const handleBeforeUnload = () => {
+    //   sessionStorage.clear();
+    // };
+
+    // window.addEventListener("beforeunload", handleBeforeUnload);
+    // return () => {
+    //   window.removeEventListener("beforeunload", handleBeforeUnload);
+    // };
   }, []);
 
   //Get Approval ConfigDetails:
@@ -78,6 +95,14 @@ const ExistingApprover = ({
   useEffect(() => {
     if (selectedFlowID !== null) {
       getApprovalStageConfigDetails();
+      setFinalSubmit((prev: IFinalSubmitDetails) => ({
+        ...prev,
+        categoryConfig: {
+          ...prev.categoryConfig, // Retain existing properties
+          category: category,
+          ExistingApprover: selectedFlowID,
+        },
+      }));
     }
   }, [selectedFlowID]);
 
@@ -126,13 +151,17 @@ const ExistingApprover = ({
   const handleFlowChange = (e: any) => {
     const selectedValue = e.value;
     setSelectedFlow(selectedValue);
-
+    sessionStorage.setItem("selectedFlow", selectedValue);
     const selectedItem = approvalConfigDetails.find(
       (item) => item.approvalFlowName === selectedValue
     );
 
     setSelectedFlowObj(selectedItem ? selectedItem : "");
     setSelectedFlowID(selectedItem ? selectedItem.id : null);
+    sessionStorage.setItem(
+      "selectedFlowID",
+      selectedItem ? selectedItem.id.toString() : ""
+    );
   };
 
   return (
@@ -191,34 +220,6 @@ const ExistingApprover = ({
               </div>
             </div>
           ))}
-      </div>
-      <div className={`${ExistingApproverStyles.FlowSideBarButtons}`}>
-        <Button
-          icon="pi pi-times"
-          label="Cancel"
-          onClick={() => {
-            setExistingApproverSideBarVisible(false);
-            setSelectedApprover("");
-            setNextStageFromCategory({
-              ...Config.NextStageFromCategorySideBar,
-            });
-          }}
-          className="customCancelButton"
-        />
-
-        <Button
-          icon="pi pi-angle-double-right"
-          label="Next"
-          className="customSubmitButton"
-          onClick={() => {
-            setNextStageFromCategory((prev: INextStageFromCategorySideBar) => ({
-              ...prev,
-              dynamicSectionWithField: true,
-              ApproverSection: false,
-            }));
-            // setSelectedApprover("");
-          }}
-        />
       </div>
     </>
   );

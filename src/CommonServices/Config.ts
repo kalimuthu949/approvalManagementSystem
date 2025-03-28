@@ -3,6 +3,7 @@ import {
   IActionBooleans,
   IDropdownDetails,
   IEmailTemplateConfigDetails,
+  IFinalSubmitDetails,
   ILibraryNames,
   IListNames,
   INextStageFromCategorySideBar,
@@ -107,5 +108,15 @@ export namespace Config {
     ApproverSection: true,
     dynamicSectionWithField: false,
     EmailTemplateSection: false,
+  };
+
+  //Category Config Last Final Submit Details:
+  export const finalSubmitDetails: IFinalSubmitDetails = {
+    categoryConfig: {
+      category: "",
+      ExistingApprover: null,
+      customApprover: "",
+    },
+    dynamicSectionWithField: [],
   };
 }
