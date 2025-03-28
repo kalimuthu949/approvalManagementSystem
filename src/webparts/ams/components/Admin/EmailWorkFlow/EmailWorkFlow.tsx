@@ -16,7 +16,6 @@ import {
 //PrimeReact Imports:
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Editor } from "primereact/editor";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Label } from "office-ui-fabric-react";
