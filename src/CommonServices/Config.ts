@@ -1,6 +1,8 @@
 //interFace Imports:
 import {
   IActionBooleans,
+  IApprovalDetailsPatch,
+  IApprovalFlowValidation,
   IDropdownDetails,
   IEmailTemplateConfigDetails,
   ILibraryNames,
@@ -31,6 +33,11 @@ export namespace Config {
   export const initialConfigDrop: IDropdownDetails = {
     categoryDrop: [],
     approvelProcess: [],
+    rejectionFlowDrop: [],
+    approvalFlowType: [
+      { name: "Everyone should approve", id: 2 },
+      { name: "Anyone can approve", id: 1 },
+    ],
   };
 
   //View and Edit Obj:
@@ -107,5 +114,20 @@ export namespace Config {
     ApproverSection: true,
     dynamicSectionWithField: false,
     EmailTemplateSection: false,
+  };
+
+  //Approval Config Details
+  export const ApprovalConfigDefaultDetails: IApprovalDetailsPatch = {
+    apprvalFlowName: "",
+    totalStages: null,
+    rejectionFlow: "",
+    stages: [],
+  };
+
+  //Approval Stage Error Details
+  export const ApprovalFlowValidation: IApprovalFlowValidation = {
+    approvalConfigValidation: "",
+    stageValidation: "",
+    stageErrIndex: [],
   };
 }

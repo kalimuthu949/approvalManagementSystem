@@ -39,8 +39,6 @@ const DynamicSectionWithField = ({
     stages: [],
     choices: [],
   });
-  console.log(sections, "section");
-
   const addDynamicSection = () => {
     setSections([...sections, { name: "", columns: [] }]);
   };

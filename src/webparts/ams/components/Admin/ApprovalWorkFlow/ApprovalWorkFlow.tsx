@@ -16,229 +16,236 @@ import SPServices from "../../../../../CommonServices/SPServices";
 import "../../../../../External/style.css";
 import ApprovalWorkFlowStyles from "./ApprovalWorkFlow.module.scss";
 import { Label } from "office-ui-fabric-react";
-import { IRightSideBarContents } from "../../../../../CommonServices/interface";
-
-interface IApprover {
-  name: string;
-  email: string;
-  id: number;
-}
-
-interface IStage {
-  id?: number;
-  stage: number;
-  approvers: IApprover[];
-  typeOfWorkflow: string;
-  rejectType: string;
-}
+import {
+  IApprovalDetailsPatch,
+  IApprovalFlowValidation,
+  IApprovalStages,
+  IBasicDropDown,
+  IDropdownDetails,
+  IPeoplePickerDetails,
+  IRightSideBarContents,
+} from "../../../../../CommonServices/interface";
+import { sp } from "@pnp/sp";
+import { Config } from "../../../../../CommonServices/Config";
 
 const ApprovalWorkFlow = ({
+  approvalTableRender,
+  ApprovalConfigSideBarVisible,
   setApprovalSideBarContent,
   setApprovalSideBarVisible,
   context,
 }) => {
-  const [workflowName, setWorkflowName] = useState("");
-  console.log("workflowName",workflowName)
-  const [rejectType, setRejectType] = useState("");
-  const [stages, setStages] = useState<IStage[]>([]);
-  const [removedStageIds, setRemovedStageIds] = useState<number[]>([]);
-  const [validationError, setValidationError] = useState("");
+  const [approvalFlowDetails, setApprovalFlowDetails] =
+    useState<IApprovalDetailsPatch>({
+      ...Config.ApprovalConfigDefaultDetails,
+    });
+  const [rejectionFlowChoice, setRejectionFlowChoice] =
+    useState<IDropdownDetails>({
+      ...Config.initialConfigDrop,
+    });
+  const [approvalType, setApprovalType] = useState<IDropdownDetails>({
+    ...Config.initialConfigDrop,
+  });
+  const [validation, setValidation] = useState<IApprovalFlowValidation>({
+    ...Config.ApprovalFlowValidation,
+  });
+  console.log("validation", validation);
 
-  const approvalConfigId = 12; // Assuming this is passed as a prop
-  const fetchApprovalData = async (id) => {
-    try {
-      // Fetch data from ApprovalConfig list
-      const listDetails = {
-        Listname: "ApprovalConfig",
-        SelectedId: approvalConfigId,
-      };
-      const approvalConfigItem = await SPServices.SPReadItemUsingID(
-        listDetails
-      ).then(function (data) {
-        if (data.length > 0) {
-          data.map((item: any) => {
-            setWorkflowName(item.ApprovalFlowName);
-            setRejectType(item.ApprovalProcess);
-          });
-        }
-      });
-
-      const listApproverDetails = {
-        Listname: "ApprovalStageConfig",
-        Select: "*,Approver/Id,Approver/Title,Approver/EMail",
-        Expand: "Approver/Id,Approver/Title,Approver/EMail",
-        Filter: [
-          {
-            FilterKey: "ParentApprovalId",
-            Operator: "eq",
-            FilterValue: `${approvalConfigId}`,
-          },
-        ],
-      };
-
-      let tempStages: any = [];
-      // Fetch data from ApprovalStageConfig list
-      const approvalStages = await SPServices.SPReadItems(
-        listApproverDetails
-      ).then(async function (data: any) {
-        for (let i = 0; i < data.length; i++) {
-          let tempArr: any = [];
-          if (data[i].Approver.length > 0) {
-            for (let j = 0; j < data[i].Approver.length; j++) {
-              tempArr.push({
-                id: data[i].Approver[j].Id,
-                name: data[i].Approver[j].Title,
-                email: data[i].Approver[j].EMail,
-              });
-            }
-          }
-
-          tempStages.push({
-            id: data[i].ID,
-            stage: data[i].Stage,
-            approvers: tempArr,
-            typeOfWorkflow: data[i].TypeOfWorkflow,
-            rejectType: data[i].RejectType,
-          });
-        }
-
-        if (tempStages.length > 0) {
-          setStages(tempStages);
-        }
-      });
-    } catch (error) {
-      console.error("Error fetching approval data", error);
-    }
+  //ApprovalConfig Details Patch
+  const addApprovalConfigDetails = (addData: IApprovalDetailsPatch) => {
+    SPServices.SPAddItem({
+      Listname: Config.ListNames.ApprovalConfig,
+      RequestJSON: {
+        ApprovalFlowName: addData?.apprvalFlowName,
+        TotalStages: addData?.totalStages,
+        RejectionFlow: addData?.rejectionFlow,
+      },
+    })
+      .then(async (res: any) => {
+        console.log("addApprovalConfigDetails res", res);
+        await addData?.stages?.forEach((stage) =>
+          addApprovalStageConfigDetails(res?.data.ID, stage)
+        );
+        setApprovalFlowDetails({ ...Config.ApprovalConfigDefaultDetails });
+        approvalTableRender();
+        setApprovalSideBarVisible(false);
+      })
+      .catch((err) => console.log("addApprovalConfigDetails error", err));
   };
 
+  //ApprovalStageConfig Details Patch
+  const addApprovalStageConfigDetails = (
+    parentId: number,
+    stage: IApprovalStages
+  ) => {
+    const tempApprovers = stage?.approver?.map((e) => e.id);
+    console.log("tempApprovers", tempApprovers);
+    SPServices.SPAddItem({
+      Listname: Config.ListNames.ApprovalStageConfig,
+      RequestJSON: {
+        ParentApprovalId: parentId,
+        Stage: stage?.stage,
+        ApprovalProcess: stage?.approvalProcess,
+        ApproverId: { results: tempApprovers },
+      },
+    })
+      .then((res: any) => {
+        console.log("addApprovalStageConfigDetails res", res);
+      })
+      .catch((err) => console.log("addApprovalStageConfigDetails error", err));
+  };
+
+  //Get rejectionFlowChoice Choices
+  const getRejectionFlowChoices = () => {
+    SPServices.SPGetChoices({
+      Listname: Config.ListNames.ApprovalConfig,
+      FieldName: "RejectionFlow",
+    })
+      .then((res: any) => {
+        console.log("res", res);
+        const temArr: IBasicDropDown[] = [];
+        res?.Choices.map((choice) =>
+          temArr.push({
+            name: choice,
+          })
+        );
+        setRejectionFlowChoice((prev: IDropdownDetails) => ({
+          ...prev,
+          rejectionFlowDrop: temArr,
+        }));
+      })
+      .catch((err) => {
+        console.log("getRejectionFlowChoices error", err);
+      });
+  };
+
+  //onChange handle
+  const onChangeHandle = (key, value) => {
+    approvalFlowDetails[key] = value;
+    setApprovalFlowDetails({ ...approvalFlowDetails });
+  };
+
+  //Add stage
   const addStage = () => {
-    var newStages = stages.slice();
-    newStages.push({
-      stage: newStages.length + 1,
-      approvers: [],
-      typeOfWorkflow: "",
-      rejectType: "",
+    const tempStage: IApprovalStages[] = approvalFlowDetails?.stages.slice();
+    tempStage.push({
+      stage: approvalFlowDetails?.stages?.length + 1,
+      approvalProcess: null,
+      approver: [],
     });
-    setStages(newStages);
+    approvalFlowDetails["stages"] = [...tempStage];
+    setApprovalFlowDetails({
+      ...approvalFlowDetails,
+      totalStages: approvalFlowDetails?.stages?.length,
+    });
   };
 
+  //Remove stage
   const removeStage = (stageIndex) => {
-    var newStages = stages.slice();
-    const removedStage = newStages.splice(stageIndex, 1)[0];
-    if (removedStage.id) {
-      setRemovedStageIds([...removedStageIds, removedStage.id]);
-    }
-    setStages(newStages);
-  };
-
-  const updateApprover = (stageIndex, approvers) => {
-    var newStages = stages.slice();
-    newStages[stageIndex].approvers = approvers.map((user) => ({
-      id: user.id,
-      name: user.text,
-      email: user.secondaryText,
-    }));
-    setStages(newStages);
-  };
-
-  const updateTypeOfWorkflow = (stageIndex, value) => {
-    var newStages = stages.slice();
-    newStages[stageIndex].typeOfWorkflow = value;
-    setStages(newStages);
-  };
-
-  const updateRejectType = (value) => {
-    setRejectType(value);
-    var newStages = stages.slice();
-    newStages.forEach((stage) => {
-      stage.rejectType = value;
+    var newStages = approvalFlowDetails?.stages?.slice();
+    newStages.splice(stageIndex, 1)[0];
+    const orderedStage: IApprovalStages[] = [];
+    newStages.forEach((e, i) =>
+      orderedStage.push({
+        stage: i + 1,
+        approvalProcess: e?.approvalProcess,
+        approver: e?.approver,
+      })
+    );
+    console.log("orderedStage", orderedStage);
+    approvalFlowDetails["stages"] = [...orderedStage];
+    setApprovalFlowDetails({
+      ...approvalFlowDetails,
+      totalStages: orderedStage.length,
     });
-    setStages(newStages);
+    setValidation({ ...Config.ApprovalFlowValidation });
   };
 
-  const handleSubmit = async () => {
-    for (var i = 0; i < stages.length; i++) {
-      if (stages[i].approvers.length === 0) {
-        setValidationError("All stages must have at least one approver.");
-        return;
+  //Update stage
+  const updateStage = (
+    index: number,
+    key: keyof IApprovalStages,
+    value: any
+  ) => {
+    const tempUpdateStage: IApprovalStages[] = [...approvalFlowDetails.stages];
+    var keyValue;
+    if (tempUpdateStage[index]) {
+      if (key === "approver") {
+        debugger;
+        const tempApproverArr: IPeoplePickerDetails[] = [];
+        value.map((e) =>
+          tempApproverArr.push({
+            id: e?.id,
+            name: e?.text,
+            email: e?.secondaryText,
+          })
+        );
+        keyValue = [...tempApproverArr];
+      } else {
+        keyValue = value;
       }
-      for (var j = 0; j < stages[i].approvers.length; j++) {
-        if (!stages[i].approvers[j].name) {
-          setValidationError("All name fields must be filled.");
-          return;
-        }
-      }
+      tempUpdateStage[index] = { ...tempUpdateStage[index], [key]: keyValue }; // Update the specific key
     }
-    setValidationError("");
-
-    try {
-      // Add or update the workflow in the ApprovalConfig list
-      const approvalConfigItem = {
-        Title: workflowName,
-        ApprovalFlowName: workflowName,
-        TotalStages: stages.length,
-        ApprovalProcess: rejectType,
-        RejectionFlow: rejectType,
-      };
-
-      const dataApproval = {
-        Listname: "ApprovalConfig",
-        RequestJSON: approvalConfigItem,
-      };
-      const approvalConfigId = await SPServices.SPAddItem(dataApproval);
-      console.log("ApprovalConfig ID", approvalConfigId);
-
-      // Remove deleted stages from the ApprovalStageConfig list
-      for (let id of removedStageIds) {
-        // await SPServices.SPDeleteItem("ApprovalStageConfig", id);
-      }
-
-      // Add or update each stage in the ApprovalStageConfig list
-      for (let i = 0; i < stages.length; i++) {
-        const stage = stages[i];
-        const approvers = stage.approvers.map((approver) => approver.id);
-        const approvalManagementItem = {
-          Title: `Stage ${stage.stage}`,
-          ParentApprovalId: approvalConfigId.data.ID,
-          Stage: stage.stage,
-          ApproverId: { results: approvers },
-          TypeOfWorkflow: stage.typeOfWorkflow,
-          RejectType: stage.rejectType,
-        };
-
-        const dataApprovers = {
-          Listname: "ApprovalStageConfig",
-          RequestJSON: approvalManagementItem,
-        };
-
-        if (stage.id) {
-          // await SPServices.SPUpdateItem(
-          //   "ApprovalStageConfig",
-          //   stage.id,
-          //   dataApprovers
-          // );
-        } else {
-          // await SPServices.SPAddItem(dataApprovers);
-        }
-      }
-
-      console.log("Data submitted successfully");
-    } catch (error) {
-      console.error("Error submitting data", error);
-    }
+    console.log("tempUpdateStage", tempUpdateStage);
+    setApprovalFlowDetails({
+      ...approvalFlowDetails,
+      stages: tempUpdateStage,
+    });
   };
 
-  const options = [
-    { label: "Everyone should approve", value: 1 },
-    { label: "Anyone can approve", value: 2 },
-  ];
-
-  const rejectOptions = [
-    { label: "Reject Option 1", value: 1 },
-    { label: "Reject Option 2", value: 2 },
-    { label: "Reject Option 3", value: 3 },
-  ];
-
+  //Validation
+  const validRequiredField = async (action) => {
+    if (
+      approvalFlowDetails?.apprvalFlowName.trim().length === 0 ||
+      approvalFlowDetails?.rejectionFlow.trim().length === 0
+    ) {
+      validation["approvalConfigValidation"] =
+        "Workflow name and Rejection process both are required";
+    } else if (
+      approvalFlowDetails?.stages.length === 0 &&
+      action === "submit"
+    ) {
+      validation["approvalConfigValidation"] =
+        "Atleast one stage approver is required";
+    } else if (
+      (action === "addStage" || action === "submit") &&
+      approvalFlowDetails?.apprvalFlowName.trim() &&
+      approvalFlowDetails?.rejectionFlow.trim()
+    ) {
+      validation["approvalConfigValidation"] = "";
+      if (approvalFlowDetails?.stages.length > 0) {
+        const tempSatgeErr = approvalFlowDetails?.stages
+          ?.map((e, index) =>
+            e.approvalProcess === null || e.approver.length === 0 ? index : -1
+          )
+          .filter((e) => e !== -1);
+        if (tempSatgeErr.length > 0) {
+          validation["stageErrIndex"] = [...tempSatgeErr];
+          validation["stageValidation"] = "People and type are required";
+        } else if (tempSatgeErr.length === 0) {
+          validation["stageErrIndex"] = [];
+          validation["stageValidation"] = "";
+        }
+      } else {
+        validation["stageErrIndex"] = [];
+        validation["stageValidation"] = "";
+      }
+    }
+    await setValidation({ ...validation });
+    finalValidation(action);
+  };
+  // Final validation
+  const finalValidation = (action) => {
+    if (!validation?.approvalConfigValidation && !validation?.stageValidation) {
+      {
+        action === "addStage"
+          ? addStage()
+          : action === "submit"
+          ? addApprovalConfigDetails(approvalFlowDetails)
+          : "";
+      }
+    }
+  };
   ///ApprovalConfigFlowContent
   const ApprovalConfigSidebarContent = () => (
     <>
@@ -247,109 +254,147 @@ const ApprovalWorkFlow = ({
         style={{ marginBottom: "1rem" }}
       >
         <div className={`${ApprovalWorkFlowStyles.nameDiv}`}>
-          <Label className={`${ApprovalWorkFlowStyles.label}`}>Name</Label>
+          <Label className={`${ApprovalWorkFlowStyles.label}`}>
+            Name<span className="required">*</span>
+          </Label>
           <InputText
-            value={workflowName}
-            onChange={(e) => setWorkflowName(e.target.value)}
+            value={approvalFlowDetails?.apprvalFlowName}
+            onChange={(e) => onChangeHandle("apprvalFlowName", e.target.value)}
             placeholder="Workflow Name"
-            style={{ marginRight: "0.5rem", width: "100%" }}
+            style={{ width: "100%" }}
           />
         </div>
         <div className={`${ApprovalWorkFlowStyles.rejectDiv}`}>
           <Label className={`${ApprovalWorkFlowStyles.label}`}>
-            Rejection Process
+            Rejection Process<span className="required">*</span>
           </Label>
           <Dropdown
-            value={rejectType}
-            options={rejectOptions}
-            onChange={(e) => updateRejectType(e.value)}
+            options={rejectionFlowChoice?.rejectionFlowDrop}
+            value={rejectionFlowChoice?.rejectionFlowDrop.find(
+              (e) => e?.name === approvalFlowDetails?.rejectionFlow
+            )}
+            optionLabel="name"
+            onChange={(e) => onChangeHandle("rejectionFlow", e.value?.name)}
             placeholder="Select Reject Type"
             style={{ width: "100%" }}
           />
         </div>
       </div>
-      {stages.map(function (stage, stageIndex) {
+      <div>
+        <span className="errorMsg">{validation?.approvalConfigValidation}</span>
+      </div>
+      {approvalFlowDetails?.stages?.map(function (stage, stageIndex) {
         return (
-          <div key={stageIndex} style={{ marginBottom: "1rem" }}>
-            <h4 className={`${ApprovalWorkFlowStyles.label}`}>
-              Stage {stage.stage} Approver
-            </h4>
-            <div className={`${ApprovalWorkFlowStyles.stage}`}>
-              {/* <div>
-                <PeoplePicker
-                  context={context}
-                  titleText="People"
-                  personSelectionLimit={3}
-                  required={true}
-                  groupName={""}
-                  webAbsoluteUrl={context._pageContext._web.absoluteUrl}
-                  showtooltip={true}
-                  disabled={false}
-                  ensureUser={true}
-                  defaultSelectedUsers={stage.approvers.map(
-                    (approver) => approver.email
-                  )}
-                  onChange={(items) => updateApprover(stageIndex, items)}
-                  principalTypes={[PrincipalType.User]}
-                  resolveDelay={1000}
-                />
-              </div> */}
-              <div>
-                <Label className={`${ApprovalWorkFlowStyles.label}`}>
-                  Type
-                </Label>
-                <Dropdown
-                  value={stage.typeOfWorkflow}
-                  options={options}
-                  onChange={(e) => updateTypeOfWorkflow(stageIndex, e.value)}
-                  placeholder="Select Type of Workflow"
-                  style={{ marginTop: "0.5rem" }}
-                />
-              </div>
-              <div className={`${ApprovalWorkFlowStyles.deleteDiv}`}>
-                <FaRegTrashAlt onClick={() => removeStage(stageIndex)} />
+          <>
+            <div key={stageIndex} style={{ marginTop: "20px" }}>
+              <h4 className={`${ApprovalWorkFlowStyles.label}`}>
+                Stage {stage.stage} Approver<span className="required">*</span>
+              </h4>
+              <div className={`${ApprovalWorkFlowStyles.stage}`}>
+                <div>
+                  <Label className={`${ApprovalWorkFlowStyles.label}`}>
+                    People
+                  </Label>
+                  <PeoplePicker
+                    context={context}
+                    personSelectionLimit={3}
+                    groupName={""}
+                    showtooltip={true}
+                    disabled={false}
+                    ensureUser={true}
+                    defaultSelectedUsers={approvalFlowDetails?.stages[
+                      stageIndex
+                    ].approver.map((approver) => approver.email)}
+                    onChange={(items) =>
+                      updateStage(stageIndex, "approver", items)
+                    }
+                    principalTypes={[PrincipalType.User]}
+                    resolveDelay={1000}
+                  />
+                </div>
+                <div>
+                  <Label className={`${ApprovalWorkFlowStyles.label}`}>
+                    Type
+                  </Label>
+                  <Dropdown
+                    value={approvalType?.approvalFlowType.find(
+                      (e) =>
+                        e?.id ===
+                        approvalFlowDetails?.stages[stageIndex].approvalProcess
+                    )}
+                    options={approvalType?.approvalFlowType}
+                    optionLabel="name"
+                    onChange={(e) =>
+                      updateStage(stageIndex, "approvalProcess", e.value?.id)
+                    }
+                    placeholder="Select Type of Workflow"
+                    style={{ marginTop: "0.5rem" }}
+                  />
+                </div>
+                <div className={`${ApprovalWorkFlowStyles.deleteDiv}`}>
+                  <FaRegTrashAlt onClick={() => removeStage(stageIndex)} />
+                </div>
               </div>
             </div>
-          </div>
+            {validation?.stageErrIndex.some((e) => e === stageIndex) && (
+              <div>
+                <span className="errorMsg">{validation?.stageValidation}</span>
+              </div>
+            )}
+          </>
         );
       })}
-      <Button
-        style={{ padding: "5px" }}
-        icon="pi pi-plus"
-        className="p-button-success"
-        onClick={() => addStage()}
-      />
-
-      {validationError && (
-        <div style={{ color: "red", marginBottom: "1rem" }}>
-          {validationError}
-        </div>
-      )}
+      <div className={`${ApprovalWorkFlowStyles.addStageButton}`}>
+        <Button
+          style={{ padding: "5px" }}
+          icon="pi pi-plus"
+          className="p-button-success"
+          onClick={() => validRequiredField("addStage")}
+        />
+      </div>
       <div className={`${ApprovalWorkFlowStyles.buttonsDiv}`}>
-        <div>
+        <>
+          <Button
+            className="customCancelButton"
+            label="Cancel"
+            icon="pi pi-times"
+            onClick={() => {
+              setApprovalSideBarVisible(false);
+            }}
+          />
           <Button
             className="customSubmitButton"
             label="Submit"
             icon="pi pi-save"
-            onClick={handleSubmit}
+            onClick={() => validRequiredField("submit")}
           />
-        </div>
+        </>
       </div>
     </>
   );
 
   //useEffects
   useEffect(() => {
-    if (approvalConfigId) {
-      fetchApprovalData(approvalConfigId);
+    getRejectionFlowChoices();
+  }, []);
+  useEffect(() => {
+    if (!ApprovalConfigSideBarVisible) {
+      setValidation({ ...Config.ApprovalFlowValidation });
+      setApprovalFlowDetails({ ...Config.ApprovalConfigDefaultDetails });
     }
-  }, [approvalConfigId]);
+  }, [ApprovalConfigSideBarVisible]);
   useEffect(() => {
     setApprovalSideBarContent((prev: IRightSideBarContents) => ({
       ...prev,
       ApprovalConfigContent: ApprovalConfigSidebarContent(),
     }));
-  }, [null, setApprovalSideBarVisible,workflowName]);
+  }, [
+    null,
+    ApprovalConfigSideBarVisible,
+    approvalFlowDetails,
+    rejectionFlowChoice?.rejectionFlowDrop,
+    validation,
+  ]);
 
   return <></>;
 };

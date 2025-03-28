@@ -148,7 +148,7 @@ const RequestsFields = ({
         console.log("Get Current Record from RequestHup Details error", e);
       });
   };
-  console.log("approvalHistoryDetails", approvalHistoryDetails);
+  
   //Get Approval History
   const getApprovalHistory = () => {
     SPServices.SPReadItems({

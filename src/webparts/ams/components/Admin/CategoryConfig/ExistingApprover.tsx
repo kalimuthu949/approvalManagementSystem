@@ -25,7 +25,6 @@ const ExistingApprover = ({
   const [approvalConfigDetails, setApprovalConfigDetails] = useState<any[]>([]);
   const [approvalFlowOptions, setApprovalFlowOptions] = useState([]);
   const [selectedFlow, setSelectedFlow] = useState(null);
-  console.log(selectedFlow, "selectedFlow");
   const [selectedFlowID, setSelectedFlowID] = useState<number>(null);
   const [selectedFlowObj, setSelectedFlowObj] = useState<any>({});
   const [approvalStageConfigDetails, setApprovalStageConfigDetails] = useState<

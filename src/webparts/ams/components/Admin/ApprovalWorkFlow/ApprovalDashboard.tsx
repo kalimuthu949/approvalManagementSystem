@@ -22,6 +22,7 @@ import ApprovalWorkFlow from "./ApprovalWorkFlow";
 
 const ApprovalDashboard = ({
   setApprovalSideBarContent,
+  ApprovalConfigSideBarVisible,
   setApprovalSideBarVisible,
   context,
 }) => {
@@ -29,7 +30,6 @@ const ApprovalDashboard = ({
   const [approvalConfigDetails, setApprovalConfigDetails] = useState<
     IApprovalConfigDetails[]
   >([]);
-  console.log("approvalConfigDetails", approvalConfigDetails);
 
   //Set Actions PopUp:
   const actionsWithIcons = () => [
@@ -61,7 +61,6 @@ const ApprovalDashboard = ({
       Expand: "Category",
     })
       .then(async (res) => {
-        console.log(res);
         const tempArr: IApprovalConfigDetails[] = [];
         await res?.forEach(async (item: any) => {
           tempArr.push({
@@ -72,7 +71,6 @@ const ApprovalDashboard = ({
             rejectionFlow: item?.RejectionFlow,
             stages: await getApprovalStageConfig(item?.ID),
           });
-          console.log("tempArr", tempArr);
           setApprovalConfigDetails([...tempArr]);
         });
       })
@@ -118,7 +116,6 @@ const ApprovalDashboard = ({
   };
   //Render Approvers column
   const renderApproversColumn = (rowData) => {
-    console.log("rowData", rowData);
     const approvers: IPeoplePickerDetails[] = rowData?.stages.flatMap((e) =>
       e?.approver.map((approver) => ({
         id: approver?.id,
@@ -147,6 +144,8 @@ const ApprovalDashboard = ({
   return (
     <>
       <ApprovalWorkFlow
+        approvalTableRender={getApprovalConfig}
+        ApprovalConfigSideBarVisible={ApprovalConfigSideBarVisible}
         setApprovalSideBarContent={setApprovalSideBarContent}
         setApprovalSideBarVisible={setApprovalSideBarVisible}
         context={context}

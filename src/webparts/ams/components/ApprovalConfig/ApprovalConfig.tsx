@@ -14,6 +14,7 @@ import ApprovalDashboard from "../Admin/ApprovalWorkFlow/ApprovalDashboard";
 const ApprovalConfig = ({
   context,
   setTabView,
+  ApprovalConfigSideBarVisible,
   setApprovalConfigSideBarContent,
   setApprovalConfigSideBarVisible,
 }) => {
@@ -27,6 +28,7 @@ const ApprovalConfig = ({
           />
         ) : setTabView == 1 ? (
           <ApprovalDashboard
+          ApprovalConfigSideBarVisible={ApprovalConfigSideBarVisible}
             setApprovalSideBarContent={setApprovalConfigSideBarContent}
             setApprovalSideBarVisible={setApprovalConfigSideBarVisible}
             context={context}

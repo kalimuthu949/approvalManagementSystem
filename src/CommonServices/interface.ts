@@ -27,6 +27,13 @@ export interface ICategoryDetails {
   category: string;
   isDelete: boolean;
 }
+//Approval Details patch:
+export interface IApprovalDetailsPatch {
+  apprvalFlowName: string;
+  totalStages: number;
+  rejectionFlow: string;
+  stages: IApprovalStages[];
+}
 //ApprovalConfig Details
 export interface IApprovalConfigDetails {
   id: number;
@@ -52,6 +59,8 @@ export interface IBasicFilterCategoryDrop {
 export interface IDropdownDetails {
   categoryDrop: IBasicFilterCategoryDrop[];
   approvelProcess: IBasicDropDown[];
+  rejectionFlowDrop: IBasicDropDown[];
+  approvalFlowType: IBasicFilterCategoryDrop[];
 }
 //View and Edit Obj:
 export interface IActionBooleans {
@@ -179,4 +188,11 @@ export interface INextStageFromCategorySideBar {
   ApproverSection: boolean;
   dynamicSectionWithField: boolean;
   EmailTemplateSection: boolean;
+}
+
+//Approval Stage Error Details
+export interface IApprovalFlowValidation {
+  approvalConfigValidation: string;
+  stageValidation: string;
+  stageErrIndex: number[];
 }
