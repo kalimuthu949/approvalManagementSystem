@@ -105,7 +105,43 @@
   }
 }
 .FlowSideBarButtons {
+  margin-top: 10px;
   display: flex;
   gap: 3%;
   justify-content: flex-end;
+}
+
+//Cutom Approver Styles:
+.topSection {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  margin-top: 30px;
+  .nameDiv {
+    width: 40%;
+  }
+  .rejectDiv {
+    width: 40%;
+  }
+}
+.stage {
+  margin-top: 20px;
+  display: flex;
+  gap: 1%;
+  align-items: center;
+
+  .deleteDiv {
+    padding-top: 37px;
+    color: red;
+    cursor: pointer;
+  }
+}
+
+.buttonsDiv {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2%;
+}
+.addStageButton {
+  margin: 20px 0px 20px 0px;
 }

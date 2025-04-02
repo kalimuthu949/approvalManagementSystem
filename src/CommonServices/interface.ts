@@ -20,6 +20,7 @@ export interface IListNames {
   SectionColumnsConfig: string;
   ApprovalHistory: string;
   EmailTemplateConfig: string;
+  CategoryEmailConfig: string;
 }
 //CategoryConfig Details:
 export interface ICategoryDetails {
@@ -190,19 +191,19 @@ export interface INextStageFromCategorySideBar {
   EmailTemplateSection: boolean;
 }
 
-
 //Approval Stage Error Details
 export interface IApprovalFlowValidation {
   approvalConfigValidation: string;
   stageValidation: string;
   stageErrIndex: number[];
 }
+
 //Category Config Last Final Submit Interface:
 export interface IFinalSubmitDetails {
   categoryConfig: {
     category: string;
     ExistingApprover: number;
-    customApprover: string;
+    customApprover: {};
   };
   dynamicSectionWithField: [];
 }

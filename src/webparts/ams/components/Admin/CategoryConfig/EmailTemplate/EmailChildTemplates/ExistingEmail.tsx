@@ -6,18 +6,14 @@ import SPServices from "../../../../../../../CommonServices/SPServices";
 import { Config } from "../../../../../../../CommonServices/Config";
 import ExistingEmailstyles from "./ExisitingEmail.module.scss";
 import { Label } from "office-ui-fabric-react";
+import { IFinalSubmitDetails } from "../../../../../../../CommonServices/interface";
 
-const ExistingEmail = () => {
+const ExistingEmail = ({ ExisitingEmailData }) => {
   //State Variables:
   const [getTemplateNameOptions, setTemplateNameOptions] = useState([]);
-  const [selectedDropValues, setSelectedDropValues] = useState<any>({
-    Approval: null,
-    Reject: null,
-    Resubmit: null,
-    Rework: null,
-  });
+  const [selectedDropValues, setSelectedDropValues] = useState<any>([]);
+  const [templateData, setTemplateData] = useState([]);
 
-  //GetEmailTemplateConfigDetails:
   const getEmailTemplateConfigDetails = () => {
     SPServices.SPReadItems({
       Listname: Config.ListNames?.EmailTemplateConfig,
@@ -26,20 +22,34 @@ const ExistingEmail = () => {
       Select: "*",
       Filter: [{ FilterKey: "IsDelete", Operator: "eq", FilterValue: "false" }],
     }).then((res) => {
-      const templateOptions = res
-        .map((item: any) => item?.TemplateName)
-        .filter((v: any, i: any, a: any) => a.indexOf(v) === i) // Remove duplicates
-        .map((name: string) => ({ label: name, value: name }));
+      const uniqueTemplates = res
+        .map((item: any) => ({
+          label: item?.TemplateName,
+          value: item?.TemplateName,
+          id: item?.ID,
+        }))
+        .filter(
+          (item, index, self) =>
+            index === self.findIndex((t) => t.value === item.value)
+        );
 
-      setTemplateNameOptions(templateOptions);
+      setTemplateNameOptions(uniqueTemplates);
+      setTemplateData(res);
     });
   };
 
   // Handle dropdown change
-  const handleFlowChange = (key: string, value: string) => {
-    // setSelectedDropValues((prev: any) => ({ ...prev, [key]: value }));
-    const updatedValues = { ...selectedDropValues, [key]: value };
+  const handleFlowChange = (process: string, value: string) => {
+    const selectedTemplate = templateData.find(
+      (item) => item.TemplateName === value
+    );
+    const updatedValues = selectedDropValues.map((item) =>
+      item.process === process
+        ? { ...item, value, id: selectedTemplate?.ID }
+        : item
+    );
     setSelectedDropValues(updatedValues);
+    ExisitingEmailData(updatedValues);
     sessionStorage.setItem("selectedDropValues", JSON.stringify(updatedValues));
   };
 
@@ -48,21 +58,36 @@ const ExistingEmail = () => {
     const storedValues = sessionStorage.getItem("selectedDropValues");
     if (storedValues) {
       setSelectedDropValues(JSON.parse(storedValues));
+    } else {
+      setSelectedDropValues([
+        { process: "Approval", value: "", id: null },
+        { process: "Reject", value: "", id: null },
+        { process: "ReSubmit", value: "", id: null },
+        { process: "ReWork", value: "", id: null },
+      ]);
     }
     getEmailTemplateConfigDetails();
-    getEmailTemplateConfigDetails();
+
+    const handleBeforeUnload = () => {
+      sessionStorage.clear();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   return (
     <div className={ExistingEmailstyles.existingEmailContainer}>
-      {["Approval", "Reject", "Resubmit", "Rework"].map((flowName) => (
-        <div key={flowName} className={ExistingEmailstyles.emailRow}>
-          <Label className={ExistingEmailstyles.label}>{flowName}</Label>
+      {selectedDropValues.map((item: any) => (
+        <div key={item.process} className={ExistingEmailstyles.emailRow}>
+          <Label className={ExistingEmailstyles.label}>{item.process}</Label>
           <div className={ExistingEmailstyles.dropDownContainer}>
             <Dropdown
-              value={selectedDropValues[flowName]}
+              value={item.value || null}
               options={getTemplateNameOptions}
-              onChange={(e) => handleFlowChange(flowName, e.value)}
+              onChange={(e) => handleFlowChange(item.process, e.value)}
               placeholder="Enter here"
               className={ExistingEmailstyles.dropDown}
             />

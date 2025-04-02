@@ -31,8 +31,11 @@ import {
   INextStageFromCategorySideBar,
 } from "../../../../../../CommonServices/interface";
 import { sp } from "@pnp/sp";
+import SPServices from "../../../../../../CommonServices/SPServices";
 
 const DynamicSectionWithField = ({
+  categoryClickingID,
+  actionBooleans,
   setNextStageFromCategory,
   setSelectedApprover,
   setDynamicSectionWithFieldSideBarVisible,
@@ -51,10 +54,8 @@ const DynamicSectionWithField = ({
     choices: [],
   });
 
-
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewFields, setPreviewFields] = useState<any>([]);
-
 
   const addDynamicSection = () => {
     setSections([...sections, { name: "", columns: [] }]);
@@ -193,11 +194,39 @@ const DynamicSectionWithField = ({
     }
   };
 
+  //Get CategorySectionConfigDetails:
+  const getCategorySectionConfigDetails = () => {
+    SPServices.SPReadItems({
+      Listname: Config.ListNames?.CategorySectionConfig,
+      Select: "*",
+      Filter: [
+        {
+          FilterKey: "Category",
+          Operator: "eq",
+          FilterValue: categoryClickingID.toString(),
+        },
+      ],
+    })
+      .then((res: any) => {})
+      .catch((err) => {
+        console.log(err, "Get CategorySectionConfig Details error");
+      });
+  };
+
   useEffect(() => {
     const storedSections = sessionStorage.getItem("dynamicSections");
     if (storedSections) {
       setSections(JSON.parse(storedSections));
     }
+    //Handle ReLoad Browser then clear session Storage:
+    const handleBeforeUnload = () => {
+      sessionStorage.clear();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   useEffect(() => {
@@ -207,6 +236,12 @@ const DynamicSectionWithField = ({
       dynamicSectionWithField: sections,
     }));
   }, [sections]);
+
+  useEffect(() => {
+    if (categoryClickingID) {
+      getCategorySectionConfigDetails();
+    }
+  }, [categoryClickingID]);
 
   return (
     <>
