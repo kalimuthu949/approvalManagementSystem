@@ -23,7 +23,6 @@ const EmailContainer = ({
   finalSubmit,
   getCategoryConfigDetails,
 }) => {
-  console.log(finalSubmit, "FinalSubmit");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
   // const [newCategoryId, setNewCategoryId] = useState<number>(null);
   // Load sessionStorage data on mount
