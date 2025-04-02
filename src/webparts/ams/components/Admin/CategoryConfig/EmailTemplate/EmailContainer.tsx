@@ -27,7 +27,6 @@ const EmailContainer = ({
   finalSubmit,
   getCategoryConfigDetails,
 }) => {
-  console.log(finalSubmit, "FinalSubmit");
   const [selectedEmail, setSelectedEmail] = useState<string>("");
   const [existingEmailData, setExistingEmailData] = useState([]);
   const [customEmailData, setCustomEmailData] = useState([]);

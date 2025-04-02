@@ -30,26 +30,45 @@ const ApprovalDashboard = ({
   const [approvalConfigDetails, setApprovalConfigDetails] = useState<
     IApprovalConfigDetails[]
   >([]);
+  const [isEdit, setIsEdit] = useState<boolean>(true);
+  const [currentRecord, setCurrentRecord] = useState<IApprovalConfigDetails>();
+  console.log("approvalConfigDetails", approvalConfigDetails);
 
   //Set Actions PopUp:
-  const actionsWithIcons = () => [
+  const actionsWithIcons = (rowData) => [
     {
       label: "View",
       icon: "pi pi-eye",
       className: "customView",
-      command: () => {},
+      command: async () => {
+        const currentRec = approvalConfigDetails?.find(
+          (rec) => rec?.id === rowData?.id
+        );
+        await setCurrentRecord(currentRec);
+        await setIsEdit(false);
+        setApprovalSideBarVisible(true);
+      },
     },
     {
       label: "Edit",
       icon: "pi pi-file-edit",
       className: "customEdit",
-      command: (event: any) => {},
+      command: async () => {
+        const currentRec = approvalConfigDetails?.find(
+          (rec) => rec?.id === rowData?.id
+        );
+        await setCurrentRecord(currentRec);
+        await setIsEdit(true);
+        setApprovalSideBarVisible(true);
+      },
     },
     {
       label: "Delete",
       icon: "pi pi-trash",
       className: "customDelete",
-      command: (event: any) => {},
+      command: () => {
+        updateIsDelete(rowData?.id);
+      },
     },
   ];
 
@@ -59,6 +78,15 @@ const ApprovalDashboard = ({
       Listname: Config.ListNames.ApprovalConfig,
       Select: "*,Category/Id",
       Expand: "Category",
+      Filter: [
+        {
+          FilterKey: "IsDelete",
+          Operator: "eq",
+          FilterValue: "false",
+        },
+      ],
+      Orderby: "Id",
+      Orderbydecorasc: false,
     })
       .then(async (res) => {
         const tempArr: IApprovalConfigDetails[] = [];
@@ -80,7 +108,7 @@ const ApprovalDashboard = ({
   //get Approval Stage Config
   const getApprovalStageConfig = async (parentID) => {
     try {
-      const res = SPServices.SPReadItems({
+      const res = await SPServices.SPReadItems({
         Listname: Config.ListNames.ApprovalStageConfig,
         Select: "*,ParentApproval/Id,Approver/Id,Approver/EMail,Approver/Title",
         Expand: "ParentApproval,Approver",
@@ -91,9 +119,12 @@ const ApprovalDashboard = ({
             FilterValue: parentID.toString(),
           },
         ],
+        Orderby: "Stage",
+        Orderbydecorasc: true,
       });
+      console.log("res", res);
       const tempStageArr: IApprovalStages[] = [];
-      (await res)?.forEach((item: any) => {
+      res?.forEach((item: any) => {
         tempStageArr.push({
           stage: item?.Stage,
           approvalProcess: item?.ApprovalProcess,
@@ -110,6 +141,16 @@ const ApprovalDashboard = ({
     }
   };
 
+  //IsDelete update in Approval config
+  const updateIsDelete = (ItemId) => {
+    SPServices.SPUpdateItem({
+      Listname: Config.ListNames.ApprovalConfig,
+      ID: ItemId,
+      RequestJSON: { IsDelete: true },
+    })
+      .then(() => getApprovalConfig())
+      .catch((err) => console.log("updateIsDelete error", err));
+  };
   //Approval Type
   const renderRejectionFlowColumn = (rowData) => {
     return <div>{statusTemplate(rowData?.rejectionFlow)}</div>;
@@ -133,7 +174,7 @@ const ApprovalDashboard = ({
   };
   //Render Action column
   const renderActionColumn = (rowData) => {
-    const menuModel = actionsWithIcons(); // rowData pass panrom da
+    const menuModel = actionsWithIcons(rowData); // rowData pass panrom da
     return <ActionsMenu items={menuModel} />;
   };
 
@@ -144,6 +185,10 @@ const ApprovalDashboard = ({
   return (
     <>
       <ApprovalWorkFlow
+        currentRec={currentRecord}
+        isEdit={isEdit}
+        setIsEdit={setIsEdit}
+        setCurrentRecord={setCurrentRecord}
         approvalTableRender={getApprovalConfig}
         ApprovalConfigSideBarVisible={ApprovalConfigSideBarVisible}
         setApprovalSideBarContent={setApprovalSideBarContent}

@@ -190,9 +190,7 @@ const WorkflowActionButtons = ({
         Comments: approvalDetails?.comments || "",
       },
     })
-      .then((e) => {
-        console.log("Add approval history sucessfully", e);
-      })
+      .then((e) => {})
       .catch((e) => {
         console.log("Add approval history error", e);
       });
@@ -282,7 +280,6 @@ const WorkflowActionButtons = ({
       ID: updatedItem?.id,
     })
       .then(() => {
-        console.log("SharePoint list updated successfully");
         setRequestsSideBarVisible(false);
       })
       .catch((e) => {

@@ -266,7 +266,7 @@ const RequestsFields = ({
                         )}
                       </Label>
                       <InputText
-                        readOnly={
+                        disabled={
                           !(
                             recordAction === "Edit" &&
                             author?.email === loginUser &&
@@ -307,7 +307,7 @@ const RequestsFields = ({
                       <InputTextarea
                         id={field.columnName}
                         autoResize
-                        readOnly={
+                        disabled={
                           !(
                             recordAction === "Edit" &&
                             author?.email === loginUser &&

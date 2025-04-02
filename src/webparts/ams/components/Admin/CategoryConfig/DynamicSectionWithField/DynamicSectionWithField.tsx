@@ -42,7 +42,6 @@ const DynamicSectionWithField = ({
   setFinalSubmit,
 }) => {
   const [sections, setSections] = useState([]);
-  console.log(sections, "sections");
   const [showPopup, setShowPopup] = useState(false);
   const [newChoice, setNewChoice] = useState("");
   const [newField, setNewField] = useState<any>({
