@@ -44,14 +44,14 @@ const ExistingApprover = ({
       setSelectedFlowID(Number(storedFlowID));
     }
     //Handle ReLoad Browser then clear session Storage:
-    // const handleBeforeUnload = () => {
-    //   sessionStorage.clear();
-    // };
+    const handleBeforeUnload = () => {
+      sessionStorage.clear();
+    };
 
-    // window.addEventListener("beforeunload", handleBeforeUnload);
-    // return () => {
-    //   window.removeEventListener("beforeunload", handleBeforeUnload);
-    // };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   //Get Approval ConfigDetails:

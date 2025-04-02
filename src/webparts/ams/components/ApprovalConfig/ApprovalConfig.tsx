@@ -23,18 +23,18 @@ const ApprovalConfig = ({
       <div className="tabViewContents">
         {setTabView == 0 ? (
           <CategoryConfig
+            context={context}
             setCategorySideBarContent={setApprovalConfigSideBarContent}
             setCategorySideBarVisible={setApprovalConfigSideBarVisible}
           />
         ) : setTabView == 1 ? (
           <ApprovalDashboard
-          ApprovalConfigSideBarVisible={ApprovalConfigSideBarVisible}
+            ApprovalConfigSideBarVisible={ApprovalConfigSideBarVisible}
             setApprovalSideBarContent={setApprovalConfigSideBarContent}
             setApprovalSideBarVisible={setApprovalConfigSideBarVisible}
             context={context}
           />
-        ) : 
-        setTabView == 2 ? (
+        ) : setTabView == 2 ? (
           <EmailWorkFlow
             setEmailWorkFlowSideBarContent={setApprovalConfigSideBarContent}
             setEmailWorkFlowSideBarVisible={setApprovalConfigSideBarVisible}

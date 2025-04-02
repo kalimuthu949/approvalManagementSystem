@@ -28,6 +28,7 @@ export namespace Config {
     SectionColumnsConfig: "SectionColumnsConfig",
     ApprovalHistory: "ApprovalHistory",
     EmailTemplateConfig: "EmailTemplateConfig",
+    CategoryEmailConfig: "CategoryEmailConfig",
   };
 
   //Dropdown Config:
@@ -117,7 +118,6 @@ export namespace Config {
     EmailTemplateSection: false,
   };
 
-
   //Approval Config Details
   export const ApprovalConfigDefaultDetails: IApprovalDetailsPatch = {
     apprvalFlowName: "",
@@ -130,15 +130,16 @@ export namespace Config {
   export const ApprovalFlowValidation: IApprovalFlowValidation = {
     approvalConfigValidation: "",
     stageValidation: "",
-    stageErrIndex: []
-  }
+    stageErrIndex: [],
+  };
+
   //Category Config Last Final Submit Details:
   export const finalSubmitDetails: IFinalSubmitDetails = {
     categoryConfig: {
       category: "",
       ExistingApprover: null,
-      customApprover: "",
+      customApprover: null,
     },
-    dynamicSectionWithField: []
-};
-  }
+    dynamicSectionWithField: [],
+  };
+}

@@ -11,13 +11,16 @@ import { Config } from "../../../../../../../CommonServices/Config";
 import SPServices from "../../../../../../../CommonServices/SPServices";
 
 const statusOptions = [
-  { label: "Approved", value: "Approved" },
+  { label: "Approval", value: "Approval" },
   { label: "Reject", value: "Reject" },
-  { label: "Resubmit", value: "Resubmit" },
-  { label: "Rework", value: "Rework" },
+  { label: "ReSubmit", value: "ReSubmit" },
+  { label: "ReWork", value: "ReWork" },
 ];
 
-const CustomEmail = ({ setCustomEmailTemplateSideBarVisible }) => {
+const CustomEmail = ({
+  setCustomEmailTemplateSideBarVisible,
+  customEmailData,
+}) => {
   const [templates, setTemplates] = useState([
     { templateName: "", emailBody: "", status: null },
   ]);
@@ -26,6 +29,7 @@ const CustomEmail = ({ setCustomEmailTemplateSideBarVisible }) => {
     const newTemplates = [...templates];
     newTemplates[index][key] = value;
     setTemplates(newTemplates);
+    customEmailData(newTemplates);
   };
 
   const handleAdd = () => {
@@ -92,13 +96,6 @@ const CustomEmail = ({ setCustomEmailTemplateSideBarVisible }) => {
           onClick={handleAdd}
         />
       </div>
-
-      {/* <Button
-        icon="pi pi-save"
-        label="Submit"
-        className="p-button-primary"
-        onClick={handleSubmit}
-      /> */}
     </div>
   );
 };

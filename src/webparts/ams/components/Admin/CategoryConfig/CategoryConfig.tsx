@@ -30,6 +30,7 @@ import DynamicSectionWithField from "./DynamicSectionWithField/DynamicSectionWit
 import EmailContainer from "./EmailTemplate/EmailContainer";
 
 const CategoryConfig = ({
+  context,
   setCategorySideBarContent,
   setCategorySideBarVisible,
 }) => {
@@ -42,6 +43,9 @@ const CategoryConfig = ({
   const [actionsBooleans, setActionsBooleans] = useState<IActionBooleans>({
     ...Config.InitialActionsBooleans,
   });
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null
+  );
   const [selectedApprover, setSelectedApprover] = useState<string>("");
   const [nextStageFromCategory, setNextStageFromCategory] =
     useState<INextStageFromCategorySideBar>({
@@ -82,17 +86,29 @@ const CategoryConfig = ({
       });
   };
 
+  //Handle View and Edit Actions:
+  const handleActionClick = (rowData: ICategoryDetails, action: string) => {
+    setCategoryInputs(rowData.category);
+    setSelectedCategoryId(rowData.id);
+    setActionsBooleans((prev) => ({
+      ...prev,
+      isView: action === "view",
+      isEdit: action === "edit",
+    }));
+    setCategorySideBarVisible(true);
+  };
+
   //Set Actions PopUp:
   const actionsWithIcons = (rowData: ICategoryDetails) => [
     {
       label: "View",
       icon: "pi pi-eye",
-      command: () => {},
+      command: () => handleActionClick(rowData, "view"),
     },
     {
       label: "Edit",
       icon: "pi pi-pencil ",
-      command: () => {},
+      command: () => handleActionClick(rowData, "edit"),
     },
     {
       label: "Delete",
@@ -126,45 +142,50 @@ const CategoryConfig = ({
                 <InputText
                   className={`${categoryConfigStyles.input}`}
                   value={categoryInputs}
+                  disabled={actionsBooleans.isView}
                   placeholder="Enter Category"
                   onChange={(e) => setCategoryInputs(e.target.value)}
                 />
               </div>
-
-              <div className={`${categoryConfigStyles.radioContainer}`}>
-                <div className={`${categoryConfigStyles.radioDiv}`}>
-                  <RadioButton
-                    inputId="existing"
-                    name="approver"
-                    value="existing"
-                    onChange={(e) => {
-                      setSelectedApprover(e?.value);
-                    }}
-                    checked={selectedApprover === "existing"}
-                  />
-                  <label
-                    className={`${categoryConfigStyles.radioDivLabel}`}
-                    htmlFor="existing"
-                  >
-                    Existing approver
-                  </label>
+              {actionsBooleans?.isEdit == false &&
+              actionsBooleans?.isView == false ? (
+                <div className={`${categoryConfigStyles.radioContainer}`}>
+                  <div className={`${categoryConfigStyles.radioDiv}`}>
+                    <RadioButton
+                      inputId="existing"
+                      name="approver"
+                      value="existing"
+                      onChange={(e) => {
+                        setSelectedApprover(e?.value);
+                      }}
+                      checked={selectedApprover === "existing"}
+                    />
+                    <label
+                      className={`${categoryConfigStyles.radioDivLabel}`}
+                      htmlFor="existing"
+                    >
+                      Existing approver
+                    </label>
+                  </div>
+                  <div className={`${categoryConfigStyles.radioDiv}`}>
+                    <RadioButton
+                      inputId="custom"
+                      name="approver"
+                      value="custom"
+                      onChange={(e) => setSelectedApprover(e?.value)}
+                      checked={selectedApprover === "custom"}
+                    />
+                    <label
+                      className={`${categoryConfigStyles.radioDivLabel}`}
+                      htmlFor="custom"
+                    >
+                      Custom approver
+                    </label>
+                  </div>
                 </div>
-                <div className={`${categoryConfigStyles.radioDiv}`}>
-                  <RadioButton
-                    inputId="custom"
-                    name="approver"
-                    value="custom"
-                    onChange={(e) => setSelectedApprover(e?.value)}
-                    checked={selectedApprover === "custom"}
-                  />
-                  <label
-                    className={`${categoryConfigStyles.radioDivLabel}`}
-                    htmlFor="custom"
-                  >
-                    Custom approver
-                  </label>
-                </div>
-              </div>
+              ) : (
+                ""
+              )}
             </>
           )}
           <div>
@@ -175,15 +196,28 @@ const CategoryConfig = ({
                 setExisitingApproverSideBarVisible={setCategorySideBarVisible}
                 category={categoryInputs}
               />
-            ) : selectedApprover === "custom" &&
-              nextStageFromCategory.ApproverSection ? (
-              <CustomApprover />
+            ) : (selectedApprover === "custom" &&
+                nextStageFromCategory.ApproverSection) ||
+              (actionsBooleans?.isEdit &&
+                nextStageFromCategory.ApproverSection) ||
+              (actionsBooleans?.isView &&
+                nextStageFromCategory.ApproverSection) ? (
+              <CustomApprover
+                categoryClickingID={selectedCategoryId}
+                actionBooleans={actionsBooleans}
+                category={categoryInputs}
+                setFinalSubmit={setFinalSubmit}
+                context={context}
+                setCustomApproverSideBarVisible={setCategorySideBarVisible}
+              />
             ) : (
               <></>
             )}
             {nextStageFromCategory.dynamicSectionWithField ? (
               <DynamicSectionWithField
                 setFinalSubmit={setFinalSubmit}
+                categoryClickingID={selectedCategoryId}
+                actionBooleans={actionsBooleans}
                 setNextStageFromCategory={setNextStageFromCategory}
                 setSelectedApprover={setSelectedApprover}
                 setDynamicSectionWithFieldSideBarVisible={
@@ -217,6 +251,7 @@ const CategoryConfig = ({
                     ...Config.NextStageFromCategorySideBar,
                   });
                   setCategoryInputs("");
+                  setActionsBooleans({ ...Config.InitialActionsBooleans });
                 }}
                 className="customCancelButton"
               />
@@ -246,6 +281,15 @@ const CategoryConfig = ({
 
   useEffect(() => {
     getCategoryConfigDetails();
+    //Handle ReLoad Browser then clear session Storage:
+    const handleBeforeUnload = () => {
+      sessionStorage.clear();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   useEffect(() => {
