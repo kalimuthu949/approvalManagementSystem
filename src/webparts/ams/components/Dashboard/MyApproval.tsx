@@ -24,6 +24,7 @@ import WorkflowActionButtons from "../WorkflowButtons/WorkflowActionButtons";
 import AttachmentUploader from "../AttachmentUploader/AttachmentUploader";
 import RequestsFields from "../DynamicsRequests/RequestsFields";
 import { Item } from "@pnp/sp/items";
+import Loader from "../Loader/Loader";
 
 const MyApprovalPage = ({
   searchValue,
@@ -44,6 +45,7 @@ const MyApprovalPage = ({
   //CategoryId
   // const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
   const [currentRecord, setCurrentRecord] = useState<IRequestHubDetails>();
+  const [showLoader,setShowLoader] = useState<boolean>(true);
   //Set Actions PopUp:
   const actionsWithIcons = (rowData: IRequestHubDetails) => [
     {
@@ -130,6 +132,7 @@ const MyApprovalPage = ({
       )
     );
     setRequestsDetails([...filterTempArr]);
+    setShowLoader(false);
   };
 
   //Render Status Column:
@@ -223,6 +226,9 @@ const MyApprovalPage = ({
   }, [null, filterCategory, searchValue]);
 
   return (
+     <>
+        {
+          showLoader?<Loader/>:
     <>
       <div className="customDataTableContainer">
         <DataTable
@@ -297,7 +303,7 @@ const MyApprovalPage = ({
           setDynamicRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
         />
       )}
-    </>
+    </>}</>
   );
 };
 

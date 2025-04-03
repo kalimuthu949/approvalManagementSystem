@@ -23,6 +23,7 @@ import {
 import WorkflowActionButtons from "../WorkflowButtons/WorkflowActionButtons";
 import AttachmentUploader from "../AttachmentUploader/AttachmentUploader";
 import RequestsFields from "../DynamicsRequests/RequestsFields";
+import Loader from "../Loader/Loader";
 
 const AllRequestPage = ({
   searchValue,
@@ -39,6 +40,7 @@ const AllRequestPage = ({
   //Record Action
   const [recordAction, setRecordAction] = useState<string>("");
   const [navigateFrom, setNavigateFrom] = useState<string>("");
+  const [showLoader,setShowLoader] = useState<boolean>(true);
   //CategoryId
   // const [selectedCategoryId, setSelectedCategoryId] = useState<number>(null);
   const [currentRecord, setCurrentRecord] = useState<IRequestHubDetails>();
@@ -51,24 +53,9 @@ const AllRequestPage = ({
       command: () => {
         setRecordAction("View");
         setCurrentRecord(rowData);
-        // setSelectedCategoryId(rowData.CategoryId);
         setDynamicRequestsSideBarVisible(true);
       },
-    },
-    // {
-    //   label: "Edit",
-    //   icon: "pi pi-file-edit",
-    //   className: "customEdit",
-    //   command: (event: any) => {
-    //     setRecordAction("Edit");
-    //   },
-    // },
-    // {
-    //   label: "Delete",
-    //   icon: "pi pi-trash",
-    //   className: "customDelete",
-    //   command: (event: any) => {},
-    // },
+    }
   ];
 
   //Get RequestHub Details:
@@ -106,6 +93,7 @@ const AllRequestPage = ({
       );
       // filterCategory ? filterRecords(temArr) : setRequestsDetails([...temArr]);
       setRequestsDetails([...temArr]);
+      setShowLoader(false);
     } catch (e) {
       console.log("RequestsHub Error", e);
     }
@@ -208,6 +196,9 @@ const AllRequestPage = ({
 
   return (
     <>
+    {
+      showLoader?<Loader/>:
+    <>
       <div className="customDataTableContainer">
         <DataTable
           globalFilter={searchValue}
@@ -267,6 +258,8 @@ const AllRequestPage = ({
           setDynamicRequestsSideBarVisible={setDynamicRequestsSideBarVisible}
         />
       )}
+    </>
+    }
     </>
   );
 };

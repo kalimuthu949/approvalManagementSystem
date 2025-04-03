@@ -14,6 +14,7 @@ import { IAmsProps } from "./components/IAmsProps";
 //Prime React Default Styles setup Imports:
 import { SPComponentLoader } from "@microsoft/sp-loader";
 require("../../../node_modules/primereact/resources/primereact.min.css");
+//require("https://cdnjs.cloudflare.com/ajax/libs/primeicons/3.0.0/primeicons.css");
 import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
 
 export interface IAmsWebPartProps {
@@ -46,7 +47,7 @@ export default class AmsWebPart extends BaseClientSideWebPart<IAmsWebPartProps> 
   //Prime React Default Styles SetUp:
   public constructor() {
     super();
-    SPComponentLoader.loadCss("https://unpkg.com/primeicons/primeicons.css");
+    SPComponentLoader.loadCss("https://cdnjs.cloudflare.com/ajax/libs/primeicons/7.0.0/primeicons.css");
     SPComponentLoader.loadCss(
       "https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
     );
